@@ -1,9 +1,16 @@
-from picamera import PiCamera
-from time import sleep
-from PIL import Image
+import time
+import picamera
+
+camera = picamera.PiCamera()
+try:
+    camera.start_preview()
+    time.sleep(10)
+    camera.stop_preview()
+finally:
+    camera.close()
 
 #INITIALIZE CAMERA
-camera = PiCamera()
+##camera = PiCamera()
 
 ###RESIZE PREVIEW WINDOW
 ##x = 0 #horizontal distance of preview window from upper left corner
