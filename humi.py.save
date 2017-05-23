@@ -1,4 +1,4 @@
-import smbus 
+import smbus
 import time
 
 bus = smbus.SMBus(1) #initialization 
@@ -14,8 +14,8 @@ address = 0x40 #sensor specific
 
 #reads raw data
 def raw():
-	raw = bus.read_word_data(address,command)
-	return raw
+	raw = bus.read_byte_data(address,command)
+	return raw 
 
 #convert raw to relative humidity
 def rh(raw):
@@ -32,38 +32,22 @@ while True:
 	setting = input("Enter 'RH' for relative humidity OR 'T' for temperature OR 'Q' to exit: ")
 	if setting == 'RH':
 		command = 0xF5
-		master = input("Enter any key for DEFAULT (no hold master). Else enter 'HM': ")
-		if master == 'HM':
+		master = input("Enter 'Y' to Hold Master (else enter 'N'): ")
+		if master == 'Y':
 			command = 0xE5
-			while True:
-				time.sleep(0.5) 
-				a = raw()
+			while True:				a = raw()
 				b = rh(a)
 				print(a,hex(int(a)),b,hex(int(b)))
 		else:
-			while True:
-				time.sleep(0.5)
-				a = raw()
-				b = rh(a) 
-				print(a,hex(int(a)),b,hex(int(b)))
+			print(type(rh(raw())))
+			#print(hex(rh(raw())))
 	elif setting == 'T':
 		command = 0xF3
-		master = input("Enter any key for DEFAULT (no hold master). Else enter 'HM': ")
-		if master == 'HM':
+		master = input("Enter 'Y' to Hold Master (else enter 'N'): ")
+		if master == 'Y':
 			command = 0xE3
-			while True:
-				time.sleep(1)
-				a = raw()
-				b = temp(a)
-				print(a,hex(int(a)),b,hex(int(b)))
-		else:
-			while True:
-				time.sleep(1)
-				a = raw()
-				b = temp(a)
-				print(a,hex(int(a)),b,hex(int(b)))
+			print(temp(raw()))
 	else: 
 		print("quitting")
 		break
-	
-#git stage -a 
+
