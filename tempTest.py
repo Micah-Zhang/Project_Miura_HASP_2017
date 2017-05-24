@@ -1,17 +1,29 @@
+import os
 import time
-from w1thermsensor import W1ThermSensor
 
-def temp(downlink,tempLED):
-	try:
-		data_raw = []
-		data = []
-		for sensor in W!ThermSensor.get_avaliable_sensors():
-			data_raw.append(sensor.get_temperature())
-		for i in range(len(data_raw)):
-			data.append(data_raw[i])
-		if (not tempLED.is_set()) and tempCheck(data):
-			tempLED.set()
-		downlink.put(["SE","T%i" % (len(data)), cs_str(data)])
-	except:
-		print("Temperature reading failed")
+os.system('modprobe w1-gpio')
+os.system('modprobe w1-therm')
 
+temp_sensor = '//sys/bus/w1/devices/28-00000829f3b5/w1_slave'
+
+def temp_raw():
+        f = open(temp_sensor, 'r')
+        lines = f.readlines()
+        f.close()
+        return lines
+def read_temp():
+    lines = temp_raw()
+    while lines[0].strip()[-3:] != 'YES':
+        time.sleep(0.2)
+        lines = temp_raw()
+    temp_output = lines[1].find('t=')
+    if temp_output != -1:
+        temp_string = lines[1].strip()[temp_output+2:]
+        temp_c = float(temp_string) /1000.0
+        temp_f = temp_c * 9.0 / 5.0 + 32.0
+        return temp_c, temp_f
+
+while True:
+    print(read_temp())
+    time.sleep(1)
+                          
