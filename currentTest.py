@@ -1,5 +1,5 @@
 from ina219 import INA219
-from ina21 import DeviceRangeEror
+from ina219 import DeviceRangeError
 
 SHUNT_OHMS = 0.1
 
