@@ -2,7 +2,6 @@ import smbus
 import time
 
 bus = smbus.SMBus(1) #initialization 
-address = 0x40 #sensor specific
 
 ## List of commands:
 # 0xE5: Measure RH, Hold Master Mode
@@ -12,58 +11,48 @@ address = 0x40 #sensor specific
 # 0xE0: Read Temperature Value from Previous RH Measurement
 # 0xFE: Reset  
 
-#reads raw data
-def raw():
-	raw = bus.read_word_data(address,command)
-	return raw
+#print relative humidity (%)
+def rh(hold):
+	address = 0x40
+	command = 0xF5
+	if hold == "HM":
+		command = 0xE5
+	bus.write_byte(address, command) 
+	time.sleep(0.3)
+	data0 = bus.read_byte(address)
+	data1 = bus.read_byte(address)
+	rh = 125 * (data0 * 256 + data1) / 65536 - 6
+	print(rh)
 
-#convert raw to relative humidity
-def rh(raw):
-	rh = 125 * raw / 65536 - 6
-	return rh
-
-#convert raw to temperature (celsius)
-def temp(raw):
-	temp = 175.72 * raw / 65536 - 46.85
-	return temp  
+#print temperature (fahrenheit)
+def temp(hold):
+	address = 0x40
+	command = 0xF3
+	if hold == "HM":
+		command = 0xE3
+	bus.write_byte(address, command)
+	time.sleep(0.3)
+	data0 = bus.read_byte(address)
+	data1 = bus.read_byte(address) 
+	temp = 175.72 * (data0 * 256 + data1) / 65536 - 46.85
+	temp = temp * 1.8 + 32
+	print(temp) 
 	
 #continuously read and print sensor data
 while True:
-	setting = input("Enter 'RH' for relative humidity OR 'T' for temperature OR 'Q' to exit: ")
+	setting = input("Enter 'RH' for relative humidity OR 'T' for temperature OR 'Q' to exit: ")	
+	hold = input("Enter 'HM' to hold master. Else press ENTER: ")
 	if setting == 'RH':
-		command = 0xF5
-		master = input("Enter any key for DEFAULT (no hold master). Else enter 'HM': ")
-		if master == 'HM':
-			command = 0xE5
-			while True:
-				time.sleep(0.5) 
-				a = raw()
-				b = rh(a)
-				print(a,hex(int(a)),b,hex(int(b)))
-		else:
-			while True:
-				time.sleep(0.5)
-				a = raw()
-				b = rh(a) 
-				print(a,hex(int(a)),b,hex(int(b)))
+		while True:
+			rh(hold)
+			time.sleep(0.5)	
 	elif setting == 'T':
-		command = 0xF3
-		master = input("Enter any key for DEFAULT (no hold master). Else enter 'HM': ")
-		if master == 'HM':
-			command = 0xE3
-			while True:
-				time.sleep(1)
-				a = raw()
-				b = temp(a)
-				print(a,hex(int(a)),b,hex(int(b)))
-		else:
-			while True:
-				time.sleep(1)
-				a = raw()
-				b = temp(a)
-				print(a,hex(int(a)),b,hex(int(b)))
+
+		while True:
+			temp(hold)
+			time.sleep(0.5)	
 	else: 
 		print("quitting")
 		break
-	
+
 #git stage -a 
