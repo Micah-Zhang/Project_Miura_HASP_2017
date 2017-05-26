@@ -3,14 +3,16 @@ import serial
 
 ser = serial.Serial(
 
-	port = '/dev/ttyS0',
-	baudrate = 9600,
+	port = '/dev/serial0',
+	baudrate = 4800,
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
 	bytesize = serial.EIGHTBITS,
 	timeout = 1
 
 )
+
+serial.open()
 
 #time.sleep(5)
 
@@ -19,4 +21,6 @@ counter = 0
 while(True):
 	print("sending...")
 	ser.write("1".encode())
+	#ser.write("Write counter: {:d} \n".format(counter).encode())
 	time.sleep(1)
+	counter +- 1
