@@ -1,5 +1,4 @@
 import RPi.GPIO as gp
-
 import os
 
 
@@ -54,17 +53,15 @@ def main():
 
 def capture(cam):
 
-	cmd = "raspistill -o capture_%d.jpg" % cam
+	cmd = "raspistill -o capture_{:d}.jpg".format(cam)
 
 	os.system(cmd)
 
 
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
 
 	main()
-
-
 
 	gp.output(7, False)
 
