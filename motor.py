@@ -13,7 +13,7 @@
 from __future__ import division # "/" operator does not floor result, to do integer division use "//"
 import time
 import logging
-import Queue
+import queue
 import threading
 import RPi.GPIO as GPIO
 
@@ -39,7 +39,7 @@ AUTOMATION_THRESHOLD = 1 #in bars
 EXIT_MOTOR_AUTOMATION = False
 
 #file to hold how far the motor has moved, in centimeters
-MOTOR_STATUS_FILE = "/home/pi/SIMBACDH/flight/motor_status.txt"
+MOTOR_STATUS_FILE = "/home/pi/miura/motor_status.txt"
        
 
 #sets the sleep pin HIGH or LOW
@@ -720,7 +720,7 @@ def test_script():
     put a motor test script in this function and run motor.py as normal to run the script
     '''
 
-    DOWNLINK_QUEUE = Queue.Queue()
+    DOWNLINK_QUEUE = queue.Queue()
     motor_init()
     enable()
     while True:
