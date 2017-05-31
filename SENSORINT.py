@@ -25,7 +25,7 @@ def temp_init():
         		temp_string = lines[1].strip()[temp_output+2:]
         		temp_c = float(temp_string) /1000.0
         		temp_f = temp_c * 9.0 / 5.0 + 32.0
-        		return temp_c, temp_f
+        		return temp_f
 
 #initialize humidity sensor
 def humi_init():
@@ -70,7 +70,7 @@ GPIO.setup(37, GPIO.OUT)
 def adc_init():
 	adc = Adafruit_ADS1x15.ADS1115()
 	GAIN = 1
-		def read_ADC():
+		def read_adc():
 			values = [0]*4
 			for i in range(4):
 				values[i] = adc.read_adc(i,gain=GAIN)
@@ -86,4 +86,5 @@ adc_init()
 
 #main
 while(True):
-	print(	
+	print(read_temp(),', ',read_humi(),', ',read_pres(),',',read_alt(),', ',read_adc())
+	time.wait(0.5) 	
