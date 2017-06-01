@@ -105,7 +105,6 @@ for i in range(int(rcount)):
 	z = 10
 	humi = 38.200230202
 	press = 12.433343
-<<<<<<< HEAD
 	data1 = 'CU ' + 'MI ' + 'SE '
 	date = str(time.time()) 
 	data2 = ' ' + str(humi) + ' ' + str(press) + ' ' + str(ranf) + ' ' + str(amm) + ' ' + str(x) + ' ' + str(y) + ' ' + str(z) + ' ' + str("temp") + ' ' + str(i) 	
@@ -116,12 +115,10 @@ for i in range(int(rcount)):
 	print(data1+check+' '+date+data2)
 	data2 = data2 + '\n'
 	f.write(data1)
-=======
 	data = 'CU ' + 'MI ' + 'SE ' + 'checksum '  + str(datetime.datetime.now()) + ' ' + str(humi) + ' ' + str(press) + ' ' + str(ranf) + ' ' + str(amm) + ' ' + str(x) + ' ' + str(y) + ' ' + str(z) + ' ' + str(read_temp) + ' ' + str(i) 	
 	print(data)
 	blink(37)
 	data = data + '\n'
 	f.write(data)
->>>>>>> e543e4c659158427e41153897a11ea568b873c94
-f.close()
+	f.close()
 #print("Data Returns: CU MI Time, Temperature, Humidity, Pressure, Accelerometer")
