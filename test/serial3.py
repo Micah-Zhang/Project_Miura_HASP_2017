@@ -8,4 +8,4 @@ ser.open()
 while(True):
 	print("Sending...")
 	x = ser.write("Hello".encode())
-	sleep(1)
+	sleep(10)

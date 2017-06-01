@@ -1,7 +1,7 @@
 #Original code at https://github.com/adafruit/Adafruit_Python_ADXL345/blob/master/examples/simpletest.py
 
 import time
-import adafruit_adxl345
+import Adafruit_ADXL345
 
 accel = Adafruit_ADXL345.ADXL345()
 
