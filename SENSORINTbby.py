@@ -1,4 +1,4 @@
-import os
+'i '    ' import os
 import time
 import smbus
 import Adafruit_ADXL345
@@ -66,6 +66,7 @@ def read_acc():
 '''
 		
 # initialize LEDs
+gpio.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 
 def blink(pin):
@@ -110,7 +111,7 @@ for i in range(int(rcount)):
 	data = 'CU ' + 'MI ' + 'SE ' + 'checksum '  + str(datetime.datetime.now()) + ' ' + str(humi) + ' ' + str(press) + ' ' + str(ranf) + ' ' + str(amm) + ' ' + str(x) + ' ' + str(y) + ' ' + str(z) + ' ' + str(read_temp) + ' ' + str(i) 	
 	print(data)
 	blink(37)
-	print(read_temp)
 	data = data + '\n'
 	f.write(data)
 f.close()
+#print("Data Returns: CU MI Time, Temperature, Humidity, Pressure, Accelerometer")
