@@ -1,10 +1,12 @@
 import os
 import time
 import smbus
-import Adafruit_ADXL345
+#import Adafruit_ADXL345
 import RPi.GPIO as GPIO
-import Adafruit_ADS1x15
+#import Adafruit_ADS1x15
 import datetime
+from zlib import adler32
+GPIO.setwarnings(False)
 
 bus = smbus.SMBus(1)
 
@@ -13,6 +15,7 @@ os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 temp_sensor = '//sys/bus/w1/devices/28-00000829f3b5/w1_slave'
 
+'''
 def temp_raw():
 	f = open(temp_sensor, 'r')
 	lines = f.readlines()
@@ -31,7 +34,7 @@ def read_temp():
 		temp_f = temp_c * 9.0 / 5.0 + 32.0
 		return temp_f
 
-'''
+
 # initialize humidity sensor
 bus.write_byte(0x40, 0xF5) # relative humidity NO HOLD master mode
 time.sleep(0.3)	
@@ -42,9 +45,8 @@ def read_humi():
 	humidity = ((data0 * 256 + data1) * 125 / 65536.0) - 6
 	time.sleep(0.3)
 	return humidity
-'''
 
-'''
+
 # initialize pressure sensor
 bus.write_byte_data(0x60, 0x26, 0x39)
 time.sleep(1)
@@ -54,16 +56,13 @@ def read_pres():
 	pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16
 	pressure = (pres / 4.0) / 1000.0
 	return pressure
-'''
 
-'''
 # initialize accelerometer
 accel = Adafruit_ADXL345.ADXL345()
 
 def read_acc():
 	x, y, z = accel.read()
 	return x, y, z
-'''
 		
 # initialize LEDs
 GPIO.setmode(GPIO.BOARD)
@@ -81,8 +80,7 @@ def led_on(pin):
 
 def led_off(pin):
 	GPIO.output(pin,GPIO.LOW)
-
-'''		
+		
 # initialize ADC
 adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1
@@ -93,7 +91,6 @@ def read_adc():
 		values[i] = adc.read_adc(i, gain=GAIN)
 	return values[0], values[1]
 '''
-
 # M A I N
 rcount = input('ENTER desired read count: ')
 f = open("test.log","w+")
@@ -107,10 +104,14 @@ for i in range(int(rcount)):
 	z = 10
 	humi = 38.200230202
 	press = 12.433343
-	data = 'CU ' + 'MI ' + 'SE ' + 'checksum '  + str(datetime.datetime.now()) + ' ' + str(humi) + ' ' + str(press) + ' ' + str(ranf) + ' ' + str(amm) + ' ' + str(x) + ' ' + str(y) + ' ' + str(z) + ' ' + str(read_temp) + ' ' + str(i) 	
-	print(data)
-	blink(37)
-	print(read_temp)
-	data = data + '\n'
-	f.write(data)
+	data1 = 'CU ' + 'MI ' + 'SE '
+	date = str(time.time()) 
+	data2 = ' ' + str(humi) + ' ' + str(press) + ' ' + str(ranf) + ' ' + str(amm) + ' ' + str(x) + ' ' + str(y) + ' ' + str(z) + ' ' + str("temp") + ' ' + str(i) 	
+	data2_2 = data2.encode('utf-8')
+	data1_2 = data1.encode('utf-8')
+	checksum = adler32(data1_2+data2_2) & 0xffffffff
+	check = str(checksum)
+	print(data1+check+' '+date+data2)
+	data2 = data2 + '\n'
+	f.write(data1)
 f.close()
