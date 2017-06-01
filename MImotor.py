@@ -28,7 +28,7 @@ GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 
 #GPIO.setup(M0, GPIO.OUT, initial=GPIO.HIGH)
 #GPIO.setup(M1, GPIO.OUT, initial=GPIO.HIGH)
-
+'''
 #ask for user input
 direction = input("Would you like to move up or down, please enter up or down")
 
@@ -58,17 +58,16 @@ for i in range(0, steps):
 cycle = 3
 while cycle!=0:
 	GPIO.output(Direction_Pin, GPIO.HIGH)
-	for a in range(0,8000):
+	for a in range(0,16500):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
-		time.sleep(.005)
-	#time.sleep(5)
+		time.sleep(.0025)
+	time.sleep(10)
 	GPIO.output(Direction_Pin, GPIO.LOW)
-	for b in range(0, 8000):
+	for b in range(0, 16500):
 		GPIO.output(Step_Pin, GPIO.HIGH)
-		GPIO.output(Step_Pin, GPIO.HIGH)
-		time.sleep(.005)
+		GPIO.output(Step_Pin, GPIO.LOW)
+		time.sleep(.0025)
 	time.sleep(5)
 	cycle = cycle-1
 
-'''

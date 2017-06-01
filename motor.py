@@ -1,3 +1,4 @@
+
 #*********************************************************#
 #   COSGC Presents                                        #
 #       _____  ____ __  ___ ____   ___                    #
@@ -76,6 +77,7 @@ def motor_init(micro=MICRO):
     #for microstepping
     if micro == 1:
         GPIO.setup(M0, GPIO.OUT, initial=GPIO.LOW)
+
         GPIO.setup(M1, GPIO.OUT, initial=GPIO.LOW)
     elif micro == 1/2:
         GPIO.setup(M0, GPIO.OUT, initial=GPIO.HIGH)
@@ -380,7 +382,6 @@ def one_eye_sleep(wait_seconds):
 
     while end > current:
         time.sleep(1)
-
         #exit thread?
         if EXIT_MOTOR_AUTOMATION:
             #EXIT_MOTOR_AUTOMATION = False #variable might need to be imported as global
@@ -748,7 +749,7 @@ def test_script():
             if dist < 0:
                 print("Try again")
 
-        move(dist/10.0, direction, DOWNLINK_QUEUE)
+        move(dist/10, direction, DOWNLINK_QUEUE)
 
     GPIO.cleanup()
 
@@ -756,3 +757,4 @@ def test_script():
 
 if __name__ == '__main__':
 	test_script()
+
