@@ -43,13 +43,14 @@ gp.output(22, True)
 
 def main():
 
-	gp.output(7, False)
+	gp.output(7, True)
 
 	gp.output(11, False)
 
 	gp.output(12, True)
 
-	capture(1)
+	capture(2)
+
 
 def capture(cam):
 
