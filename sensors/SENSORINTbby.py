@@ -7,9 +7,11 @@ import RPi.GPIO as GPIO
 import Adafruit_ADS1x15
 import datetime
 from zlib import adler32
-GPIO.setwarnings(False)
+import queue
 
+GPIO.setwarnings(False)
 bus = smbus.SMBus(1)
+q = queue.Queue()
 
 # initialize temperature sensor
 os.system('modprobe w1-gpio')
@@ -119,4 +121,5 @@ for i in range(int(rcount)):
 	f.close()
 #	blink(37)
 	print(read_humi())
+	q.put(data1+data+data2)
 
