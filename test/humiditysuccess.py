@@ -16,7 +16,6 @@ while(True):
 	bus.write_byte(0x40, 0xF5)
 
 	time.sleep(0.3)
-
 # SI7021 address, 0x40(64)
 # Read data back, 2 bytes, Humidity MSB first
 	data0 = bus.read_byte(0x40)
