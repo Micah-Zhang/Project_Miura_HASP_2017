@@ -12,6 +12,7 @@ import queue
 GPIO.setwarnings(False)
 bus = smbus.SMBus(1)
 q = queue.Queue()
+print("sensor thread initialzed")
 
 # initialize temperature sensor
 os.system('modprobe w1-gpio')
@@ -97,29 +98,29 @@ def read_adc():
 	return values[0], values[1]
 
 # M A I N
-rcount = input('ENTER desired read count: ')
-f = open("test.log","w+")
-for i in range(int(rcount)):
-	ranf, amm  = read_adc()
-#	x, y, z = read_acc()
-	data1 = 'CU ' + 'MI ' + 'SE '
-	date = str(time.time())
-	data2 = str("humi" + ' ' + "press"  + ' ' + str(ranf) + ' ' + str(amm) + ' ' + "acc x" + ' ' + "acc y" + ' ' + "acc z" + ' ' + str(read_temp()) + ' ' + str(i))
-	data2 = str('RF: ' + str(ranf) + ' AM: ' +  str(amm) + ' HU: ' + str(read_humi()))
-	data22 = data2.encode('utf-8')
-	data12 = data1.encode('utf-8')
-	checksum = adler32(data12+data22) & 0xffffffff
-	check = str(checksum)
-	check = ' '
-	print(data1)
-	print(date)
-#	print(checksum)
-	print(data2)
-	data2 = data2 + '\n'
-#	f.write(data1)
-#	f.write(data)
-	f.close()
-#	blink(37)
-	print(read_humi())
-	q.put(data1+data+data2)
+
+def main():
+	print("motor thread initialized")
+	while True:
+		with open("test.log", "a") as f:
+			f.write(data3)
+		#f = open("test.log","w+")
+		ranf, amm  = read_adc()
+		#x, y, z = read_acc()
+		data1 = 'CU ' + 'MI ' + 'SE '
+		date = str(time.time())
+		#data2 = str("humi" + ' ' + "press"  + ' ' + str(ranf) + ' ' + str(amm) + ' ' + "acc x" + ' ' + "acc y" + ' ' + "acc z" + ' ' + str(read_temp()))
+		data2 = str('RF: ' + str(ranf) + ' AM: ' +  str(amm) + ' HU: ' + str(read_humi()))
+		data22 = data2.encode('utf-8')
+		data12 = data1.encode('utf-8')
+		checksum = adler32(data12+data22) & 0xffffffff
+		check = str(checksum)
+		check = ' '
+		print(data1,date,checksum,data2)
+		data2 = data2 + '\n'
+		data3 = str(data1) + str(date) + str(checksum) + str(data2)
+		#f.write(data3)
+		#f.close()
+		#blink(37)
+		q.put(data3)
 
