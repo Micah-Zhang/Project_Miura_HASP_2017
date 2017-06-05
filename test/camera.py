@@ -4,7 +4,7 @@ import picamera
 
 count = 1
 with picamera.PiCamera() as camera:
-	while count!=50:
+	while True:
 		camera.resolution = (1024, 768)
 		camera.start_preview()
 		# Camera warm-up time
