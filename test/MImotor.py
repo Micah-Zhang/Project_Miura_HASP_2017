@@ -28,7 +28,7 @@ GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 
 #GPIO.setup(M0, GPIO.OUT, initial=GPIO.HIGH)
 #GPIO.setup(M1, GPIO.OUT, initial=GPIO.HIGH)
-'''
+
 #ask for user input
 direction = input("Would you like to move up or down, please enter up or down")
 
@@ -71,3 +71,4 @@ while cycle!=0:
 	time.sleep(5)
 	cycle = cycle-1
 
+'''
