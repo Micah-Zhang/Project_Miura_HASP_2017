@@ -51,24 +51,26 @@ for i in range(0, steps):
 	GPIO.output(Step_Pin, GPIO.HIGH)
 	GPIO.output(Step_Pin, GPIO.LOW)
 	time.sleep(.002) #delay
-
 '''
-
 #complete 3 cycles
-cycle = 3
-while cycle!=0:
+cycle = 1
+height = 11550
+while cycle!=10:
 	GPIO.output(Direction_Pin, GPIO.HIGH)
-	for a in range(0,16500):
+	for a in range(0, height):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
 		time.sleep(.0025)
-	time.sleep(10)
+	time.sleep(200)
 	GPIO.output(Direction_Pin, GPIO.LOW)
-	for b in range(0, 16500):
+	for b in range(0, height):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
 		time.sleep(.0025)
-	time.sleep(5)
-	cycle = cycle-1
+	time.sleep(100)
+	cycle += 1
+	if cycle == 3:
+		height = 16500
+	
 
 '''
