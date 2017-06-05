@@ -2,9 +2,9 @@ import threading
 import serial
 import time 
 import queue
-from camera import camera
-from motor import MImotor
-from sensors import SENSORINTbby
+from cama import cama
+from moto import moto
+from sens import sens
 
 q = queue.Queue()
 
@@ -22,10 +22,9 @@ ser.open()
 def main():
 	print("downlink thread verified")
 	while True:
-		if 'b' in locals():
-			break
-		else:
-			a = SENSORINTbby.q.get()
+			a = q.get()
 			print("packet recieved")
 			b = ser.write(bytes(a, encoding="UTF-8"))
 			print("packet sent")
+main()
+

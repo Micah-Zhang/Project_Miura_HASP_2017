@@ -1,8 +1,7 @@
-from __future__ import division
+#from __future__ import division
 import time
-import logging
-import queue
-import threading
+#import logging
+#import queue
 import RPi.GPIO as GPIO
 
 def main():
