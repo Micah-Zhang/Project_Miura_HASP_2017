@@ -6,14 +6,27 @@ import RPi.GPIO as GPIO
 import Adafruit_ADS1x15
 import datetime
 from zlib import adler32
-import queue
+import queue 
 import sys
 sys.path.append('/home/pi/miura')
 import dwlk
-#import Adafru
+
+print("sensor thread initialized")
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+os.system('modprobe w1-gpio')
+os.system('modprobe w1-therm')
+temp_sensor = '//sys/bus/w1/devices/28-00000829f3b5/w1_slave'
+#accel = Adafruit_ADXL345.ADXL345()\
+adc = Adafruit_ADS1x15.ADS1115()
+GAIN = 1
+bus = smbus.SMBus(1)
+bus.write_byte(0x40, 0xF5) #humi
+#bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
 def read_temp(): #read temperature
-	time.sleep(1)
+	#time.sleep(1)
 	f = open(temp_sensor, 'r')
 	lines = f.readlines()
 	f.close()
@@ -32,7 +45,7 @@ def read_humi(): #read humidity
 	data0 = bus.read_byte(0x40)
 	data1 = bus.read_byte(0x40)
 	humidity = ((data0 * 256 + data1) * 125 / 65536.0) - 6
-	time.sleep(0.3)
+	#time.sleep(0.3)
 	return humidity#, data0, data1
 
 '''
@@ -68,19 +81,6 @@ def read_adc(): #read ADC
 	return values[0], values[1]
 
 def main():
-	print("motor thread initialized")
-	GPIO.setwarnings(False)
-	GPIO.setmode(GPIO.BOARD)
-	os.system('modprobe w1-gpio')
-	os.system('modprobe w1-therm')
-	temp_sensor = '//sys/bus/w1/devices/28-00000829f3b5/w1_slave'	
-	accel = Adafruit_ADXL345.ADXL345()	
-	adc = Adafruit_ADS1x15.ADS1115()
-	GAIN = 1
-	bus = smbus.SMBUS(1)
-	bus.write_byte(0x40, 0xF5) #humi
-	#bus.write_byte_data(0x60, 0x26, 0x39) #pres
-	
 	counter = 1
 	while True:
 		ranf, amm  = read_adc()
@@ -88,7 +88,7 @@ def main():
 		timestamp = str(time.time())
 		data = ' RF: ' + str(ranf) + ' AM: ' + str(amm) + ' HU: ' + str(read_humi()) + ' TF: ' + str(read_temp())
 		checksum = label + timestamp + data
-		checksum  = packet.encode('utf-8')
+		checksum  = checksum.encode('utf-8')
 		checksum = adler32(checksum) & 0xffffffff
 		checksum = str(checksum)
 		packet = label + timestamp + checksum + data
@@ -98,5 +98,5 @@ def main():
 		name = 'test{:d}.log'.format(counter)
 		with open(name, "a") as f:
 			f.write(packet)
-		counter += 1
+		#counter += 1
 

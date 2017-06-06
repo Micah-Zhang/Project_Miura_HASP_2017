@@ -1,10 +1,7 @@
 import threading
 import serial
-import time 
+import time
 import queue
-from cama import cama
-from moto import moto
-from sens import sens
 
 q = queue.Queue()
 
@@ -16,15 +13,13 @@ ser = serial.Serial(
 	bytesize = serial.EIGHTBITS,
 	timeout = 1
 )
+
 ser.close()
 ser.open()
 
 def main():
-	print("downlink thread verified")
+	print("downlink thread initialized")
 	while True:
-			a = q.get()
-			print("packet recieved")
-			b = ser.write(bytes(a, encoding="UTF-8"))
-			print("packet sent")
-main()
-
+		a = q.get()		
+		b = ser.write(bytes(a, encoding="UTF-8"))
+		print("packet sent")
