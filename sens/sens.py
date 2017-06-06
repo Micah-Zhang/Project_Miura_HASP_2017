@@ -85,8 +85,8 @@ def main():
 	while True:
 		ranf, amm  = read_adc()
 		label = 'CU ' + 'MI ' + 'SE '
-		timestamp = str(time.time())
-		data = ' RF: ' + str(ranf) + ' AM: ' + str(amm) + ' HU: ' + str(read_humi()) + ' TF: ' + str(read_temp())
+		timestamp = "{0:.2f}".format(time.time())
+		data = ' RF: ' + "{0:.2f}".format(ranf) + ' AM: ' + "{0:.2f}".format(amm) + ' HU: ' + "{0:.2f}".format(read_humi()) + ' TF: ' + "{0:.2f}".format(read_temp())
 		checksum = label + timestamp + data
 		checksum  = checksum.encode('utf-8')
 		checksum = adler32(checksum) & 0xffffffff
