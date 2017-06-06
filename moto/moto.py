@@ -12,11 +12,8 @@ def main():
 	M1 = 31
 	Micro = 1/16
 
-	print("motor thread initialzied")
-
 	#file to hold how far the motor has moved
 	Motor_Status_File = "/home/pi/miura/motor_status.txt"
-
 
 	#initialize the motor
 
@@ -63,13 +60,15 @@ def main():
 			GPIO.output(Step_Pin, GPIO.HIGH)
 			GPIO.output(Step_Pin, GPIO.LOW)
 			time.sleep(.0025)
-		time.sleep(200)
+		time.sleep(30)
+		#time.sleep(200)
 		GPIO.output(Direction_Pin, GPIO.LOW)
 		for b in range(0, height):
 			GPIO.output(Step_Pin, GPIO.HIGH)
 			GPIO.output(Step_Pin, GPIO.LOW)
 			time.sleep(.0025)
-		time.sleep(100)
+		time.sleep(30)
+		#time.sleep(100)
 		cycle += 1
 		if cycle == 3:
 			height = 16500

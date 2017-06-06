@@ -18,7 +18,6 @@ ser.close()
 ser.open()
 
 def main():
-	print("downlink thread initialized")
 	while True:
 		a = q.get()		
 		b = ser.write(bytes(a, encoding="UTF-8"))

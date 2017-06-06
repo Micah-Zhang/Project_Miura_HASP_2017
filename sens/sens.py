@@ -11,18 +11,16 @@ import sys
 sys.path.append('/home/pi/miura')
 import dwlk
 
-print("sensor thread initialized")
-
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
-temp_sensor = '//sys/bus/w1/devices/28-00000829f3b5/w1_slave'
+temp_sensor = '//sys/bus/w1/devices/28-000007a8d22b/w1_slave'
 #accel = Adafruit_ADXL345.ADXL345()\
 adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1
 bus = smbus.SMBus(1)
-bus.write_byte(0x40, 0xF5) #humi
+#bus.write_byte(0x40, 0xF5) #humi
 #bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
 def read_temp(): #read temperature
@@ -41,12 +39,13 @@ def read_temp(): #read temperature
 		return temp_f	
 
 def read_humi(): #read humidity
-	#bus.write_byte(0x40, 0xF5)
+	bus.write_byte(0x40, 0xF5)
+	time.sleep(0.3)
 	data0 = bus.read_byte(0x40)
 	data1 = bus.read_byte(0x40)
 	humidity = ((data0 * 256 + data1) * 125 / 65536.0) - 6
-	#time.sleep(0.3)
-	return humidity#, data0, data1
+	time.sleep(0.3)
+	return humidity
 
 '''
 def read_pres(): #read pressure
@@ -86,12 +85,12 @@ def main():
 		ranf, amm  = read_adc()
 		label = 'CU ' + 'MI ' + 'SE '
 		timestamp = "{0:.2f}".format(time.time())
-		data = ' RF: ' + "{0:.2f}".format(ranf) + ' AM: ' + "{0:.2f}".format(amm) + ' HU: ' + "{0:.2f}".format(read_humi()) + ' TF: ' + "{0:.2f}".format(read_temp())
+		data = ' ' + "{0:.2f}".format(ranf) + ' ' + "{0:.2f}".format(amm) + ' ' + "{0:.2f}".format(read_humi()) + ' ' +  "{0:.2f}".format(read_temp())
 		checksum = label + timestamp + data
 		checksum  = checksum.encode('utf-8')
 		checksum = adler32(checksum) & 0xffffffff
 		checksum = str(checksum)
-		packet = label + timestamp + checksum + data
+		packet = label + timestamp + ' ' + checksum + data
 		print(packet)
 		dwlk.q.put(packet)
 		packet = packet + '\n'

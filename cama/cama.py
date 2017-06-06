@@ -1,12 +1,10 @@
 import time
-#import picamera
-
-print("camera thread initialized")
+import picamera
 
 def main():
-	print("Taking Pictures [PLACEHOLDER]")
-	time.sleep(10)
-
+	while True:
+		print("Taking Pictures [PLACEHOLDER]")
+		time.sleep(10)
 	'''
 	count = 1
 	print("camera thread initiated")

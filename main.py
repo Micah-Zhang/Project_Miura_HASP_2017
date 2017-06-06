@@ -13,6 +13,5 @@ tcama = threading.Thread(name='cama', target=cama.main)
 
 tsens.start()
 tdwlk.start()
-time.sleep(300)
 tmoto.start()
 tcama.start()
