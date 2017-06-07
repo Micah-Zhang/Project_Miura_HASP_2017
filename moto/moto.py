@@ -59,15 +59,15 @@ def main():
 		for a in range(0, height):
 			GPIO.output(Step_Pin, GPIO.HIGH)
 			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0025)
-		time.sleep(30)
+			time.sleep(.00363636363636363636364)
+		time.sleep1080)
 		#time.sleep(200)
 		GPIO.output(Direction_Pin, GPIO.LOW)
 		for b in range(0, height):
 			GPIO.output(Step_Pin, GPIO.HIGH)
 			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0025)
-		time.sleep(30)
+			time.sleep(.00363636363636363636364)
+		time.sleep(600)
 		#time.sleep(100)
 		cycle += 1
 		if cycle == 3:
