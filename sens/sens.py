@@ -8,6 +8,7 @@ import datetime
 from zlib import adler32
 import queue 
 import sys
+import math
 sys.path.append('/home/pi/miura')
 from dwlk import dwlk
 
@@ -78,7 +79,7 @@ def read_adc(): #read ADC
 	for i in range(4):
 		values[i] = adc.read_adc(i, gain=GAIN)
 	a = values[i]*.0048828125
-	distance = 65*(a^(-1.1))
+	distance = 65*math.pow(a,-1.1)
 	values[1] = distance
 	return values[0], values[1]
 
