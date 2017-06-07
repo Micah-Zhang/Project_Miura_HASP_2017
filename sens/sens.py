@@ -77,9 +77,9 @@ def read_adc(): #read ADC
 	values = [0]*4
 	for i in range(4):
 		values[i] = adc.read_adc(i, gain=GAIN)
-	voltage = values[1] * 4.88
-	current = (voltage-2500)*.2
-	values[1] = current
+	a = values[i]*.0048828125
+	distance = 65*(a^(-1.1))
+	values[1] = distance
 	return values[0], values[1]
 
 def main():
