@@ -33,7 +33,7 @@ for i in range(0, steps):
         GPIO.output(Step_Pin, GPIO.LOW)
         time.sleep(.02) #delay
 
-
+'''
 #camera stuff
 
 GPIO.setwarnings(False)
@@ -79,3 +79,4 @@ if (__name__ == "__main__"):
 
 
 
+'''

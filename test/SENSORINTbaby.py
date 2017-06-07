@@ -1,4 +1,3 @@
-#ALEX OR MICAH! I COULDN'T FIGURE OUT HOW TO MAKE THE HUMIDITY STOP READING THOSE FAKE VALUES, THE CODE FOR THE HUMIDITY SENSOR WILL GIVE YOU REAL 
 import os
 import time
 import smbus
@@ -36,20 +35,17 @@ def read_temp():
 		return temp_f
 
 # initialize humidity sensor
-bus = smbus.SMBus(1)
-
 bus.write_byte(0x40, 0xF5) # relative humidity NO HOLD master mode
 time.sleep(0.3)	
 
 def read_humi():
-	#bus.write_byte(0x40, 0xF5)
 	data0 = bus.read_byte(0x40)
 	data1 = bus.read_byte(0x40)
 	humidity = ((data0 * 256 + data1) * 125 / 65536.0) - 6
 	time.sleep(0.3)
-	return humidity#, data0, data1
+	return humidity, data0, data1
+
 '''
-#NOT HOOKED UP YET!!!!
 # initialize pressure sensor
 bus.write_byte_data(0x60, 0x26, 0x39)
 time.sleep(1)
@@ -59,14 +55,14 @@ def read_pres():
 	pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16
 	pressure = (pres / 4.0) / 1000.0
 	return pressure
-#NOT HOOKED UP YET!!!
+
 # initialize accelerometer
 accel = Adafruit_ADXL345.ADXL345()
 
 def read_acc():
 	x, y, z = accel.read()
 	return x, y, z
-
+		
 # initialize LEDs
 GPIO.setmode(GPIO.BOARD)
 
@@ -83,7 +79,8 @@ def led_on(pin):
 
 def led_off(pin):
 	GPIO.output(pin,GPIO.LOW)
-'''		
+'''
+		
 # initialize ADC
 adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1
@@ -99,24 +96,19 @@ rcount = input('ENTER desired read count: ')
 f = open("test.log","w+")
 for i in range(int(rcount)):
 	ranf, amm  = read_adc()
-#	x, y, z = read_acc()
+	print(read_humi())
+	#x, y, z = read_acc()
 	data1 = 'CU ' + 'MI ' + 'SE '
 	date = str(time.time())
-	data2 = str("humi" + ' ' + "press"  + ' ' + str(ranf) + ' ' + str(amm) + ' ' + "acc x" + ' ' + "acc y" + ' ' + "acc z" + ' ' + str(read_temp()) + ' ' + str(i))
-	data2 = str('RF: ' + str(ranf) + ' AM: ' +  str(amm) + ' HU: ' + str(read_humi()))
-	data22 = data2.encode('utf-8')
+	data2 = str("humi" + ' ' + "press"  + ' ' + str(ranf) + ' ' + str(amm) + ' ' + "acc x" + ' ' + "acc y" + ' ' + "acc z" + ' ' + str(read_temp()) + ' ' + str(i)
+	data21 = data2.encode('utf-8')
 	data12 = data1.encode('utf-8')
 	checksum = adler32(data12+data22) & 0xffffffff
 	check = str(checksum)
-	check = ' '
-	print(data1)
-	print(date)
-#	print(checksum)
-	print(data2)
+	print(data1+check + ' ' + date+data2)
 	data2 = data2 + '\n'
-#	f.write(data1)
-#	f.write(data)
+	f.write(data1)
+	f.write(data)
 	f.close()
-#	blink(37)
-	print(read_humi())
-
+	blink(37)
+#print("Data Returns: CU MI Time, Temperature, Humidity, Pressure, Accelerometer")

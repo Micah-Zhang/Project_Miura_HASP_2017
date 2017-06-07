@@ -15,8 +15,7 @@ while(True):
 #		0xF5(245)	Select Relative Humidity NO HOLD master mode
 	bus.write_byte(0x40, 0xF5)
 
-	time.sleep(0.3)
-
+	time.sleep(0.1)
 # SI7021 address, 0x40(64)
 # Read data back, 2 bytes, Humidity MSB first
 	data0 = bus.read_byte(0x40)
@@ -25,13 +24,13 @@ while(True):
 # Convert the data
 	humidity = ((data0 * 256 + data1) * 125 / 65536.0) - 6
 	
-	time.sleep(0.3)
+	time.sleep(0.1)
 
 # SI7021 address, 0x40(64)
 #		0xF3(243)	Select temperature NO HOLD master mode
 	bus.write_byte(0x40, 0xF3)
 
-	time.sleep(0.3)
+	time.sleep(0.01)
 
 # SI7021 address, 0x40(64)
 # Read data back, 2 bytes, Temperature MSB first
