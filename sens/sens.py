@@ -9,7 +9,7 @@ from zlib import adler32
 import queue 
 import sys
 sys.path.append('/home/pi/miura')
-import dwlk
+from dwlk import dwlk
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
@@ -92,8 +92,8 @@ def main():
 		checksum = str(checksum)
 		packet = label + timestamp + ' ' + checksum + data
 		print(packet)
-		dwlk.q.put(packet)
 		packet = packet + '\n'
+		dwlk.q.put(packet)
 		name = 'test{:d}.log'.format(counter)
 		with open(name, "a") as f:
 			f.write(packet)

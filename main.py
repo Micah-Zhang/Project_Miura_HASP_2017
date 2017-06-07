@@ -4,7 +4,7 @@ import queue
 from cama import cama
 from moto import moto 
 from sens import sens
-import dwlk
+from dwlk import dwlk
  
 tsens = threading.Thread(name='sens', target=sens.main)  
 tdwlk = threading.Thread(name='dwlk', target=dwlk.main)

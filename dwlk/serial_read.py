@@ -7,10 +7,12 @@ ser = serial.Serial(
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
 	bytesize = serial.EIGHTBITS,
-	timeout = 3
+	timeout = 1
 )
 
 while True:
-	x = ser.read()
+	x = ser.readline()
 	print(x)
-	time.sleep(1)
+	time.sleep(0.5)
+	with open("dwlk1.log", "a+") as f:
+		f.write(str(ser.readline()))
