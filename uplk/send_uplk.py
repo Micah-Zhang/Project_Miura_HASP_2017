@@ -1,9 +1,6 @@
 import threading
 import serial
 import time
-import queue
-
-q = queue.Queue()
 
 ser = serial.Serial(
 	port = '/dev/serial0',
@@ -19,9 +16,13 @@ ser.open()
 
 def main():
 	while True:
-		#a = q.get()
-		a = "Hello Lucas!\n"		
+		print("get ready")
+		time.sleep(3)
+		a = "First uplink command\n"		
 		b = ser.write(bytes(a, encoding="UTF-8"))
-		print("packet sent")
-		time.sleep(1)
+		print("packet 1 sent")
+		time.sleep(10)
+		a = "Second uplink command\n"
+		b = ser.write(byte(a, encoding="UTF-8"))
+		print ("packet 2 sent")
 main()

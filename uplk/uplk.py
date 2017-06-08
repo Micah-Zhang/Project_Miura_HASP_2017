@@ -1,12 +1,12 @@
-import threading
-import serial
 import time
-import queue
-
-q = queue.Queue()
+import serial
+import sys
+sys.path.append('/home/pi/miura')
+import func
+from func import *
 
 ser = serial.Serial(
-	port = '/dev/serial0',
+	port = '/dev/ttyUSB0',
 	baudrate = 4800,
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
@@ -14,14 +14,17 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-ser.close()
-ser.open()
-
 def main():
 	while True:
-		#a = q.get()
-		a = "Hello Lucas!\n"		
-		b = ser.write(bytes(a, encoding="UTF-8"))
-		print("packet sent")
-		time.sleep(1)
+		while True:
+			x = ser.readline().decode("utf-8")
+			if x == "First uplink command\n":
+				print("First uplink command recieved!")
+				func.save_file("uplk.log",x)
+				break
+		x = ser.readline().decode("utf-8")
+		if x == "Second uplink command\n":
+			print("Second uplink command recieved!")
+			func.save_file("uplk.log",x)
+			break
 main()
