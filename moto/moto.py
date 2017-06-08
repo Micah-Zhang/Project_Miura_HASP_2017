@@ -27,7 +27,7 @@ def main():
 
 	#GPIO.setup(M0, GPIO.OUT, initial=GPIO.HIGH)
 	#GPIO.setup(M1, GPIO.OUT, initial=GPIO.HIGH)
-	'''
+	
 	#ask for user input
 	direction = input("Would you like to move up or down, please enter up or down")
 
@@ -49,29 +49,30 @@ def main():
 	for i in range(0, steps):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
-		time.sleep(.002) #delay
+		time.sleep(.0036) #delay
 	'''
+
 	#complete 3 cycles
 	cycle = 1
-	height = 11550
+	height = 16500
 	while cycle!=10:
 		GPIO.output(Direction_Pin, GPIO.HIGH)
 		for a in range(0, height):
 			GPIO.output(Step_Pin, GPIO.HIGH)
 			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0025)
+			time.sleep(.0036)
 		time.sleep(30)
 		#time.sleep(200)
 		GPIO.output(Direction_Pin, GPIO.LOW)
 		for b in range(0, height):
 			GPIO.output(Step_Pin, GPIO.HIGH)
 			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0025)
+			time.sleep(.0036)
 		time.sleep(30)
 		#time.sleep(100)
 		cycle += 1
 		if cycle == 3:
 			height = 16500
-	
+	'''
 
-
+main()

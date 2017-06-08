@@ -92,10 +92,10 @@ def main():
 		checksum = str(checksum)
 		packet = label + timestamp + ' ' + checksum + data
 		print(packet)
+		packet = packet + '\n'
 		#dwlk.q.put(packet)
-		#packet = packet + '\n'
-		#name = 'test{:d}.log'.format(counter)
-		#with open(name, "a") as f:
-		#	f.write(packet)
+		name = 'test{:d}.log'.format(counter)
+		with open(name, "a") as f:
+			f.write(packet)
 		#counter += 1
 main()

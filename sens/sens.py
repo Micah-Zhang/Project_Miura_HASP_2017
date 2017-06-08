@@ -6,7 +6,6 @@ import RPi.GPIO as GPIO
 import Adafruit_ADS1x15
 import datetime
 from zlib import adler32
-import queue 
 import sys
 import math
 sys.path.append('/home/pi/miura')
@@ -16,22 +15,27 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
-temp_sensor = '//sys/bus/w1/devices/28-000007a8d22b/w1_slave'
-#accel = Adafruit_ADXL345.ADXL345()\
+temp_sensor1 = '//sys/bus/w1/devices/28-000007a8d22b/w1_slave'
+temp_sensor2 = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
+temp_sensor3 = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
+
+#accel = Adafruit_ADXL345.ADXL345()
 adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1
 bus = smbus.SMBus(1)
-#bus.write_byte(0x40, 0xF5) #humi
 #bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
-def read_temp(): #read temperature
-	#time.sleep(1)
+def temp_raw(temp_sensor):
 	f = open(temp_sensor, 'r')
 	lines = f.readlines()
 	f.close()
+	return lines
+
+def read_temp(temp_sensor): #read temperature
+	lines = temp_raw(temp_sensor)
 	while lines[0].strip()[-3:] != 'YES':
 		time.sleep(0.2)
-		lines = temp_raw()
+		lines = temp_raw(temp_sensor)
 	temp_output = lines[1].find('t=')
 	if temp_output != -1:
 		temp_string = lines[1].strip()[temp_output+2:]
@@ -78,24 +82,33 @@ def read_adc(): #read ADC
 	values = [0]*4
 	for i in range(4):
 		values[i] = adc.read_adc(i, gain=GAIN)
-	a = values[0]*.0048828125
-	values[0] = 65*math.pow(a,-1.1)
-	voltage = 4.88*values[1]
-	values[1] = (voltage-2500)*.2
+	#Rangefinder conversion factor
+	values[0] = 130*math.pow(values[0]/1000,-1.1)
+	#Ammeter Conversion factor
+	Vref = 2500
+	sensitivity = 100/500
+	voltage = 4.88*(values[1]/1000)
+	values[1] = (voltage - Vref) * sensitivity
+	#values[1] = (values[1])/(100/500)
+	#values[1] = (voltage-2500)*.2
 	return values[0], values[1]
 
 def main():
 	counter = 1
 	while True:
-		ranf, amm  = read_adc()
-		label = 'CU ' + 'MI ' + 'SE '
-		timestamp = "{0:.2f}".format(time.time())
-		data = ' ' + "{0:.2f}".format(ranf) + ' ' + "{0:.2f}".format(amm) + ' ' + "{0:.2f}".format(read_humi()) + ' ' +  "{0:.2f}".format(read_temp())
-		checksum = label + timestamp + data
-		checksum  = checksum.encode('utf-8')
-		checksum = adler32(checksum) & 0xffffffff
-		checksum = str(checksum)
-		packet = label + timestamp + ' ' + checksum + data
+		#ranf, amm  = read_adc()
+		#label = 'CU ' + 'MI ' + 'SE '
+		#timestamp = "{0:.2f}".format(time.time())
+		#data = ' ' + "{0:.4f}".format(ranf) + ' ' + "{0:.2f}".format(amm) + ' ' + "{0:.2f}".format(read_humi()) + ' ' +  "{0:.2f}".format(read_temp())
+		#checksum = label + timestamp + data
+		#checksum  = checksum.encode('utf-8')
+		#checksum = adler32(checksum) & 0xffffffff
+		#checksum = str(checksum)
+		#packet = label + timestamp + ' ' + checksum + data		
+		#packet = "{0:.4f}".format(ranf)
+		#packet = str(amm)
+		packet = str(read_temp(temp_sensor1)) + ' ' + str(read_temp(temp_sensor2)) + ' ' + str(read_temp(temp_sensor3))
+		#packet = label + timestamp + ' ' + checksum + data
 		print(packet)
 		packet = packet + '\n'
 		dwlk.q.put(packet)
@@ -103,4 +116,4 @@ def main():
 		with open(name, "a") as f:
 			f.write(packet)
 		#counter += 1
-
+main()
