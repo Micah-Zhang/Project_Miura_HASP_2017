@@ -53,7 +53,7 @@ def main():
 	#complete 3 cycles
 	cycle = 1
 	height = 11550
-	while cycle!=10:
+	while cycle!=7:
 		GPIO.output(Direction_Pin, GPIO.HIGH)
 		for a in range(0, height):
 			GPIO.output(Step_Pin, GPIO.HIGH)
