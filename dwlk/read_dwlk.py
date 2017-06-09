@@ -1,10 +1,10 @@
 import time
 import serial
 import sys
-sys.path.append('home/pi/miura')
+sys.path.append('/home/pi/miura')
 import func
 from func import *
-
+ 
 ser = serial.Serial(
 	port = '/dev/serial0',
 	baudrate = 4800,
@@ -17,5 +17,5 @@ ser = serial.Serial(
 while True:
 	x = ser.readline().decode("utf-8")
 	print(x)
-	save_file("dwlk.log", x)
+	func.save_file("dwlk.log", x)
 

@@ -2,8 +2,10 @@ import time
 import serial
 import sys
 sys.path.append('/home/pi/miura')
+from dwlk import dwlk
 import func
 from func import *
+import main
 
 ser = serial.Serial(
 	port = '/dev/ttyUSB0',
@@ -16,15 +18,7 @@ ser = serial.Serial(
 
 def main():
 	while True:
-		while True:
-			x = ser.readline().decode("utf-8")
-			if x == "First uplink command\n":
-				print("First uplink command recieved!")
-				func.save_file("uplk.log",x)
-				break
 		x = ser.readline().decode("utf-8")
-		if x == "Second uplink command\n":
-			print("Second uplink command recieved!")
-			func.save_file("uplk.log",x)
-			break
-main()
+		if x == "start\n":
+			main.q.put(x)
+			dwlk.q.put("start command recieved!")
