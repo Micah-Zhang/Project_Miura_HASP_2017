@@ -8,7 +8,7 @@ from func import *
 import main
 
 ser = serial.Serial(
-	port = '/dev/ttyUSB0',
+	port = '/dev/serial0',
 	baudrate = 4800,
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
@@ -19,6 +19,7 @@ ser = serial.Serial(
 def main():
 	while True:
 		x = ser.readline().decode("utf-8")
-		if x == "start\n":
+		if x == "start":
 			main.q.put(x)
 			dwlk.q.put("start command recieved!")
+			print("uplink command recieved")
