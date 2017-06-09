@@ -1,12 +1,14 @@
-import threading
-import serial
 import time
-import queue
-
-q = queue.Queue()
+import serial
+import sys
+sys.path.append('/home/pi/miura')
+from dwlk import dwlk
+import func
+from func import *
+import main
 
 ser = serial.Serial(
-	port = '/dev/serial0',
+	port = '/dev/ttyUSB0',
 	baudrate = 4800,
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
@@ -14,14 +16,9 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-ser.close()
-ser.open()
-
 def main():
 	while True:
-		#a = q.get()
-		a = "Hello Lucas!\n"		
-		b = ser.write(bytes(a, encoding="UTF-8"))
-		print("packet sent")
-		time.sleep(1)
-main()
+		x = ser.readline().decode("utf-8")
+		if x == "start\n":
+			main.q.put(x)
+			dwlk.q.put("start command recieved!")
