@@ -19,7 +19,8 @@ ser = serial.Serial(
 def main():
 	while True:
 		x = ser.readline().decode("utf-8")
-		if x == "start":
-			main.q.put(x)
-			dwlk.q.put("start command recieved!")
+		if x == "start\n":
+			#main.q.put(x)
+			#dwlk.q.put("start command recieved!")
 			print("uplink command recieved")
+		time.sleep(1)
