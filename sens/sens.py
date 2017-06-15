@@ -22,13 +22,12 @@ def main():
 		#rangefinder = ' ' + "{0:.2f}".format(rangefinder)
 		#ammeter = ' ' + "{0:.2f}".format(ammeter)
 		#humidity = ' ' + "{0:.2f}".format(func.read_humi())
-#		pressure = ' ' + "{0:.2f}".format(func.read_pres())
+		#pressure = ' ' + "{0:.2f}".format(func.read_pres())
 		#temp1 = ' ' + "{0:.2f}".format(func.read_temp(temp_sensor1))
 		#temp = ' ' + "{0:.2f}".format(func.read_temp(temp_sensor))
 		#temp3 = ' ' + "{0:.2f}".format(func.read_temp(temp_sensor3))
-#		temp4 = ' ' + "{0:.2f}".format(func.read_temp(temp_sensor4))
-#		accel = ' ' + "{0:.2f}".format(func.read_acc())
-		
+		#temp4 = ' ' + "{0:.2f}".format(func.read_temp(temp_sensor4))
+		#accel = ' ' + "{0:.2f}".format(func.read_acc())
 		#data = humidity + temp + rangefinder + ammeter
 		#data = rangefinder + humidity + pressure + temp + accel
 		#data = humidity + pressure + temp
@@ -41,5 +40,4 @@ def main():
 		dwlk.q.put(packet)
 		name = 'test{:d}.log'.format(counter)
 		func.save_file(name,packet)
-
 main()
