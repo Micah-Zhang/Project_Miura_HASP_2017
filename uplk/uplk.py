@@ -5,7 +5,6 @@ sys.path.append('/home/pi/miura')
 from dwlk import dwlk
 import func
 from func import *
-import main
 
 ser = serial.Serial(
 	port = '/dev/serial0',
@@ -20,7 +19,6 @@ def main():
 	while True:
 		x = ser.readline().decode("utf-8")
 		if x == "start\n":
-			#main.q.put(x)
-			#dwlk.q.put("start command recieved!")
-			print("uplink command recieved")
+			print("YES!!!")
+			dwlk.q.put("start command recieved!\n")
 		time.sleep(1)
