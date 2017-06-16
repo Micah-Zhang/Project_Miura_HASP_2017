@@ -10,9 +10,9 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-def main(downlink,run_exp):
+def main(downlink,run_exp, moto_cmd):
 	while True:
 		x = ser.readline().decode("utf-8")
 		if x == "start":
-			
+			run_exp.set() #start running the experiment
 		time.sleep(1)

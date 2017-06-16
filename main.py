@@ -22,9 +22,9 @@ run_exp = threading.Event()
 
 # Package arg tuples for thread
 dwlk_args = (downlink)
-uplk_args = (downlink, moto_cmd)
+uplk_args = (downlink, run_exp, moto_cmd)
 sens_args = (downlink)
-moto_args = (downlink, run_exp)
+moto_args = (downlink, run_exp, moto_cmd)
 
 # Create thread objects
 threads = [
