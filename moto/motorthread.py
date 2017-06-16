@@ -37,7 +37,7 @@ GPIO.setup(12, GPIO.OUT)
 
 #move motor up the input amount of steps
 #also has queue input to check if there is a STOP command before it moves another step
-def raise_the_roof(steps, q):
+def raise_the_roof(steps, moto_cmd):
 	if steps == 11160:
 		quarter_one = 2790
 		quarter_two = 5580
@@ -62,13 +62,13 @@ def raise_the_roof(steps, q):
 			say_cheese_four_times(High_Resolution)
 		#######################################################MICAH DO YOUR COMMAND THANG####################################### ALSO THANKS FOR THE CAKE IT WAS DELICIOUS
 		# I think itll be something like q.getnowait()
-		cmd = q.get_nowait()
+		cmd = moto_cmd.get_nowait()
 		if cmd == 'stop':
 			return
 
 #move motor down the input amount of
 #also has queue input to check if there is a STOP command before it moves another step
-def drop_it_low(steps, q):
+def drop_it_low(steps, moto_cmd):
 	if steps == 11160:
 		quarter_one = 2790
 		quarter_two = 5580
@@ -94,7 +94,7 @@ def drop_it_low(steps, q):
 			say_cheese_four_times(High_Resolution)
 		#######################################################################MICAH DO YOUR COMMAND THANG###########################################################YOUR A COOL CAT
 		###something like q.getnowait()
-		cmd = q.get_nowait()
+		cmd = moto_cmd.get_nowait()
 		if cmd == 'stop':
 			return
 
@@ -135,16 +135,16 @@ def say_cheese_four_times(High_Resolution):
 
 #waits for nudge commands, reset command, or unstuck command from queue,
 #as of right now the code will remain in sobering up state until unstuck command is recieved
-def sobering_up(cmd, moto_cmd):
+def sobering_up(moto_cmd):
 	##wait for queue (q), if queue has a command then do stuff
 	#################################################################MICAH ADD YOUR STUFF HERE################################################
 	cmd = moto_cmd.get()
 	if cmd == 'reset':
-		drop_it_low(16500)
+		drop_it_low(16500, moto_cmd)
 	if cmd == 'nudge up':
-		raise_the_roof(1000)
+		raise_the_roof(1000, moto_cmd)
 	if cmd == 'nudge down':
-		drop_it_low(1000)
+		drop_it_low(1000, moto_cmd)
 	if cmd == 'unstuck':
 		is_stuck = False
 
@@ -201,7 +201,7 @@ def main(run_exp, moto_cmd):
 					cycle += 1
 			##remains in sobering_up state until commanded that it is unstuck
 			while is_stuck == True:
-				sobering_up()
+				sobering_up(moto_cmd)
 		#complete 100% of max height cycles (any amount after first two successul cycles)
 		while cycle>2:
 			if is_stuck == False:
@@ -211,7 +211,7 @@ def main(run_exp, moto_cmd):
 					cycle += 1
 				#remains in sobering_up state until commanded that it is unstuck
 				while is_stuck == True:
-					sobering_up()
+					sobering_up(moto_cmd)
 				#########################################################MICAH THIS IS YOU AGAIN FOR TERMINATE EXTENSION CONTRACTION CYCLES ########################
 				#cmd = q.no_wait()
 				#if cmd == "terminate":	
