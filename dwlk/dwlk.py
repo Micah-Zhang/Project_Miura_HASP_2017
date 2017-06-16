@@ -1,13 +1,5 @@
-import threading
 import serial
 import time
-import queue
-import sys
-sys.path.append('/home/pi/miura')
-import func
-from func import *
-
-q = queue.Queue()
 
 ser = serial.Serial(
 	port = '/dev/serial0',
@@ -20,14 +12,12 @@ ser = serial.Serial(
 
 ser.close()
 ser.open()
-def main():
+
+def main(downlink):
 	counter = 0
 	while True:
-#		a = q.get()		
-		a = "hi micah\n"
-		#b = ser.write(bytes(a,'utf-8'))
+		a = downlink.get()
 		ser.write(a.encode('utf-8'))
 		print("packet sent",counter)
 		time.sleep(1)
 		counter+=1
-main()
