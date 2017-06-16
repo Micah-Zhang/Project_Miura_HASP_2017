@@ -5,6 +5,7 @@ import queue
 from sens import sens
 from dwlk import dwlk
 from uplk import uplk
+from moto import motorthread
 
 def shutdown():
 	''' Completes all necessary events for a shutdown '''
@@ -15,16 +16,22 @@ def shutdown():
 moto_cmd = queue.Queue()
 downlink = queue.Queue()
 
+# Setting up events to be seen across threads
+# Event is like global boolean but safer for multithreading
+run_exp  = thread.Event()
+
 # Package arg tuples for thread
 dwlk_args = (downlink)
-uplk_args = (downlink)
+uplk_args = (downlink, moto_cmd)
 sens_args = (downlink)
+moto_args = (downlink, run_exp)
 
 # Create thread objects
 threads = [
 	threading.Thread(name='uplk', target=uplk.main, args=uplk_args),
 	threading.Thread(name='sens', target=sens.main, args=sens_args),
-	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args)
+	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
+	threading.Thread(name='moto', target=motorthread.main, args=moto_args)
 ]
 
 # Start running threads within a try-except block to allow for it to catch exceptions
