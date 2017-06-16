@@ -29,7 +29,8 @@ def main(run_exp):
 				print("Picture taken")
 				#camera.stop_preview()
 				#cmd = "raspistill -o capture_{:d}.jpg".format(cam)
-				time.sleep(time)
+				time.sleep(15)
+				'''
 				switcher += 1
 				if switcher == 4:
 					time = 20
@@ -47,7 +48,7 @@ def main(run_exp):
 					switcher = 1
 					cycle = 0
 					time = 15
-		
+				'''
 	#camera code for multiplexer with four cameras
 	'''
 	GPIO.setwarnings(False)
