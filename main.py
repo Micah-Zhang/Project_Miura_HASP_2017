@@ -6,6 +6,9 @@ from sens import sens
 from dwlk import dwlk
 from uplk import uplk
 from moto import motorthread
+#from cama import cama ### REMOVE COMMENTS IT MOTORTHREAD FAILS
+#from moto import INmoto
+#from moto import OUTmoto
 
 def shutdown():
 	''' Completes all necessary events for a shutdown '''
@@ -25,7 +28,8 @@ dwlk_args = (downlink,)
 uplk_args = (downlink, run_exp, moto_cmd,)
 sens_args = (downlink,)
 moto_args = (run_exp, moto_cmd,) ###comment out if using OUTmoto and INmoto
-#OUTmoto_args = (run_exp,) ###remove comments if using OUTmoto and INmoto
+#cama_args = (run_exp,) ### remove comments if using OUTmoto and INmoto
+#OUTmoto_args = (run_exp,)
 #INmoto_args = (run_exp,)
 
 # Create thread objects
@@ -35,7 +39,8 @@ threads = [
 	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
 	threading.Thread(name='moto', target=motorthread.main, args=moto_args)
 	###ADD COMMA TO END OF PREVIOUS LINE BEFORE COMMENTING OUT THE BELOW
-	#thread.Thread(name='OUTmoto', target=OUTmoto.main, args=OUTmoto_args), ###CREATES NEW THREADS FOR OUTMOTO AND INMOTO
+	#thread.Thread(name='cama', target=cama.main, args=cama_args), ###creates new threads in case motorthread fails
+	#thread.Thread(name='OUTmoto', target=OUTmoto.main, args=OUTmoto_args),
 	#thread.Thread(name='INmoto', target=INmoto.py, args=INmoto_args)
 ]
 
