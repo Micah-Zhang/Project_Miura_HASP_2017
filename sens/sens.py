@@ -34,4 +34,4 @@ def main(downlink):
 		packet = packet + '\n'
 		downlink.put(packet)
 		name = 'test{:d}.log'.format(counter)
-		func.save_file(name,packet)
+		sensors.save_file(name,packet)
