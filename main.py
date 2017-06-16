@@ -1,5 +1,6 @@
 import threading
 import queue
+import serial
 
 # Import code for threading. All flight code must be initialized from the main function in the thread file
 from sens import sens
@@ -15,6 +16,13 @@ def shutdown():
 	#camera.close()
 	exit()
 
+# Create ser object 
+ser = serial.Serial()
+ser.port = '/dev/serial0'
+ser.baud = 4800
+ser.timeout = 1
+ser.open()
+
 # Create required Queues
 moto_cmd = queue.Queue()
 downlink = queue.Queue()
@@ -24,8 +32,8 @@ downlink = queue.Queue()
 run_exp = threading.Event()
 
 # Package arg tuples for thread
-dwlk_args = (downlink,)
-uplk_args = (downlink, run_exp, moto_cmd,)
+dwlk_args = (downlink,ser)
+uplk_args = (downlink, ser, run_exp, moto_cmd,)
 sens_args = (downlink,)
 moto_args = (run_exp, moto_cmd,) ###comment out if using OUTmoto and INmoto
 #cama_args = (run_exp,) ### remove comments if using OUTmoto and INmoto

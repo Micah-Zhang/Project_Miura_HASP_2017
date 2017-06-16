@@ -190,30 +190,30 @@ def main(run_exp, moto_cmd):
 	##################################################################MICAH
 	#################################################################if you want the cycle number to always be pulled from this thread to the downlink then we need th
 	#################################queue to wait for the "begin cycle" command to be right here, then it will be global up above and remain at 0 until command is recieved
-	if(run_exp.is_set()):
-		cycle = 1
-		#complete minimum success cycle (2 consectuve successful total)
-		while cycle<3:
-			if is_stuck == False:
-				just_scraping_by()
-				#if motor didnt exit early/get stuck in its cycle then increase the cycle count
+	while True:
+		if(run_exp.is_set()):
+			#complete minimum success cycle (2 consectuve successful total)
+			while cycle<3:
 				if is_stuck == False:
-					cycle += 1
-			##remains in sobering_up state until commanded that it is unstuck
-			while is_stuck == True:
-				sobering_up(moto_cmd)
-		#complete 100% of max height cycles (any amount after first two successul cycles)
-		while cycle>2:
-			if is_stuck == False:
-				lets_get_as_high_as_we_can()
-				#if motor didnt exit early/get stuck in its cycle then increase the cycle count
-				if is_stuck == False:
-					cycle += 1
-				#remains in sobering_up state until commanded that it is unstuck
+					just_scraping_by()
+					#if motor didnt exit early/get stuck in its cycle then increase the cycle count
+					if is_stuck == False:
+						cycle += 1
+				##remains in sobering_up state until commanded that it is unstuck
 				while is_stuck == True:
 					sobering_up(moto_cmd)
-				#########################################################MICAH THIS IS YOU AGAIN FOR TERMINATE EXTENSION CONTRACTION CYCLES ########################
-				#cmd = q.no_wait()
-				#if cmd == "terminate":	
-				if terminate == True:
-					return
+			#complete 100% of max height cycles (any amount after first two successul cycles)
+			while cycle>2:
+				if is_stuck == False:
+					lets_get_as_high_as_we_can()
+					#if motor didnt exit early/get stuck in its cycle then increase the cycle count
+					if is_stuck == False:
+						cycle += 1
+					#remains in sobering_up state until commanded that it is unstuck
+					while is_stuck == True:
+						sobering_up(moto_cmd)
+					#########################################################MICAH THIS IS YOU AGAIN FOR TERMINATE EXTENSION CONTRACTION CYCLES ########################
+					#cmd = q.no_wait()
+					#if cmd == "terminate":	
+					if terminate == True:
+						return

@@ -13,7 +13,7 @@ else:
 	from sens.sensors import *
 '''
 
-def main():
+def main(downlink):
 	counter = 1
 	while True:
 		label = 'CU ' + 'MI ' + 'SE '
@@ -36,16 +36,16 @@ def main():
 		checksum = ' ' + str(adler32(data.encode('utf-8')) & 0xffffffff)
 		packet = label + timestamp + checksum + data
 		packet = packet + '\n'
-#		downlink.put(packet)
-		print(packet)
+		downlink.put(packet)
+		#print(packet)
 		name = 'test{:d}.log'.format(counter)
 		sensors.save_file(name,packet)
 
-if __name__ == '__main__':
-        import sensors
-        main()
-else:
-        import sens.sensors as sensors
-        from sens.sensors import *
+#if __name__ == '__main__':
+#        import sensors
+#        main()
+#else:
+#        import sens.sensors as sensors
+#        from sens.sensors import *
 
-main()
+#main()
