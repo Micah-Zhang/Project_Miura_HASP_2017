@@ -1,15 +1,19 @@
 import time
 from zlib import adler32
-import sens.sensors as sensors
+#import sens.sensors as sensors
+import sensors
+from sensors import *
 
+'''
 if __name__ == '__main__':
 	import sensors
 	main()
 else:
 	import sens.sensors as sensors
 	from sens.sensors import *
+'''
 
-def main(downlink):
+def main():
 	counter = 1
 	while True:
 		label = 'CU ' + 'MI ' + 'SE '
@@ -31,8 +35,17 @@ def main(downlink):
 		#data = "junk"
 		checksum = ' ' + str(adler32(data.encode('utf-8')) & 0xffffffff)
 		packet = label + timestamp + checksum + data
-#		print(packet)
 		packet = packet + '\n'
-		downlink.put(packet)
+#		downlink.put(packet)
+		print(packet)
 		name = 'test{:d}.log'.format(counter)
 		sensors.save_file(name,packet)
+
+if __name__ == '__main__':
+        import sensors
+        main()
+else:
+        import sens.sensors as sensors
+        from sens.sensors import *
+
+main()
