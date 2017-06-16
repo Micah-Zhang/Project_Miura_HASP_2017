@@ -1,18 +1,18 @@
 import datetime
 from zlib import adler32
+import sens.sensors as sensors
 
+'''
 if __name__ == '__main__':
 	import sensors
 	main()
 else:
 	import sens.sensors as sensors
+'''
 
 def main(downlink):
 	counter = 1
 	while True:
-		cmd = downlink.get()
-		if cmd == "sens\n":
-			dowlink.put("uplk recieved (sens)\n")
 		label = 'CU ' + 'MI ' + 'SE '
 		timestamp = "{0:.2f}".format(time.time())
 		#rangefinder,ammeter = func.read_adc()
