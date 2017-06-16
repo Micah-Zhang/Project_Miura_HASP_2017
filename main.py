@@ -21,10 +21,10 @@ downlink = queue.Queue()
 run_exp = threading.Event()
 
 # Package arg tuples for thread
-dwlk_args = (downlink)
-uplk_args = (downlink, run_exp, moto_cmd)
-sens_args = (downlink)
-moto_args = (run_exp, moto_cmd)
+dwlk_args = (downlink,)
+uplk_args = (downlink, run_exp, moto_cmd,)
+sens_args = (downlink,)
+moto_args = (run_exp, moto_cmd,)
 
 # Create thread objects
 threads = [
@@ -46,7 +46,7 @@ except(KeyboardInterrupt, SystemExit):
 	# Capture an exit condition and shut down the flight code
 	shutdown()
 
-'''
+
 tuplk.start()
 print("uplk started")
 tdwlk.start()
@@ -57,4 +57,4 @@ print("sens started")
 #print("motor started")
 #tcama.start()
 #print("camera started")
-'''
+
