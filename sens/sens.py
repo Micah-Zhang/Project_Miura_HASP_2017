@@ -1,16 +1,13 @@
 import datetime
-import time
 from zlib import adler32
-import queue
-import sys
-sys.path.append('/home/pi/miura')
-from dwlk import dwlk
-import func
-from func import *
 
-q = queue.Queue()
+if __name__ == '__main__':
+	import sensors
+	main()
+else:
+	import sens.sensors as sensors
 
-def main():
+def main(downlink):
 	counter = 1
 	while True:
 		cmd = q.get
@@ -37,7 +34,6 @@ def main():
 		packet = label + timestamp + checksum + data
 		print(packet)
 		packet = packet + '\n'
-		dwlk.q.put(packet)
+		downlink.put(packet)
 		name = 'test{:d}.log'.format(counter)
 		func.save_file(name,packet)
-main()
