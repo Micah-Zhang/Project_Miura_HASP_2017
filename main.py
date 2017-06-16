@@ -18,7 +18,7 @@ downlink = queue.Queue()
 
 # Setting up events to be seen across threads
 # Event is like global boolean but safer for multithreading
-run_exp  = thread.Event()
+run_exp = threading.Event()
 
 # Package arg tuples for thread
 dwlk_args = (downlink)

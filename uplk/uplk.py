@@ -1,10 +1,5 @@
 import time
 import serial
-import sys
-sys.path.append('/home/pi/miura')
-from dwlk import dwlk
-import func
-from func import *
 
 ser = serial.Serial(
 	port = '/dev/serial0',
@@ -15,10 +10,9 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-def main():
+def main(downlink,run_exp):
 	while True:
 		x = ser.readline().decode("utf-8")
-		if x == "start\n":
-			print("YES!!!")
-			dwlk.q.put("start command recieved!\n")
+		if x == "start":
+			
 		time.sleep(1)

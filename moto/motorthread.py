@@ -1,16 +1,12 @@
 from time import sleep
 import picamera
 import logging
-import queue
-import threading
 import RPi.GPIO as GPIO
 import os
 ###################################################################MICAH IMPORT THE QUEUE AS WELL AS UPLINK AND DOWNLINK AND WHATEVER ELSE YA NEED :)###############################
 ########################THE VARIABLE THAT COUNTS THE NUMBER OF STEPS IS CALLED stepcount ######################################3
 ######################THE VARIABLE THAT TRACKS THE CYCLE COUNT IS CALLED cycle ####################################3
 
-#create queue
-q = queue.Queue()
 #tracks the cycle the payload is on
 cycle = 0
 #is_stuck is false when the motor is not stuck, true when it is stuck
@@ -139,10 +135,10 @@ def say_cheese_four_times(High_Resolution):
 
 #waits for nudge commands, reset command, or unstuck command from queue,
 #as of right now the code will remain in sobering up state until unstuck command is recieved
-def sobering_up(cmd, q):
+def sobering_up(cmd, moto_cmd):
 	##wait for queue (q), if queue has a command then do stuff
 	#################################################################MICAH ADD YOUR STUFF HERE################################################
-	cmd = q.get()
+	cmd = moto_cmd.get()
 	if cmd == 'reset':
 		drop_it_low(16500)
 	if cmd == 'nudge up':
@@ -190,7 +186,7 @@ def lets_get_as_high_as_we_can():
 	say_cheese_four_times(High_Resolution) #take image at end of sustention
 	time.sleep(595) #remain closed for 10 minutes
 
-def main():
+def main(moto_cmd):
 	##################################################################MICAH
 	#################################################################if you want the cycle number to always be pulled from this thread to the downlink then we need th
 	#################################queue to wait for the "begin cycle" command to be right here, then it will be global up above and remain at 0 until command is recieved
