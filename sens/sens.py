@@ -10,7 +10,7 @@ else:
 def main(downlink):
 	counter = 1
 	while True:
-		cmd = q.get
+		cmd = downlink.get
 		if cmd == "sens\n":
 			dwlk.q.put("uplk recieved (sens)\n")
 		label = 'CU ' + 'MI ' + 'SE '
