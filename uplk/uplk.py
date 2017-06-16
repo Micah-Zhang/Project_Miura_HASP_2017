@@ -10,7 +10,7 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-def main(downlink,run_exp, moto_cmd):
+def main(downlink, run_exp, moto_cmd):
 	while True:
 		x = ser.readline().decode('utf-8')
 		if x == 'start':
