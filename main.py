@@ -1,21 +1,45 @@
 import threading
-import time
 import queue
-from cama import cama
-#from moto import OUTmoto 
-#from moto import moto
+
+# Import code for threading. All flight code must be initialized from the main function in the thread file
 from sens import sens
 from dwlk import dwlk
 from uplk import uplk
 
-q = queue.Queue()
+def shutdown():
+	''' Completes all necessary events for a shutdown '''
+	#camera.close()
+	exit()
 
-tuplk = threading.Thread(name='uplk', target=uplk.main)
-tsens = threading.Thread(name='sens', target=sens.main)  
-tdwlk = threading.Thread(name='dwlk', target=dwlk.main)
-#tmoto = threading.Thread(name='moto', target=OUTmoto.main)
-#tcama = threading.Thread(name='cama', target=cama.main)
+# Create required Queues
+moto_cmd = queue.Queue()
+downlink = queue.Queue()
 
+# Package arg tuples for thread
+dwlk_args = (downlink)
+uplk_args = (downlink)
+sens_args = (downlink)
+
+# Create thread objects
+threads = [
+	threading.Thread(name='uplk', target=uplk.main, args=uplk_args),
+	threading.Thread(name='sens', target=sens.main, args=sens_args),
+	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args)
+]
+
+# Start running threads within a try-except block to allow for it to catch exceptions
+try:
+	for t in threads:
+		t.daemon = True # Prevents it from running without main
+		t.start()
+	while True:
+		for t in threads:
+			t.join(3) # Prevent main from quitting by joining threads
+except(KeyboardInterrupt, SystemExit):
+	# Capture an exit condition and shut down the flight code
+	shutdown()
+
+'''
 tuplk.start()
 print("uplk started")
 tdwlk.start()
@@ -26,3 +50,4 @@ print("sens started")
 #print("motor started")
 #tcama.start()
 #print("camera started")
+'''
