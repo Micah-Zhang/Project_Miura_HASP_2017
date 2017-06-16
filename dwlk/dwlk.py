@@ -17,6 +17,8 @@ def main(downlink):
 	counter = 0
 	while True:
 		a = downlink.get()
+#		a = ("AHHHHHHHHHHH!!!!!!\n")
+		print('message:' + a)
 		ser.write(a.encode('utf-8'))
 #		print("packet sent",counter)
 		time.sleep(1)

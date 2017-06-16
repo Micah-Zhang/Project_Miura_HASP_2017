@@ -37,7 +37,7 @@ def read_temp(): #read temperature
 		temp_c = float(temp_string) /1000.0
 		temp_f = temp_c * 9.0 / 5.0 + 32.0
 		return temp_f	
-
+'''
 def read_humi(): #read humidity
 	bus.write_byte(0x40, 0xF5)
 	time.sleep(0.3)
@@ -47,7 +47,7 @@ def read_humi(): #read humidity
 	time.sleep(0.3)
 	return humidity
 
-'''
+
 def read_pres(): #read pressure
 	data = bus.read_i2c_block_data(0x60, 0x00, 4)
 	pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16
@@ -57,7 +57,7 @@ def read_pres(): #read pressure
 def read_acc(): #read accelerometer
 	x, y, z = accel.read()
 	return x, y, z
-'''
+
 
 def blink(pin): #blink LEDs
 	GPIO.setup(pin, GPIO.OUT)
@@ -78,10 +78,12 @@ def read_adc(): #read ADC
 	for i in range(4):
 		values[i] = adc.read_adc(i, gain=GAIN)
 	return values[0], values[1]
+'''
 
 def main():
 	counter = 1
 	while True:
+		'''
 		ranf, amm  = read_adc()
 		label = 'CU ' + 'MI ' + 'SE '
 		timestamp = "{0:.2f}".format(time.time())
@@ -98,4 +100,6 @@ def main():
 		with open(name, "a") as f:
 			f.write(packet)
 		#counter += 1
+		'''
+		print(read_temp())
 main()

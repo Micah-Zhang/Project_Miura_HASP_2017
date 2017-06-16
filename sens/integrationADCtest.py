@@ -23,6 +23,8 @@ while True:
 	raw = [0]*4000
 	for j in range(0,200):
 		dist=input("Enter distance in mm")
+		dist = float(dist)
+		dist = dist + 150
 		for k in range(0,20):
 			m = (j*20)+k
 			actual[m] = dist

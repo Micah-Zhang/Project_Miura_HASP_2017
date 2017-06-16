@@ -51,7 +51,7 @@ def read_humi():
 	humidity = ((data0 * 256 + data1) * 125 / 65536.0) - 6
 	time.sleep(0.3)
 	return humidity#, data0, data1
-'''
+
 #NOT HOOKED UP YET!!!!
 # initialize pressure sensor
 bus.write_byte_data(0x60, 0x26, 0x39)
@@ -86,7 +86,7 @@ def led_on(pin):
 
 def led_off(pin):
 	GPIO.output(pin,GPIO.LOW)
-'''		
+	
 # initialize ADC
 adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1
@@ -98,10 +98,12 @@ def read_adc():
 	return values[0], values[1]
 
 # M A I N
-
 def main():
 	print("motor thread initialized")
-	while True:
+	i = 1
+	print(read_temp()) 
+	while i ==1:
+		print("in loop")
 		with open("test.log", "a") as f:
 			f.write(data3)
 		#f = open("test.log","w+")
@@ -123,4 +125,4 @@ def main():
 		#f.close()
 		#blink(37)
 		q.put(data3)
-
+		print(read_temp())

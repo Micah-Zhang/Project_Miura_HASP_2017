@@ -10,9 +10,10 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
-temp_sensor1 = '//sys/bus/w1/devices/28-000007a8d22b/w1_slave'
-#temp_sensor2 = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
+#temp_sensor1 = '//sys/bus/w1/devices/28-000007a8d22b/w1_slave'
+temp_sensor = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
 #temp_sensor3 = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
+temp_sensor4 = '//sys/bus/w1/devices/28-000007a8a632/w1_slave'
 #accel = Adafruit_ADXL345.ADXL345()
 adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1

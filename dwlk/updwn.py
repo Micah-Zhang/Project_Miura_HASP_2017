@@ -3,7 +3,7 @@ import serial
 import sys
  
 ser = serial.Serial(
-	port = '/dev/ttyUSB1',
+	port = '/dev/serial0',
 	baudrate = 4800,
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
@@ -22,7 +22,8 @@ while True:
 		counter = 0
 		while(counter < int(length)):
 			x = ser.readline().decode('utf-8')
-			print("dwlk recieved: ", x)
+			print(x)
+			#print("dwlk recieved: ", x)
 			save_file("dwlklog.txt",x)
 			counter += 1
 	elif(choice == "uplk"):

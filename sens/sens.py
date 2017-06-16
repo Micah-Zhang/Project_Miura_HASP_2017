@@ -48,4 +48,3 @@ else:
         import sens.sensors as sensors
         from sens.sensors import *
 
-main()

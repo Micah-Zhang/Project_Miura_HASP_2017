@@ -24,7 +24,7 @@ Step_Pin = 13
 
 #set up
 GPIO.setmode(GPIO.BOARD)
-GPIO.setwarning(False)
+#GPIO.setwarning(False)
 
 #motor setup
 GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)

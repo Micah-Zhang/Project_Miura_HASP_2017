@@ -11,7 +11,6 @@ device_folder = glob.glob(base_dir + '28*')
 
 print(device_folder)
 
-'''
 def read_temp_raw():
 	f = open(device_file, 'r')
 	lines = f.readlines()
@@ -33,4 +32,4 @@ def read_temp():
 while(True):
 	print(read_temp())
 	time.sleep(1)
-'''
+

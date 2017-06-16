@@ -39,10 +39,10 @@ camera = PiCamera()
 
 
 #One image
-#camera.start_preview()
-#sleep(3)
-#camera.capture('/home/pi/Desktop/image.jpg')
-#camera.stop_peview()
+camera.start_preview()
+sleep(3)
+camera.capture('/home/pi/Desktop/image.jpg')
+camera.stop_peview()
 
 #Resolution
 #camera.resolution = (2593, 1944)
