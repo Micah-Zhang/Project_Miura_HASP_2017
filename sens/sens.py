@@ -12,7 +12,7 @@ def main(downlink):
 	while True:
 		cmd = downlink.get()
 		if cmd == "sens\n":
-			dwlk.q.put("uplk recieved (sens)\n")
+			dowlink.put("uplk recieved (sens)\n")
 		label = 'CU ' + 'MI ' + 'SE '
 		timestamp = "{0:.2f}".format(time.time())
 		#rangefinder,ammeter = func.read_adc()
