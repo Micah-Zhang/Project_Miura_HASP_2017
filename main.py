@@ -24,7 +24,9 @@ run_exp = threading.Event()
 dwlk_args = (downlink,)
 uplk_args = (downlink, run_exp, moto_cmd,)
 sens_args = (downlink,)
-moto_args = (run_exp, moto_cmd,)
+moto_args = (run_exp, moto_cmd,) ###comment out if using OUTmoto and INmoto
+#OUTmoto_args = (run_exp,) ###remove comments if using OUTmoto and INmoto
+#INmoto_args = (run_exp,)
 
 # Create thread objects
 threads = [
@@ -32,6 +34,9 @@ threads = [
 	threading.Thread(name='sens', target=sens.main, args=sens_args),
 	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
 	threading.Thread(name='moto', target=motorthread.main, args=moto_args)
+	###ADD COMMA TO END OF PREVIOUS LINE BEFORE COMMENTING OUT THE BELOW
+	#thread.Thread(name='OUTmoto', target=OUTmoto.main, args=OUTmoto_args), ###CREATES NEW THREADS FOR OUTMOTO AND INMOTO
+	#thread.Thread(name='INmoto', target=INmoto.py, args=INmoto_args)
 ]
 
 # Start running threads within a try-except block to allow for it to catch exceptions
