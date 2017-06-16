@@ -41,20 +41,7 @@ try:
 		t.start()
 	while True:
 		for t in threads:
-			t.join(3) # Prevent main from quitting by joining threads
+			t.join(4) # Prevent main from quitting by joining threads
 except(KeyboardInterrupt, SystemExit):
 	# Capture an exit condition and shut down the flight code
 	shutdown()
-
-
-tuplk.start()
-print("uplk started")
-tdwlk.start()
-print("dwlk started")
-tsens.start()
-print("sens started")
-#tmoto.start()
-#print("motor started")
-#tcama.start()
-#print("camera started")
-

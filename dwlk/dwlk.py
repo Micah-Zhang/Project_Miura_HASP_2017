@@ -18,6 +18,6 @@ def main(downlink):
 	while True:
 		a = downlink.get()
 		ser.write(a.encode('utf-8'))
-		print("packet sent",counter)
+#		print("packet sent",counter)
 		time.sleep(1)
 		counter+=1
