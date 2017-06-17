@@ -31,6 +31,8 @@ downlink = queue.Queue()
 # Event is like global boolean but safer for multithreading
 run_exp = threading.Event()
 
+run_exp.set() # <- just for testing
+
 # Package arg tuples for thread
 dwlk_args = (downlink,ser)
 uplk_args = (downlink, ser, run_exp, moto_cmd,)

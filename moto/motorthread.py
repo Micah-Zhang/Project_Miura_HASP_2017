@@ -3,12 +3,15 @@ import picamera
 import logging
 import RPi.GPIO as GPIO
 import os
+import time
 ###################################################################MICAH IMPORT THE QUEUE AS WELL AS UPLINK AND DOWNLINK AND WHATEVER ELSE YA NEED :)###############################
 ########################THE VARIABLE THAT COUNTS THE NUMBER OF STEPS IS CALLED stepcount ######################################3
 ######################THE VARIABLE THAT TRACKS THE CYCLE COUNT IS CALLED cycle ####################################3
 
+#camera =picamera.PiCamera()
+
 #tracks the cycle the payload is on
-cycle = 0
+cycle = 3
 #is_stuck is false when the motor is not stuck, true when it is stuck
 is_stuck = False
 #High_Resolution is false when a 720p resolution picture is wanted, true when a higher resolution images is wanted
@@ -24,7 +27,7 @@ Step_Pin = 13
 
 #set up
 GPIO.setmode(GPIO.BOARD)
-GPIO.setwarning(False)
+#GPIO.setwarning(False)
 
 #motor setup
 GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
@@ -38,6 +41,7 @@ GPIO.setup(12, GPIO.OUT)
 #move motor up the input amount of steps
 #also has queue input to check if there is a STOP command before it moves another step
 def raise_the_roof(steps, moto_cmd):
+	freq = 1000
 	if steps == 11160:
 		quarter_one = 2790
 		quarter_two = 5580
@@ -62,13 +66,14 @@ def raise_the_roof(steps, moto_cmd):
 			say_cheese_four_times(High_Resolution)
 		#######################################################MICAH DO YOUR COMMAND THANG####################################### ALSO THANKS FOR THE CAKE IT WAS DELICIOUS
 		# I think itll be something like q.getnowait()
-		cmd = moto_cmd.get_nowait()
-		if cmd == 'stop':
-			return
+		#cmd = moto_cmd.get_nowait()
+		#if cmd == 'stop':
+		#	return
 
 #move motor down the input amount of
 #also has queue input to check if there is a STOP command before it moves another step
 def drop_it_low(steps, moto_cmd):
+	freq = 1000
 	if steps == 11160:
 		quarter_one = 2790
 		quarter_two = 5580
@@ -94,24 +99,25 @@ def drop_it_low(steps, moto_cmd):
 			say_cheese_four_times(High_Resolution)
 		#######################################################################MICAH DO YOUR COMMAND THANG###########################################################YOUR A COOL CAT
 		###something like q.getnowait()
-		cmd = moto_cmd.get_nowait()
-		if cmd == 'stop':
-			return
+		#cmd = moto_cmd.get_nowait()
+		#if cmd == 'stop':
+		#	return
 
 #capture and store image with timestamp
 def say_cheese(cam, High_Resolution):
 	if High_Resolution == True:
-		camera.resolution(1640, 922)
+		camera.resolution = (1640, 922)
 	else:
-		camera.resolution(1024, 786)
+		camera.resolution = (1024, 786)
 	timestamp = time.time()
 	timestamp = str(timestamp)
 	cam = str(cam)
-	image = "raspistill -o {:s}.jpg".format(cam+' '+timestamp)
+	image = "raspistill -o {:s}.jpg".format(cam+'_'+timestamp)
 	os.system(image)
 
 #take images from 4 pi cameras
 def say_cheese_four_times(High_Resolution):
+	return
 	#camera A
 	GPIO.output(7, False)
 	GPIO.output(11, False)
@@ -148,54 +154,63 @@ def sobering_up(moto_cmd):
 	if cmd == 'unstuck':
 		is_stuck = False
 
+def basic_capture():
+	os.system('raspistill -o {}.jpg'.format(time.time()))
+
 #complete a minimum success cycle, approximately 72% of max height
-def just_scraping_by():
+def just_scraping_by(moto_cmd):
 	High_Resolution = False
-	say_cheese_four_times(High_Resolution)#capture images directly before moving the motor
-	raise_the_roof(11160)
+	#say_cheese_four_times(High_Resolution)#capture images directly before moving the motor
+	raise_the_roof(11160,moto_cmd)
 	High_Resolution = True
-	say_cheese_four_times(High_Resolution)
+	#say_cheese_four_times(High_Resolution)
+	basic_capture()
 	High_Resolution = False
 	for i in range(1,9): #remain open for 18 minutes
 		time.sleep(120)
-		say_cheese_four_times(High_Resolution)
+		basic_capture()
+		#say_cheese_four_times(High_Resolution)
 	High_Resolution = True
-	say_cheese_four_times(High_Resolution)
+	#say_cheese_four_times(High_Resolution)
 	High_Resolution = False
-	drop_it_low(11160)
+	drop_it_low(11160,moto_cmd)
 	time.sleep(5)
-	say_cheese_four_times(High_Resolution) #take image at end of sustention
+	basic_capture()
+	#say_cheese_four_times(High_Resolution) #take image at end of sustention
 	time.sleep(595) #remain closed for 10 minutes
 
 #complete a normal cycle, 100% of max height
-def lets_get_as_high_as_we_can():
+def lets_get_as_high_as_we_can(moto_cmd):
 	High_Resolution = False
-	say_cheese_four_times(High_Resolution)#capture images directly before moving the motor
-	raise_the_roof(15500)
+	#say_cheese_four_times(High_Resolution)#capture images directly before moving the motor
+	raise_the_roof(15500,moto_cmd)
 	High_Resolution = True
-	say_cheese_four_times(High_Resolution)
+	#say_cheese_four_times(High_Resolution)
 	High_Resolution = False
+	basic_capture()
 	for i in range(1,9): #remain open for 18 minutes
 		time.sleep(120)
-		say_cheese_four_times(High_Resolution)
+		basic_capture()
+		#say_cheese_four_times(High_Resolution)
 	High_Resolution = True
-	say_cheese_four_times(High_Resolution)
+	#say_cheese_four_times(High_Resolution)
 	High_Resolution = False
-	drop_it_low(15500)
+	drop_it_low(15500,moto_cmd)
 	time.sleep(5)
-	say_cheese_four_times(High_Resolution) #take image at end of sustention
+	#say_cheese_four_times(High_Resolution) #take image at end of sustention
 	time.sleep(595) #remain closed for 10 minutes
 
 def main(run_exp, moto_cmd):
 	##################################################################MICAH
 	#################################################################if you want the cycle number to always be pulled from this thread to the downlink then we need th
 	#################################queue to wait for the "begin cycle" command to be right here, then it will be global up above and remain at 0 until command is recieved
+	global cycle
 	while True:
 		if(run_exp.is_set()):
 			#complete minimum success cycle (2 consectuve successful total)
 			while cycle<3:
 				if is_stuck == False:
-					just_scraping_by()
+					just_scraping_by(moto_cmd)
 					#if motor didnt exit early/get stuck in its cycle then increase the cycle count
 					if is_stuck == False:
 						cycle += 1
@@ -205,7 +220,7 @@ def main(run_exp, moto_cmd):
 			#complete 100% of max height cycles (any amount after first two successul cycles)
 			while cycle>2:
 				if is_stuck == False:
-					lets_get_as_high_as_we_can()
+					lets_get_as_high_as_we_can(moto_cmd)
 					#if motor didnt exit early/get stuck in its cycle then increase the cycle count
 					if is_stuck == False:
 						cycle += 1

@@ -1,8 +1,8 @@
 import time
 from zlib import adler32
 #import sens.sensors as sensors
-import sensors
-from sensors import *
+from sens import sensors
+from sens.sensors import *
 
 '''
 if __name__ == '__main__':
