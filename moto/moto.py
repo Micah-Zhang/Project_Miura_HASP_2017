@@ -5,9 +5,9 @@ import logging
 import RPi.GPIO as GPIO
 import os
 import serial
-from MOTOR import minimum_success #we shouldn't have so many imports from the same file
-from MOTOR import full_extension #why not just import MOTOR? it isn't very large, so there's no need to import individual functions
-from MOTOR import receive_command
+from fmoto import minimum_success #we shouldn't have so many imports from the same file
+from fmoto import full_extension #why not just import MOTOR? it isn't very large, so there's no need to import individual functions
+from fmoto import receive_command
 
 #tracks the cycle the payload is on
 cycle = 0
