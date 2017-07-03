@@ -1,8 +1,8 @@
 import time
 from zlib import adler32
-#import sens.sensors as sensors #only works when threading
-import fsens
-from fsens import *
+#import sens.fsens as sensors #only works when threading
+#import fsens
+#from fsens import *
 
 '''
 if __name__ == '__main__':
@@ -22,12 +22,12 @@ def main():
 		rangefinder = ' ' + "{0:.2f}".format(rangefinder)
 		ammeter = ' ' + "{0:.2f}".format(ammeter)
 		humidity = ' ' + "{0:.2f}".format(fsens.read_humi())
-		#pressure = ' ' + "{0:.2f}".format(sensors.read_pres())
-		#temp1 = ' ' + "{0:.2f}".format(sensors.read_temp(temp_sensor1))
+		#pressure = ' ' + "{0:.2f}".format(fsens.read_pres())
+		#temp1 = ' ' + "{0:.2f}".format(fsens.read_temp(temp_sensor1))
 		temp = ' ' + "{0:.2f}".format(fsens.read_temp(temp_sensor))
-		#temp3 = ' ' + "{0:.2f}".format(sensors.read_temp(temp_sensor3))
+		#temp3 = ' ' + "{0:.2f}".format(fsens.read_temp(temp_sensor3))
 		temp4 = ' ' + "{0:.2f}".format(fsens.read_temp(temp_sensor4))
-		#accel = ' ' + "{0:.2f}".format(sensors.read_acc())
+		#accel = ' ' + "{0:.2f}".format(fsens.read_acc())
 		#data = humidity + temp + rangefinder + ammeter
 		data = rangefinder + ammeter +  humidity +  temp + temp4
 		#data = humidity + pressure + temp
@@ -42,9 +42,10 @@ def main():
 		fsens.save_file(name,packet)
 
 if __name__ == '__main__':
-        import sensors
+        import fsens
+	from fsens import *
         main()
 else:
-        import sens.sensors as sensors
-        from sens.sensors import *
+        import sens.fsens as fsens
+        from sens.fsens import *
 
