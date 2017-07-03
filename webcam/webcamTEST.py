@@ -26,18 +26,3 @@ while pic<6:
     os.system('fswebcam -d /dev/video1 --save redimage{}.jpg'.format(pic))
     pic += 1
     '''
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
