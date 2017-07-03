@@ -26,9 +26,9 @@ def up(steps):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
 		time.sleep(.0036) #what does this do?
-	if step == quarter: #shouldn't this be inside the for loop?
-		take_4_images()
-		quarter += quarter #what if "steps" is odd?
+		if step == quarter: #shouldn't this be inside the for loop?
+			take_4_images()
+			quarter += quarter #what if "steps" is odd?
 
 #move the motor down input amount of steps
 def down(steps):
