@@ -1,17 +1,8 @@
 import time
 from zlib import adler32
-#import sens.fsens as sensors #only works when threading
+#import sens.fsens as fsens #only works when threading
 #import fsens
 #from fsens import *
-
-'''
-if __name__ == '__main__':
-	import sensors
-	main()
-else:
-	import sens.sensors as sensors
-	from sens.sensors import *
-'''
 
 def main():
 	counter = 1
