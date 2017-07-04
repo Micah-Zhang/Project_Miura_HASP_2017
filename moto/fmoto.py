@@ -12,7 +12,7 @@ Step_Pin = 13
 
 #set up
 GPIO.setmode(GPIO.BOARD)
-#GPIO.setwarning(False) #why is this commented out?
+GPIO.setwarnings(False) #why is this commented out?
 
 #motor setup
 GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
