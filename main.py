@@ -5,14 +5,10 @@ import queue
 from sens import sens
 from dwlk import dwlk
 from uplk import uplk
-from moto import motorthread
-#from cama import cama ### REMOVE COMMENTS IT MOTORTHREAD FAILS
-#from moto import INmoto
-#from moto import OUTmoto
+from moto import moto
 
 def shutdown():
 	''' Completes all necessary events for a shutdown '''
-	#camera.close()
 	exit()
 
 # Create required Queues
@@ -27,21 +23,14 @@ run_exp = threading.Event()
 dwlk_args = (downlink,)
 uplk_args = (downlink, run_exp, moto_cmd,)
 sens_args = (downlink,)
-moto_args = (run_exp, moto_cmd,) ###comment out if using OUTmoto and INm
-#cama_args = (run_exp,) ### remove comments if using OUTmoto and INmoto
-#OUTmoto_args = (run_exp,)
-#INmoto_args = (run_exp,)
+moto_args = (run_exp, moto_cmd,)
 
 # Create thread objects
 threads = [
 	threading.Thread(name='uplk', target=uplk.main, args=uplk_args),
 	threading.Thread(name='sens', target=sens.main, args=sens_args),
 	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
-	threading.Thread(name='moto', target=motorthread.main, args=moto_args)
-	###ADD COMMA TO END OF PREVIOUS LINE BEFORE COMMENTING OUT THE BELOW
-	#thread.Thread(name='cama', target=cama.main, args=cama_args), ###creates new threads in case motorthread fails
-	#thread.Thread(name='OUTmoto', target=OUTmoto.main, args=OUTmoto_args),
-	#thread.Thread(name='INmoto', target=INmoto.py, args=INmoto_args)
+	threading.Thread(name='moto', target=moto.main, args=moto_args)
 ]
 
 # Start running threads within a try-except block to allow for it to catch exceptions
