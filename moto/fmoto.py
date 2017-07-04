@@ -43,37 +43,37 @@ def down(steps):
 			quarter += quarter
 
 #complete minimum success cycle
-def minimum_success():
+def minimum_success(moto_cmd):
 	up(11160)
-	receive_command()
+	receive_command(moto_cmd)
 	take_4_images()
 	ninths = 1080/9
 	for opened in range(1,1080):
-		receive_command()
+		receive_command(moto_cmd)
 		if opened == ninths:
 			take_4_images()
 			ninths += ninths
 	down(11160)
-	receive_command()
+	receive_command(moto_cmd)
 	take_4_images()
 	for closed in range(1,600): #what does this do?
-		receive_command()
+		receive_command(moto_cmd)
 
 #complete full extension cycle
-def full_extension():
+def full_extension(moto_cmd):
 	up(15500)
 	take_4_images()
-	receive_command()
+	receive_command(moto_cmd)
 	ninths = 1080/9
 	for opened in range(1,1080):
-		receive_command()
+		receive_command(moto_cmd)
 	if opened == ninths:
 		take_4_images()
 		ninths += ninths
 	down(11500)
 	take_4_images()
 	for closed in range(1,600):
-        	receive_command()
+        	receive_command(moto_cmd)
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():
@@ -85,12 +85,13 @@ def take_4_images():
 	'''
 
 #parce through the commands
-def receive_command():
-	ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
-	command = ser.readline().decode('utf-8')
-    	#nudge commands
+def receive_command(moto_cmd):
+	#ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
+	#command = ser.readline().decode('utf-8')
+	command = moto_cmd.get_nowait()
+	#nudge commands
 	if command == 'move up 200':
-        	up(200)
+		up(200)
         	#downlink command received awknowledgement
 	elif command == 'move up 1000':
 		up(1000)
