@@ -102,7 +102,7 @@ def take_4_images():
 def receive_command(moto_cmd):
 	#ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
 	#command = ser.readline().decode('utf-8')
-	command = moto_cmd.get_nowait()
+	command = moto_cmd.get()
 	#nudge commands
 	if command == 'move up 200':
 		up(200, "CM")
