@@ -23,33 +23,44 @@ GPIO.setup(32,GPIO.IN)
 GPIO.setup(36,GPIO.IN)
 
 #move the motor up input amount of steps
-def up(steps):
+def up(steps,cycle_type):
 	GPIO.output(Direction_Pin, GPIO.HIGH)
 	quarter = steps/4
 	#for step in range(steps):
-	while !GPIO.input(32):
-		GPIO.output(Step_Pin, GPIO.HIGH)
-		GPIO.output(Step_Pin, GPIO.LOW)
-		time.sleep(.0036) #what does this do?
+	if cycle_type == 'FE':
+		while not(GPIO.input(32)):
+			GPIO.output(Step_Pin, GPIO.HIGH)
+			GPIO.output(Step_Pin, GPIO.LOW)
+			time.sleep(.0036) #what does this do?
+		'''
 		if step == quarter: #shouldn't this be inside the for loop?
 			take_4_images()
 			quarter += quarter #what if "steps" is odd?
-
+		'''
+	else:
+		for step in range(steps):
+			GPIO.output(Step_Pin, GPIO.HIGH)
+			GPIO.output(Step_Pin, GPIO.LOW)
+			time.sleep(.0036)
+		
 #move the motor down input amount of steps
 def down(steps):
 	GPIO.output(Direction_Pin, GPIO.LOW)
 	quarter = steps/4
-	for step in range(steps):
+	#for step in range(steps):
+	while not(GPIO.input(36)):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
 		time.sleep(.0036)
+		'''	
 		if step == quarter:
 			take_4_images()
 			quarter += quarter
-
+		'''
+	
 #complete minimum success cycle
 def minimum_success():
-	up(11160)
+	up(11160,'MS')
 	receive_command()
 	take_4_images()
 	ninths = 1080/9
@@ -66,7 +77,7 @@ def minimum_success():
 
 #complete full extension cycle
 def full_extension():
-	up(15500)
+	up(15500,'FE')
 	take_4_images()
 	receive_command()
 	ninths = 1080/9
