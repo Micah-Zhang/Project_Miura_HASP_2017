@@ -12,6 +12,7 @@ ser = serial.Serial(
 
 def main(downlink, run_exp, moto_cmd): #downlink, run_exp, moto_cmd
 	while True:
+		print("waiting for command")
 		cmd = ser.readline().decode('utf-8')
 		if cmd == 'start':
 			print("received command: start")
