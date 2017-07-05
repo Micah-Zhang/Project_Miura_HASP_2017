@@ -18,11 +18,16 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 
+#button setup
+GPIO.setup(32,GPIO.IN)
+GPIO.setup(36,GPIO.IN)
+
 #move the motor up input amount of steps
 def up(steps):
 	GPIO.output(Direction_Pin, GPIO.HIGH)
 	quarter = steps/4
-	for step in range(steps):
+	#for step in range(steps):
+	while !GPIO.input(32):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
 		time.sleep(.0036) #what does this do?
