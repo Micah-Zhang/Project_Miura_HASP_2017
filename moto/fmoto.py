@@ -18,17 +18,31 @@ GPIO.setwarnings(False) #why is this commented out?
 GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 
+#button setup
+GPIO.setup(32,GPIO.IN)
+GPIO.setup(36,GPIO.IN)
+
 #move the motor up input amount of steps
-def up(steps):
+def up(steps,cycle_type):
 	GPIO.output(Direction_Pin, GPIO.HIGH)
 	quarter = steps/4
-	for step in range(steps):
-		GPIO.output(Step_Pin, GPIO.HIGH)
-		GPIO.output(Step_Pin, GPIO.LOW)
-		time.sleep(.0036) #what does this do?
-		if step == quarter: #shouldn't this be inside the for loop?
-			take_4_images()
-			quarter += quarter #what if "steps" is odd?
+	if (cycle_type == "MS" or cycle_type == "CM"):
+		for step in range(steps):
+			GPIO.output(Step_Pin, GPIO.HIGH)
+			GPIO.output(Step_Pin, GPIO.LOW)
+			time.sleep(.0036) #what does this do?
+			if step == quarter: #shouldn't this be inside the for loop?
+				take_4_images()
+				quarter += quarter #what if "steps" is odd?
+	else:
+		while not (GPIO.input(32)):
+			GPIO.output(Step_Pin, GPIO.HIGH)
+			GPIO.output(Step_Pin, GPIO.LOW)
+			step += 1
+			time.sleep(.0036)
+			if step == quarter:
+				take_4_images()
+				quarter += quarter
 
 #move the motor down input amount of steps
 def down(steps):
@@ -44,7 +58,7 @@ def down(steps):
 
 #complete minimum success cycle
 def minimum_success(moto_cmd):
-	up(11160)
+	up(11160,"MS")
 	receive_command(moto_cmd)
 	take_4_images()
 	ninths = 1080/9
@@ -61,7 +75,7 @@ def minimum_success(moto_cmd):
 
 #complete full extension cycle
 def full_extension(moto_cmd):
-	up(15500)
+	up(15500,"FE")
 	take_4_images()
 	receive_command(moto_cmd)
 	ninths = 1080/9
@@ -91,13 +105,13 @@ def receive_command(moto_cmd):
 	command = moto_cmd.get_nowait()
 	#nudge commands
 	if command == 'move up 200':
-		up(200)
+		up(200, "CM")
         	#downlink command received awknowledgement
 	elif command == 'move up 1000':
-		up(1000)
+		up(1000, "CM")
         	#downlink command received awknowledgement
 	elif command == 'move up 5000':
-		up(5000)
+		up(5000, "CM")
         	#downlink command received awknowledgement
 	elif command == 'move down 200':
 		down(200)
@@ -108,11 +122,13 @@ def receive_command(moto_cmd):
 	elif command == 'move down 5000':
 		down(5000)
 		#downlink command received awknowledgement
-	'''
 	elif command == 'move down ALW':
+		down(1)
         	#move down until button is pressed
 	elif command == 'move up ALW':
+		up(1, "FE")
         	#move up until button is pressed
+	'''
 	elif command == 'dwlk image':
         	#downlink image
 	elif command == 'ping':
