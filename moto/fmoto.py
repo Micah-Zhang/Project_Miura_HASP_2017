@@ -64,7 +64,7 @@ def minimum_success():
 	receive_command()
 	take_4_images()
 	ninths = 1080/9
-	for opened in range(1,1080):
+	for opened in range(1,10):
 		receive_command()
 		if opened == ninths:
 			take_4_images()
@@ -72,7 +72,7 @@ def minimum_success():
 	down(11160)
 	receive_command()
 	take_4_images()
-	for closed in range(1,600): #what does this do?
+	for closed in range(1,6): #what does this do?
 		receive_command()
 
 #complete full extension cycle
@@ -81,14 +81,14 @@ def full_extension():
 	take_4_images()
 	receive_command()
 	ninths = 1080/9
-	for opened in range(1,1080):
+	for opened in range(1,10):
 		receive_command()
 	if opened == ninths:
 		take_4_images()
 		ninths += ninths
 	down(11500)
 	take_4_images()
-	for closed in range(1,600):
+	for closed in range(1,6):
         	receive_command()
 
 #take image from all four cameras and save with the current timestamp as the name
