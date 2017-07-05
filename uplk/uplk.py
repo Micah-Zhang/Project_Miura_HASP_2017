@@ -10,21 +10,29 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-def main(downlink, run_exp, moto_cmd):
+def main(downlink, run_exp, moto_cmd): #downlink, run_exp, moto_cmd
 	while True:
 		cmd = ser.readline().decode('utf-8')
 		if cmd == 'start':
+			print("received command: start")
 			run_exp.set() #start running the experiment
+			print("run_exp set")
 		elif cmd == 'move up 200':
+			print("received command: move up 200")
 			moto_cmd.put('move up 200') #nudge commands
 		elif cmd == 'move up 1000':
+			print("received command: move up 1000")
 			moto_cmd.put('move up 1000')
 		elif cmd == 'move up 5000':
+			print("received command: move up 500")
 			moto_cmd.put('move up 5000')
 		elif cmd == 'move down 200':
+			print("received command: move down 200")
 			moto_cmd.put('move down 200')
 		elif cmd == 'move down 1000':
+			print("received command: move down 1000")
 			moto_cmd.put('move down 1000')
 		elif cmd == 'move down 5000':
+			print("received command: move down 5000")
 			moto_cmd.put('move down 5000')
 		time.sleep(1) #conserve system resources

@@ -1,5 +1,6 @@
 def main(run_exp, moto_cmd):
 	if(run_exp==True):
+		print("run_exp is set verified")
 		cycle = 1
 		while cycle<3:
 			fmoto.minimum_success(moto_cmd)
