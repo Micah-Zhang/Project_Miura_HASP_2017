@@ -12,7 +12,7 @@ Step_Pin = 13
 
 #set up
 GPIO.setmode(GPIO.BOARD)
-#GPIO.setwarning(False) #why is this commented out?
+GPIO.setwarnings(False) #why is this commented out?
 
 #motor setup
 GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
@@ -59,6 +59,7 @@ def down(steps):
 		'''
 	
 #complete minimum success cycle
+<<<<<<< HEAD
 def minimum_success():
 	up(11160,'MS')
 	receive_command()
@@ -66,30 +67,58 @@ def minimum_success():
 	ninths = 1080/9
 	for opened in range(1,10):
 		receive_command()
+=======
+def minimum_success(moto_cmd):
+	up(11160)
+	receive_command(moto_cmd)
+	take_4_images()
+	ninths = 1080/9
+	for opened in range(1,1080):
+		receive_command(moto_cmd)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 		if opened == ninths:
 			take_4_images()
 			ninths += ninths
 	down(11160)
-	receive_command()
+	receive_command(moto_cmd)
 	take_4_images()
+<<<<<<< HEAD
 	for closed in range(1,6): #what does this do?
 		receive_command()
 
 #complete full extension cycle
 def full_extension():
 	up(15500,'FE')
+=======
+	for closed in range(1,600): #what does this do?
+		receive_command(moto_cmd)
+
+#complete full extension cycle
+def full_extension(moto_cmd):
+	up(15500)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 	take_4_images()
-	receive_command()
+	receive_command(moto_cmd)
 	ninths = 1080/9
+<<<<<<< HEAD
 	for opened in range(1,10):
 		receive_command()
+=======
+	for opened in range(1,1080):
+		receive_command(moto_cmd)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 	if opened == ninths:
 		take_4_images()
 		ninths += ninths
 	down(11500)
 	take_4_images()
+<<<<<<< HEAD
 	for closed in range(1,6):
         	receive_command()
+=======
+	for closed in range(1,600):
+        	receive_command(moto_cmd)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():
@@ -101,12 +130,13 @@ def take_4_images():
 	'''
 
 #parce through the commands
-def receive_command():
-	ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
-	command = ser.readline().decode('utf-8')
-    	#nudge commands
+def receive_command(moto_cmd):
+	#ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
+	#command = ser.readline().decode('utf-8')
+	command = moto_cmd.get_nowait()
+	#nudge commands
 	if command == 'move up 200':
-        	up(200)
+		up(200)
         	#downlink command received awknowledgement
 	elif command == 'move up 1000':
 		up(1000)

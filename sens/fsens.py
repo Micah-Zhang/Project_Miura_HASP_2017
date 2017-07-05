@@ -1,21 +1,21 @@
 import os
 import time
 import smbus
-import Adafruit_ADXL345
+#import Adafruit_ADXL345
 import RPi.GPIO as GPIO
-import Adafruit_ADS1x15
+#import Adafruit_ADS1x15
 import math
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
-os.system('modprobe w1-gpio')
-os.system('modprobe w1-therm')
+#os.system('modprobe w1-gpio')
+#os.system('modprobe w1-therm')
 #temp_sensor1 = '//sys/bus/w1/devices/28-000007a8d22b/w1_slave'
-temp_sensor = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
+#temp_sensor = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
 #temp_sensor3 = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
-temp_sensor4 = '//sys/bus/w1/devices/28-000007a8a632/w1_slave'
+#temp_sensor4 = '//sys/bus/w1/devices/28-000007a8a632/w1_slave'
 #accel = Adafruit_ADXL345.ADXL345()
-adc = Adafruit_ADS1x15.ADS1115()
+#adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1
 bus = smbus.SMBus(1)
 #bus.write_byte_data(0x60, 0x26, 0x39) #pres
@@ -47,7 +47,6 @@ def read_humi(): #read humidity
 	time.sleep(0.3)
 	return humidity
 
-'''
 def read_pres(): #read pressure
 	data = bus.read_i2c_block_data(0x60, 0x00, 4)
 	pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16
@@ -57,7 +56,6 @@ def read_pres(): #read pressure
 def read_acc(): #read accelerometer
 	x, y, z = accel.read()
 	return x, y, z
-'''
 
 def blink(pin): #blink LEDs
 	GPIO.setup(pin, GPIO.OUT)
