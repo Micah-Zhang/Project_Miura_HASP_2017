@@ -84,7 +84,7 @@ for i in range(2):
 		step += 1
 		time.sleep(.0036)
 		encoder.process_pulse()
-		lines.append('{:.2f} {} {} {} {} '.format(time.time(), step, encoder.check_encoder_count(), GPIO.input(Upper_Button), GPIO.inp$
+		lines.append('{:.2f} {} {} {} {} '.format(time.time(), step, encoder.check_encoder_count(), GPIO.input(Upper_Button), GPIO.input(Lower_Button)))
 	with open('motor_data.txt','a') as f:
 		for line in lines: # lines is an array of characters. this for loop iterates through the array, adding each character in the a$
 			f.write(line+'\n')
@@ -100,7 +100,7 @@ for i in range(2):
 		step += 1
 		time.sleep(.0036)
 		encoder.process_pulse()
-		lines.append('{:.2f} {} {} {} {} '.format(time.time(), step, encoder.check_encoder_count(), GPIO.input(Upper_Button), GPIO.out$
+		lines.append('{:.2f} {} {} {} {} '.format(time.time(), step, encoder.check_encoder_count(), GPIO.input(Upper_Button), GPIO.input(Lower_Button)))
 	with open('motor_data.txt','a') as f:
 		for line in lines: # lines is an array of characters. this for loop iterates through the array, adding each character in the a$
 			f.write(line+'\n')
@@ -119,7 +119,7 @@ for i in range(4):
 		lines.append('{:.2f} {} {} {} {} '.format(time.time(), step, encoder.check_encoder_count(), GPIO.input(Upper_Button), GPIO.input(Lower_Button))) # where does the .append come from? what does it do?
 	with open('motor_data.txt','a') as f:
 		for line in lines: # lines is an array of characters. this for loop iterates through the array, adding each character in the a$
-		f.write(line+'\n')
+			f.write(line+'\n')
 	lines = []
 
 	#time.sleep(60)
@@ -132,10 +132,10 @@ for i in range(4):
 		step += 1
 		time.sleep(.0036)
 		encoder.process_pulse()
-		lines.append('{:.2f} {} {} {} {} '.format(time.time(), step, encoder.check_encoder_count(), GPIO.input(Upper_Button), GPIO.output(Lower_Button)))
+		lines.append('{:.2f} {} {} {} {} '.format(time.time(), step, encoder.check_encoder_count(), GPIO.input(Upper_Button), GPIO.input(Lower_Button)))
 	with open('motor_data.txt','a') as f:
 		for line in lines: # lines is an array of characters. this for loop iterates through the array, adding each character in the a$
-		f.write(line+'\n')
+			f.write(line+'\n')
 	lines = []
 
 
