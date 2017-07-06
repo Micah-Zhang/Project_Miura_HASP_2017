@@ -10,19 +10,30 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-def main(downlink, run_exp, moto_cmd):
+def main(downlink, run_exp, moto_cmd): #downlink, run_exp, moto_cmd
 	while True:
-		x = ser.readline().decode('utf-8')
-		if x == 'start':
+		print("waiting for command")
+		cmd = ser.readline().decode('utf-8')
+		if cmd == 'start':
+			print("received command: start")
 			run_exp.set() #start running the experiment
-		elif x == 'stop motor':
-			moto_cmd.put('stop')
-		elif x == 'reset motor':
-			moto_cmd.put('reset')
-		elif x == 'nudge up':
-			moto_cmd.put('nudge up')
-		elif x == 'nudge down':
-			moto_cmd.put('nudge down')
-		elif x == 'unstuck':
-			moto_cmd.put('unstuck')
-		time.sleep(1)
+			print("run_exp set")
+		elif cmd == 'move up 200':
+			print("received command: move up 200")
+			moto_cmd.put('move up 200') #nudge commands
+		elif cmd == 'move up 1000':
+			print("received command: move up 1000")
+			moto_cmd.put('move up 1000')
+		elif cmd == 'move up 5000':
+			print("received command: move up 500")
+			moto_cmd.put('move up 5000')
+		elif cmd == 'move down 200':
+			print("received command: move down 200")
+			moto_cmd.put('move down 200')
+		elif cmd == 'move down 1000':
+			print("received command: move down 1000")
+			moto_cmd.put('move down 1000')
+		elif cmd == 'move down 5000':
+			print("received command: move down 5000")
+			moto_cmd.put('move down 5000')
+		time.sleep(1) #conserve system resources

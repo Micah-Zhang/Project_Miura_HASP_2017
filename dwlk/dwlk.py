@@ -10,16 +10,11 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-ser.close()
+ser.close() # need to replace
 ser.open()
 
 def main(downlink):
-	counter = 0
 	while True:
-		a = downlink.get()
-#		a = ("AHHHHHHHHHHH!!!!!!\n")
-		print('message:' + a)
-		ser.write(a.encode('utf-8'))
-#		print("packet sent",counter)
-		time.sleep(1)
-		counter+=1
+		data = downlink.get() #retrieve data from queue
+		ser.write(data.encode('utf-8')) #send data through serial
+		time.sleep(1) #conserve system resources
