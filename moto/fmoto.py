@@ -12,68 +12,113 @@ Step_Pin = 13
 
 #set up
 GPIO.setmode(GPIO.BOARD)
-#GPIO.setwarning(False) #why is this commented out?
+GPIO.setwarnings(False) #why is this commented out?
 
 #motor setup
 GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 
+#button setup
+GPIO.setup(32,GPIO.IN)
+GPIO.setup(36,GPIO.IN)
+
 #move the motor up input amount of steps
-def up(steps):
+def up(steps,cycle_type):
 	GPIO.output(Direction_Pin, GPIO.HIGH)
 	quarter = steps/4
-	for step in range(steps):
-		GPIO.output(Step_Pin, GPIO.HIGH)
-		GPIO.output(Step_Pin, GPIO.LOW)
-		time.sleep(.0036) #what does this do?
+	#for step in range(steps):
+	if cycle_type == 'FE':
+		while not(GPIO.input(32)):
+			GPIO.output(Step_Pin, GPIO.HIGH)
+			GPIO.output(Step_Pin, GPIO.LOW)
+			time.sleep(.0036) #what does this do?
+		'''
 		if step == quarter: #shouldn't this be inside the for loop?
 			take_4_images()
 			quarter += quarter #what if "steps" is odd?
-
+		'''
+	else:
+		for step in range(steps):
+			GPIO.output(Step_Pin, GPIO.HIGH)
+			GPIO.output(Step_Pin, GPIO.LOW)
+			time.sleep(.0036)
+		
 #move the motor down input amount of steps
 def down(steps):
 	GPIO.output(Direction_Pin, GPIO.LOW)
 	quarter = steps/4
-	for step in range(steps):
+	#for step in range(steps):
+	while not(GPIO.input(36)):
 		GPIO.output(Step_Pin, GPIO.HIGH)
 		GPIO.output(Step_Pin, GPIO.LOW)
 		time.sleep(.0036)
+		'''	
 		if step == quarter:
 			take_4_images()
 			quarter += quarter
-
+		'''
+	
 #complete minimum success cycle
+<<<<<<< HEAD
 def minimum_success():
-	up(11160)
+	up(11160,'MS')
 	receive_command()
 	take_4_images()
 	ninths = 1080/9
-	for opened in range(1,1080):
+	for opened in range(1,10):
 		receive_command()
+=======
+def minimum_success(moto_cmd):
+	up(11160)
+	receive_command(moto_cmd)
+	take_4_images()
+	ninths = 1080/9
+	for opened in range(1,1080):
+		receive_command(moto_cmd)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 		if opened == ninths:
 			take_4_images()
 			ninths += ninths
 	down(11160)
-	receive_command()
+	receive_command(moto_cmd)
 	take_4_images()
-	for closed in range(1,600): #what does this do?
+<<<<<<< HEAD
+	for closed in range(1,6): #what does this do?
 		receive_command()
 
 #complete full extension cycle
 def full_extension():
+	up(15500,'FE')
+=======
+	for closed in range(1,600): #what does this do?
+		receive_command(moto_cmd)
+
+#complete full extension cycle
+def full_extension(moto_cmd):
 	up(15500)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 	take_4_images()
-	receive_command()
+	receive_command(moto_cmd)
 	ninths = 1080/9
-	for opened in range(1,1080):
+<<<<<<< HEAD
+	for opened in range(1,10):
 		receive_command()
+=======
+	for opened in range(1,1080):
+		receive_command(moto_cmd)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 	if opened == ninths:
 		take_4_images()
 		ninths += ninths
 	down(11500)
 	take_4_images()
-	for closed in range(1,600):
+<<<<<<< HEAD
+	for closed in range(1,6):
         	receive_command()
+=======
+	for closed in range(1,600):
+        	receive_command(moto_cmd)
+>>>>>>> d51ca44526939c2247cfa7e768a21c831227f449
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():
@@ -85,12 +130,13 @@ def take_4_images():
 	'''
 
 #parce through the commands
-def receive_command():
-	ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
-	command = ser.readline().decode('utf-8')
-    	#nudge commands
+def receive_command(moto_cmd):
+	#ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
+	#command = ser.readline().decode('utf-8')
+	command = moto_cmd.get_nowait()
+	#nudge commands
 	if command == 'move up 200':
-        	up(200)
+		up(200)
         	#downlink command received awknowledgement
 	elif command == 'move up 1000':
 		up(1000)

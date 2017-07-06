@@ -9,7 +9,6 @@ ser = serial.Serial(
 	bytesize = serial.EIGHTBITS,
 	timeout = 1
 )
-
 def main(downlink, run_exp, moto_cmd):
 	while True:
 		cmd = ser.readline().decode('utf-8')
