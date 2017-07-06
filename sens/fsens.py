@@ -1,6 +1,7 @@
 import os
 import time
 import smbus
+from smbus import SMBus
 #import Adafruit_ADXL345
 import RPi.GPIO as GPIO
 #import Adafruit_ADS1x15
@@ -8,12 +9,15 @@ import math
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
-#os.system('modprobe w1-gpio')
-#os.system('modprobe w1-therm')
-#temp_sensor1 = '//sys/bus/w1/devices/28-000007a8d22b/w1_slave'
-#temp_sensor = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
-#temp_sensor3 = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
-#temp_sensor4 = '//sys/bus/w1/devices/28-000007a8a632/w1_slave'
+os.system('modprobe w1-gpio')
+os.system('modprobe w1-therm')
+temp_sensor1 = '//sys/bus/w1/devices/28-000007a891a3/w1_slave'
+temp_sensor2 = '//sys/bus/w1/devices/28-000007a89303/w1_slave'
+temp_sensor3 = '//sys/bus/w1/devices/28-000007a8a632/w1_slave'
+temp_sensor4 = '//sys/bus/w1/devices/28-000007a8acab/w1_slave'
+temp_sensor5 = '//sys/bus/w1/devices/28-000007a8af78/w1_slave'
+temp_sensor6 = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
+temp_sensor7 = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
 #accel = Adafruit_ADXL345.ADXL345()
 #adc = Adafruit_ADS1x15.ADS1115()
 GAIN = 1
@@ -46,7 +50,54 @@ def read_humi(): #read humidity
 	humidity = ((data0 * 256 + data1) * 125 / 65536.0) - 6
 	time.sleep(0.3)
 	return humidity
+'''
+def read_pres():
+        deg = u'\N{DEGREE SIGN}'
+        ADDR = 0x60
+        Ctrl_REG1 = 0x26
+        PT_DATA_CFG = 0x13
+        bus = SMBus(1)
 
+        whoAmI = bus.read_byte_data(ADDR, 0x0C)
+        print( hex(whoAmI))
+        if whoAmI != 0xc4:
+                print( "Device Not Active")
+                exit(1)
+        setting = bus.read_byte_data(ADDR, CTRL_REG1)
+        newSetting = setting | 0x38
+        bus.write_byte_data(ADDR, CTRL_REG1, newSetting)
+
+        bus.write_byte_data(ADDR, PT_DATA_CFG, 0x07)
+
+        setting = bus.read_byte_data(ADDR, CTRL_REG1)
+        if (setting & 0x02) == 0:
+                bus.write_byte_data(ADDR, CTRL_REG1, (setting | 0x02))
+
+        print( "Waiting for data")
+        status = bus.read_bytes_data(ADDR,0x00)
+        time.sleep(0.5)
+
+        print( "Reading data")
+        p_data = bus.read_i2c_block_data(ADDR,0x01,3)
+        t_data = bus.read_i2c_block_data(ADDR,0x04,2)
+        status = bus.read_byte_data(ADDR,0x00)
+        print("status:" +bin(status))
+
+        p_msb = p_data[0]
+        p_csb = p_data[1]
+	p_lsb = p_data[2]
+        t_msb = t_data[0]
+        t_lsb = t_data[1]
+
+        pressure = (p_msb << 10) | (p_csb << 2) | (p_lsb >> 6)
+        p_decimal = ((p_lsb & 0x30) >>4) / 4.0
+
+        print("Pressure and Temperature at "+time.strftime('%m/%d/%Y %H:%M:%S%z'))
+        print( str(pressure + p_decimal))
+
+	
+
+'''
 def read_pres(): #read pressure
 	data = bus.read_i2c_block_data(0x60, 0x00, 4)
 	pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16
