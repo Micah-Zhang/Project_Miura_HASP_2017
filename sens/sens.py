@@ -3,7 +3,7 @@ from zlib import adler32
 
 def main(downlink):
 	counter = 1
-	while True:'
+	while True:
 		label = 'CU ' + 'MI ' + 'SE '
 		timestamp = "{0:.2f}".format(time.time())
 		#rangefinder,ammeter = fsens.read_adc()
@@ -25,9 +25,9 @@ def main(downlink):
 		checksum = ' ' + str(adler32(data.encode('utf-8')) & 0xffffffff)
 		packet = label + timestamp + checksum + data
 		packet = packet + '\n'
-                downlink.put(packet)
-                name = 'test{:d}.log'.format(counter)
-                fsens.save_file(name,packet)
+		downlink.put(packet)
+		name = 'test{:d}.log'.format(counter)
+		fsens.save_file(name,packet)
 
 if __name__ == '__main__':
 	import fsens
