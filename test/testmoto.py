@@ -16,18 +16,25 @@ GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(Upper_Button, GPIO.IN)
 GPIO.setup(Lower_Button, GPIO.IN)
 
-direction = ""
-while not (direction == "up" or direction == "down"):
-	direction = input("Please enter up or down")
-	if (direction == "up"):
-		GPIO.output(Direction_Pin, GPIO.HIGH)
-		while not (GPIO.input(Upper_Button)):
-			GPIO.output(Step_Pin, GPIO.HIGH)
-			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0036)
-	elif (direction == "down"):
-		GPIO.output(Direction_Pin, GPIO.LOW)
-		while not (GPIO.input(Lower_Button)):
-			GPIO.output(Step_Pin, GPIO.HIGH)
-			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0036)
+
+step = 0
+while True:
+	direction = ""
+	while not (direction == "up" or direction == "down"):
+		direction = input("Please enter up or down")
+		if (direction == "up"):
+			GPIO.output(Direction_Pin, GPIO.HIGH)
+			while not (GPIO.input(Upper_Button)):
+				GPIO.output(Step_Pin, GPIO.HIGH)
+				GPIO.output(Step_Pin, GPIO.LOW)
+				step += 1
+				print(step)
+				time.sleep(.0036)
+		elif (direction == "down"):
+			GPIO.output(Direction_Pin, GPIO.LOW)
+			while not (GPIO.input(Lower_Button)):
+				GPIO.output(Step_Pin, GPIO.HIGH)
+				GPIO.output(Step_Pin, GPIO.LOW)
+				step -=1
+				print(step)
+				time.sleep(.0036)
