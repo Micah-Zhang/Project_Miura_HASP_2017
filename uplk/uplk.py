@@ -1,39 +1,53 @@
 import time
-import serial
 
-ser = serial.Serial(
-	port = '/dev/serial0',
-	baudrate = 4800,
-	parity = serial.PARITY_NONE,
-	stopbits = serial.STOPBITS_ONE,
-	bytesize = serial.EIGHTBITS,
-	timeout = 1
-)
+## Turns on command LED after a command has been received, serv will turn it off
+#def setcmdLED(cmdLED):
+#    if not cmdLED.is_set():
+#        cmdLED.set()
+#    return
 
-def main(downlink, run_exp, moto_cmd): #downlink, run_exp, moto_cmd
+def main(downlink, ground, adcs, inputQ, nightMode, cmdLED):
+	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
+	ground.flushInput() # Clears the serial communication channel before attempting to use it
 	while True:
-		print("waiting for command")
-		cmd = ser.readline().decode('utf-8')
-		if cmd == 'start':
-			print("received command: start")
-			run_exp.set() #start running the experiment
-			print("run_exp set")
-		elif cmd == 'move up 200':
-			print("received command: move up 200")
-			moto_cmd.put('move up 200') #nudge commands
-		elif cmd == 'move up 1000':
-			print("received command: move up 1000")
-			moto_cmd.put('move up 1000')
-		elif cmd == 'move up 5000':
-			print("received command: move up 500")
-			moto_cmd.put('move up 5000')
-		elif cmd == 'move down 200':
-			print("received command: move down 200")
-			moto_cmd.put('move down 200')
-		elif cmd == 'move down 1000':
-			print("received command: move down 1000")
-			moto_cmd.put('move down 1000')
-		elif cmd == 'move down 5000':
-			print("received command: move down 5000")
-			moto_cmd.put('move down 5000')
-		time.sleep(1) #conserve system resources
+		time.sleep(2)
+		if ground.inWaiting(): # Reads uplink command
+			#HASP will send a series of 7 bytes
+			# See Interface Manual for more Details
+			soh = ground.read()  # Start of Heading (SOH)
+			stx = ground.waitByte() # Start of Text (STX)
+			tar = ground.waitByte() # Command  Byte: Target (specifies which thread should receive the command)
+			cmd = ground.waitByte() # Command Byte: Contains actual uplink command
+			etx = ground.waitByte() # End of Text (ETX)
+			cr_ = ground.waitByte() # Carriage Return (CR)
+			lf_ = ground.waitByte() # Line Feed (LF)
+			packet = hex(int.from_bytes((soh + stx + tar + cmd + etx), byteorder='big')) # Convert from hex into bytes
+			#print(packet)
+			#setcmdLED(cmdLED) # Not sure if this is needed
+			if soh == b"\x01" and etx == b"\x03":
+				if stx == b"\x02":
+					if tar == b"\xAA": # Ping Pi
+						# Pings payload to test communication
+						downlink.put(["UP","AC","ACK"])
+					elif tar == b"\xBB": # Calibrate Motor Count
+						# Retracts payload, resets motor count to the minimum value
+						moto_cmd.put()
+					elif tar == b"\xCD": # Manual Extension and Retraction
+						# Tells stepper motor to travel to specified location
+					elif tar == b"\xCC":
+						if cmd == b"\x03": # Query Safe Mode
+						elif cmd == b"\x04": # Safe Mode ON
+							# Halts Motor
+						elif cmd == b"\x05": # Safe Mode OFF
+							 # Restarts Extension Cycle
+					elif tar == b"\xDD": # Reboot Pi
+					elif tar == b"\xEE": # Send Low Resolution Image
+					else:
+						downlink.put(["UP", "ER", packet]) # Command not recognized. Downlink error message.
+				elif stx == b"\x30": # Not sure why this is.
+					pass
+				else:
+					downlink.put(["UP", "ER", packet]) # Start of text byte not  recognized. Downlink error message.
+			else:
+				downlink.put(["UP", "ER", packet]) # Received unrecognized bytes. Downlink error message.
+		return 0

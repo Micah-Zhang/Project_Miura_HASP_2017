@@ -7,23 +7,34 @@ from dwlk import dwlk
 from uplk import uplk
 from moto import moto
 
+# Import code shared between threads
+from shared import easyserial
+
 def shutdown():
 	''' Completes all necessary events for a shutdown '''
 	exit()
+
+## Remove before flight pin: Check if the inhibit is active and set flag if it is 
+#inhibit = 12
+#gpio.setup(inhibit, gpio.IN)
+#motorInhibit = True if gpio.input(inhibit) else False
 
 # Create required Queues
 moto_cmd = queue.Queue()
 downlink = queue.Queue()
 
+# Create shared objects
+gnd_bus = easyserial.Bus("/dev/serial0", 4800)
+
 # Setting up events to be seen across threads
 # Event is like global boolean but safer for multithreading
-run_exp = threading.Event()
+run_exp = threading.Event() # Checks whether start command has been set
 
 # Package arg tuples for thread
-dwlk_args = (downlink,)
-uplk_args = (downlink, run_exp, moto_cmd,)
-sens_args = (downlink,)
-moto_args = (run_exp, moto_cmd,)
+dwlk_args = (downlink, gnd_bus)
+uplk_args = (downlink, gnd_bus, moto_cmd, run_exp)
+sens_args = (downlink)
+moto_args = (moto_cmd, run_exp)
 
 # Create thread objects
 threads = [

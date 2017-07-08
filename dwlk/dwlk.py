@@ -1,20 +1,47 @@
-import serial
 import time
+from zlib import adler32
 
-ser = serial.Serial(
-	port = '/dev/serial0',
-	baudrate = 4800,
-	parity = serial.PARITY_NONE,
-	stopbits = serial.STOPBITS_ONE,
-	bytesize = serial.EIGHTBITS,
-	timeout = 1
-)
+# Stores data from each thread in separate logs
+def logdata(packet, sender):
+	if sender == "MO": # Keeps track of all packets sent by the motor thread
+		with open("/home/pi/miura/moto.log", 'a') as log:
+			log.write(packet)
+	print(packet, end="")
 
-ser.close() # need to replace
-ser.open()
+	if sender == "UP": # Keeps track of all packets sent by the uplink thread
+		with open("/home/pi/miura/uplk.log", 'a') as log:
+			log.write(packet)
+	print(packet, end="")
 
-def main(downlink):
+	if sender == "SE": # Keeps track of all packets sent by the sensor thread
+		with open("/home/pi/miura/sens.log", 'a') as log:
+			log.write(packet)
+	print(packet, end="")
+
+	if sender == "DW": # Keeps track of all packets sent by the downlink thread
+		with open("/home/pi/miura/dwlk.log", 'a') as log:
+			log.write(packet)
+	print(packet, end="")
+
+def main(downlink, gnd):
+	downlink.put(["DW", "BU", "DWNL"]) # Verify that thread has started successfully
 	while True:
-		data = downlink.get() #retrieve data from queue
-		ser.write(data.encode('utf-8')) #send data through serial
-		time.sleep(1) #conserve system resources
+		# All downlinked data must be in this form:
+		# [2 char sender, 2 char record type, string of data]
+		# Multi-item data needs to be in the form of ###, ###, ###
+		packet = downlink.get() # Pop the first item of the queue: a list of that contains the labels for the packet
+		sender, record, data = packet[0], packet[1], packet[2] # Package the elements of the popped list into three separate variables
+		l = len(data) # Calculate the length of the data
+		if type(data) is not bytes: # Necessary for sending strings
+			a_data = data.encode('utf-8')
+		else:
+			a_data = data # Useful for sending raw data
+		ck = adler32(a_data) & 0xffffffff # Use data to calculate checksum
+		t = time.time()  # Unix time. Seconds since epoch.
+		packet = "\x01CU MI %s %s %.2f %i %i\x02" % (sender, record, t, l, ck) + " " + data + "\x03\n" # Follows HASP guidelines
+		with open("/home/pi/miura/downlink.log", 'a') as log: # Keeps a central record of everything that was downlinked
+			log.write(packet)
+		gnd.write(packet) # Downlink packet through serial
+		logdata(packet, sender) # Log data received
+
+		return 0
