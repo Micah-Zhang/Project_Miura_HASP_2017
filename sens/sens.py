@@ -4,8 +4,11 @@ from zlib import adler32
 def main():
 	counter = 1
 	while True:
+<<<<<<< HEAD
 		#downlink.put("packet")
 		#time.sleep(1)
+=======
+>>>>>>> 57fb5297c9f551af35f58cf2ce9f546d1d7622f7
 		label = 'CU ' + 'MI ' + 'SE '
 		timestamp = "{0:.2f}".format(time.time())
 		#rangefinder,ammeter = fsens.read_adc()
@@ -13,6 +16,10 @@ def main():
 		#ammeter = ' ' + "{0:.2f}".format(ammeter)
 		#humidity = ' ' + "{0:.2f}".format(fsens.read_humi())
 		#pressure = ' ' + "{0:.2f}".format(fsens.read_pres())
+<<<<<<< HEAD
+=======
+		#temp1 = ' ' + "{0:.2f}".format(fsens.read_temp(temp_sensor1))
+>>>>>>> 57fb5297c9f551af35f58cf2ce9f546d1d7622f7
 		#accel = ' ' + "{0:.2f}".format(fsens.read_acc())
 		#data = rangefinder + ammeter +  humidity + pressure + temp1 + accel
 		temp1 = ' ' + "{0:.2f}".format(fsens.read_temp(temp_sensor1))
@@ -30,7 +37,10 @@ def main():
 		#downlink.put(packet)
 		name = 'test{:d}.log'.format(counter)
 		fsens.save_file(name,packet)
+<<<<<<< HEAD
 		
+=======
+>>>>>>> 57fb5297c9f551af35f58cf2ce9f546d1d7622f7
 
 if __name__ == '__main__':
 	import fsens
@@ -39,4 +49,3 @@ if __name__ == '__main__':
 else:
 	import sens.fsens as fsens
 	from sens.fsens import *
-
