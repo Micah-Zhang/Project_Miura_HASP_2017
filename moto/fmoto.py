@@ -130,32 +130,32 @@ def take_4_images():
 def receive_command(moto_cmd):
 	#ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
 	#command = ser.readline().decode('utf-8')
-	
+
 	while not moto_cmd.empty():
 		command = moto_cmd.get_nowait()
 		#nudge commands
-		if command == 'move up 200':
+		if command == '\xB1':
 			up(200, "CM")
         		#downlink command received awknowledgement
-		elif command == 'move up 1000':
+		elif command == '\xB2':
 			up(1000, "CM")
         		#downlink command received awknowledgement
-		elif command == 'move up 5000':
+		elif command == '\xB3':
 			up(5000, "CM")
         		#downlink command received awknowledgement
-		elif command == 'move down 200':
+		elif command == '\xB4':
 			down(200, "CM")
        	 		#downlink command received awknowledgement
-		elif command == 'move down 1000':
+		elif command == '\xB5':
 			down(1000, "CM")
         		#downlink command received awknowledgement
-		elif command == 'move down 5000':
+		elif command == '\xB6':
 			down(5000, "CM")
 			#downlink command received awknowledgement
-		elif command == 'move down ALW':
+		elif command == '\xB7':
 			down(1, "FE")
         		#move down until button is pressed
-		elif command == 'move up ALW':
+		elif command == '\xB8':
 			up(1, "FE")
         	#move up until button is pressed
 		'''

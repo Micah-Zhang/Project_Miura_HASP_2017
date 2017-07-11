@@ -6,7 +6,7 @@ import time
 #        cmdLED.set()
 #    return
 
-def main(downlink, ground, adcs, inputQ, nightMode, cmdLED):
+def main(downlink, ground, moto_cmd, run_exp):
 	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
 	ground.flushInput() # Clears the serial communication channel before attempting to use it
 	while True:
@@ -28,20 +28,19 @@ def main(downlink, ground, adcs, inputQ, nightMode, cmdLED):
 				if stx == b"\x02":
 					if tar == b"\xAA": # Ping Pi
 						# Pings payload to test communication
-						downlink.put(["UP","AC","ACK"])
-					elif tar == b"\xBB": # Calibrate Motor Count
-						# Retracts payload, resets motor count to the minimum value
-						moto_cmd.put()
-					elif tar == b"\xCD": # Manual Extension and Retraction
-						# Tells stepper motor to travel to specified location
-					elif tar == b"\xCC":
-						if cmd == b"\x03": # Query Safe Mode
-						elif cmd == b"\x04": # Safe Mode ON
-							# Halts Motor
-						elif cmd == b"\x05": # Safe Mode OFF
-							 # Restarts Extension Cycle
-					elif tar == b"\xDD": # Reboot Pi
-					elif tar == b"\xEE": # Send Low Resolution Image
+						downlink.put(["UP","AK","ACK"])
+					elif tar == b"\xBB": # Send command to moto thread to be processed
+						moto_cmd.put(cmd)
+					#elif tar == b"\xCD": # Manual Extension and Retraction
+					#	# Tells stepper motor to travel to specified location
+					#elif tar == b"\xCC":
+					#	if cmd == b"\x03": # Query Safe Mode
+					#	elif cmd == b"\x04": # Safe Mode ON
+					#		# Halts Motor
+					#	elif cmd == b"\x05": # Safe Mode OFF
+					#		 # Restarts Extension Cycle
+					#elif tar == b"\xDD": # Reboot Pi
+					#elif tar == b"\xEE": # Send Low Resolution Image
 					else:
 						downlink.put(["UP", "ER", packet]) # Command not recognized. Downlink error message.
 				elif stx == b"\x30": # Not sure why this is.
