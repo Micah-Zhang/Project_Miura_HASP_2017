@@ -1,0 +1,51 @@
+________________________________________
+Miura Sample Data Packets
+________________________________________
+
+UPLINK (uplk.log):
+
+Bootup:
+\x01CU MI DW BU 1467281836.86 4 754387604\x02 UPLK\x03
+
+Command Acknowledgement (subject to change):
+\x01CU MI DW AK 1467281836.86 4 754387604\x02 ACKL\x03
+
+DOWNLINK (dwlk.log):
+
+Bootup:
+\x01CU MI DW BU 1467281836.86 4 754387604\x02 DWNL\x03
+
+
+SENSORS (sens.log):
+
+Bootup:
+\x01CU MI SE BU 1467281836.86 4 754387604\x02 SENS\x03
+
+Temperature Sensor:
+\x01CU MI SE T9 1467281836.86 56 754387604\x02 21.62 21.87 21.06 21.93 21.18 21.87 21.93 22.12 21.93 \x03
+
+Pressure Sensor:
+\x01CU MI SE PR 1467281836.86 56 754387604\x02 11.61 \x03
+
+Humidity Sensor
+\x01CU MI SE HU 1467281836.86 56 754387604\x02 40.61 \x03
+
+Accelerometer
+\x01CU MI SE AC 1467281836.86 56 754387604\x02 21.05 -10.45 -1.33 \x03
+
+
+MOTOR THREAD (moto.log)
+
+Bootup:
+\x01CU MI MO BU 1467281836.86 4 754387604\x02 MOTO\x03
+
+Step Count:
+\x01CU MI MO ST 1467281836.86 4 754387604\x02 10203\x03
+
+Button State:
+\x01CU MI MO BT 1467281836.86 4 754387604\x02 1\x03
+
+Encoder Count:
+\x01CU MI MO EN 1467281836.86 4 754387604\x02 10002\x03
+
+
