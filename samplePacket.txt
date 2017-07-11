@@ -5,10 +5,14 @@ ________________________________________
 UPLINK (uplk.log):
 
 Bootup:
-\x01CU MI DW BU 1467281836.86 4 754387604\x02 UPLK\x03
+\x01CU MI UP BU 1467281836.86 4 754387604\x02 UPLK\x03
 
-Command Acknowledgement (subject to change):
-\x01CU MI DW AK 1467281836.86 4 754387604\x02 ACKL\x03
+Command Acknowledgement:
+\x01CU MI UP AK 1467281836.86 4 754387604\x02 ACKL\x03
+
+Error:
+\x01CU MI UP ER 1467281836.86 12 754387604\x02 0xfffffffffd\x03
+
 
 DOWNLINK (dwlk.log):
 
