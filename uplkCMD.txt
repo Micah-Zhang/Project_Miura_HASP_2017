@@ -1,0 +1,13 @@
+Name			Two Byte Command	Description
+
+Ping Pi			0xAA 0x01		Pings payload to test communication
+Cal. Mot. Cnt. Bot.	0xBB 0x01		Retracts payload, resets motor count and encoder to minimum value at Bottom
+Cal. Mot. Cnt. Top.	0xBB 0x02		Retracts payload, resets motor count and encoder to minimum value at Top	
+Man. Ext. & Ret.	0xBB 0x03		Manual extends to any height, second byte is percent extended
+Nudge up/down		0xBB 0x04		Nudge up or down by specified height
+Change Cycle Count	0xBB 0x05		Adjust cycle type
+Query Safe Mode		0xBB 0x06		Query Safe Mode
+Safe Mode ON		0xBB 0x07		Halts motor, buttons, encoder, camera
+Safe Mode OFF		0xBB 0x08		Starts Mission
+Reboot Pi		0xBB 0x09		Reboots Pi
+Send Low Res Image	0xBB 0xAA		Sends most recent Low Resolution Image

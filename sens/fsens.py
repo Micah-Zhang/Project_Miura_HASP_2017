@@ -78,6 +78,7 @@ def temp_raw(temp_sensor):
 	f.close()
 	return lines
 
+
 # Process raw data and return nice data for ONE temp sensor. Will replace with HELIOSV code once verified.
 def read_temp(downlink):
 	try:
@@ -118,6 +119,7 @@ def read_pres(downlink):
 		downlink.put(["SE", "PR", "{0:.2f}".format(humidity)])
 	except:
 		pass
+
 
 # Grab raw data from bus. Use Adafruit library to convert to nice data.
 def read_acce(downlink):
