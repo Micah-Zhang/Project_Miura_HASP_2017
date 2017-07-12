@@ -34,7 +34,7 @@ run_exp = threading.Event() # Checks whether start command has been set
 dwlk_args = (downlink, gnd_bus)
 uplk_args = (downlink, gnd_bus, moto_cmd, run_exp)
 sens_args = (downlink)
-moto_args = (moto_cmd, run_exp)
+moto_args = (downlink, moto_cmd, run_exp)
 
 # Create thread objects
 threads = [

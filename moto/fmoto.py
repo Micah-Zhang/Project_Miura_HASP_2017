@@ -1,81 +1,25 @@
-import time
+	import time
+import serial
 import RPi.GPIO as GPIO
 import os
-import serial
-
-#need encoder stuff
-Direction_Pin = 15
-Step_Pin = 13
-
-Upper_Button = 32
-Lower_Button = 36
-
-#global step = 0
-
-#set up
-GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False) #why is this commented out?
-
-#motor setup
-GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
-GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
-
-#button setup
-GPIO.setup(Upper_Button,GPIO.IN)
-GPIO.setup(Lower_Button,GPIO.IN)
+import cmoto
 
 #move motor
-def move(
-	
-
-
-
-#complete minimum success cycle
-def minimum_success(moto_cmd):
-	up(11160,"MS")
-	print("1")
-	receive_command(moto_cmd)
-	print("2")
-	take_4_images()
-	print("3")
-	ninths = 1080/9
-	tempninths = ninths
-	print("4")
-	for opened in range(1,180):
-		print("5")
-		receive_command(moto_cmd)
-		time.sleep(1)
-		print(opened)
-		if opened == ninths:
-			take_4_images()
-			ninths += tempninths
-	down(11160, "MS")
-	receive_command(moto_cmd)
-	take_4_images()
-	for closed in range(1,180): #what does this do?
-		receive_command(moto_cmd)
-		time.sleep(1)
-		print(closed)
-
-#complete full extension cycle
-def full_extension(moto_cmd):
-	up(15500,"FE")
-	take_4_images()
-	receive_command(moto_cmd)
-	ninths = 1080/9
-	for opened in range(1,180):
-		receive_command(moto_cmd)
-		print(opened)
-		time.sleep(1)
-		if opened == ninths:
-			take_4_images()
-			ninths += ninths
-	down(11500, "FE")
-	take_4_images()
-	for closed in range(1,180):
-		receive_command(moto_cmd)
-		print(closed)
-		time.sleep(1)
+def move(steps):
+	#determine if moving up or down. respond accordingly.
+	if steps > 0:
+		GPIO.output(cmoto.Direction_Pin, GPIO.HIGH)
+		else:
+		GPIO.output(cmoto.Direction_Pin, GPIO.LOW)
+	for step in range(steps):
+		#stop moving if either button depressed
+		if GPIO.input(cmoto.Upper_Button)|GPIO.input(cmoto.Lower_Button):
+			return
+		#otherwise, move motor and increase step count
+		GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
+		GPIO.output(cmoto.Step_Pin, GPIO.LOW)
+		cmoto.step_count += 1
+		time.sleep(.0036)
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():
@@ -87,41 +31,30 @@ def take_4_images():
 	'''
 
 #parce through the commands
-def receive_command(moto_cmd):
-	#ser = serial.Serial(port='/dev/serial0',baudrate=4800,timeout=1) #1 second timeout will hold up the code. there may be a better way to do the same thing.
-	#command = ser.readline().decode('utf-8')
-
-	while not moto_cmd.empty():
-		command = moto_cmd.get_nowait()
-		#nudge commands
-		if command == '\xB1':
-			up(200, "CM")
-        		#downlink command received awknowledgement
-		elif command == '\xB2':
-			up(1000, "CM")
-        		#downlink command received awknowledgement
-		elif command == '\xB3':
-			up(5000, "CM")
-        		#downlink command received awknowledgement
-		elif command == '\xB4':
-			down(200, "CM")
-       	 		#downlink command received awknowledgement
-		elif command == '\xB5':
-			down(1000, "CM")
-        		#downlink command received awknowledgement
-		elif command == '\xB6':
-			down(5000, "CM")
-			#downlink command received awknowledgement
-		elif command == '\xB7':
-			down(1, "FE")
-        		#move down until button is pressed
-		elif command == '\xB8':
-			up(1, "FE")
-        	#move up until button is pressed
-		'''
-		elif command == 'dwlk image':
-        		#downlink image
-		elif command == 'ping':
-			#test for pi communication
-		'''
-
+def checkUplink(moto_cmd):
+	while not moto_cmd.empty(): #grab commands until queue empty
+		cmd = moto_cmd.get()
+		if type(cmd) is bytes:
+			packet = hex(int.from_bytes(cmd, byteorder='big'))
+			if cmd == b"\x01":
+				cmoto.bot_calib = True
+				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x02":
+				cmoto.top_calib = True
+				downlink.put(["MO","AK",packet])
+			else:
+				downlink.put(["MO","ER",packet])
+		elif type(cmd) is int:
+			packet = cmd
+			downlink.put(["MO","AK",packet])
+			if abs(cmd) < 100:
+				#cmoto.nudge_step = ((cmd/100)-(cmoto.step_count/cmoto.max_step))*cmoto.max_step)
+				cmoto.nudge_step = cmd*(cmoto.max_step/100)
+				cmoto.nudge_state = True #signal ready for nudging
+				downlink.put(["MO","AK",str(cmd)])
+			elif abs(cmd) > 100:
+				cmoto.nudge_step = cmd
+				cmoto.nudge_state = True #signal ready for nudging
+				downlink.put(["MO","AK",str(cmd)])
+			else:
+				downlink.put(["MO", "ER",str(cmd)])

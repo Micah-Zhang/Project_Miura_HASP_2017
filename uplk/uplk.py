@@ -1,11 +1,5 @@
 import time
 
-## Turns on command LED after a command has been received, serv will turn it off
-#def setcmdLED(cmdLED):
-#    if not cmdLED.is_set():
-#        cmdLED.set()
-#    return
-
 def main(downlink, ground, moto_cmd, run_exp):
 	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
 	ground.flushInput() # Clears the serial communication channel before attempting to use it
@@ -22,28 +16,32 @@ def main(downlink, ground, moto_cmd, run_exp):
 			cr_ = ground.waitByte() # Carriage Return (CR)
 			lf_ = ground.waitByte() # Line Feed (LF)
 			packet = hex(int.from_bytes((soh + stx + tar + cmd + etx), byteorder='big')) # Convert from hex into bytes
-			#print(packet)
-			#setcmdLED(cmdLED) # Not sure if this is needed
 			if soh == b"\x01" and etx == b"\x03":
 				if stx == b"\x02":
-					if tar == b"\xAA": # Ping Pi
-						# Pings payload to test communication
+
+					if tar == b"\xAA": #Ping Pi
 						downlink.put(["UP","AK","ACK"])
-					elif tar == b"\xBB": # Send command to moto thread to be processed
-						moto_cmd.put(cmd)
-					#elif tar == b"\xCD": # Manual Extension and Retraction
-					#	# Tells stepper motor to travel to specified location
-					#elif tar == b"\xCC":
-					#	if cmd == b"\x03": # Query Safe Mode
-					#	elif cmd == b"\x04": # Safe Mode ON
-					#		# Halts Motor
-					#	elif cmd == b"\x05": # Safe Mode OFF
-					#		 # Restarts Extension Cycle
-					#elif tar == b"\xDD": # Reboot Pi
-					#elif tar == b"\xEE": # Send Low Resolution Image
+					elif tar == b"\xBB": #Send command to moto thread to be processed
+						if cmd == b"\x01": #Calibrate motor count at bottom
+							moto_cmd.put(-99)
+						elif cmd == b"\x02": #Calibrate motor count at top
+							moto_cmd.put(99)
+					elif tar == b"\xCB":
+						nudge = int.from_bytes(cmd, byteorder='big')
+						if nudge > 100:
+							downlink.put(["UP","ER",packet]) #downlink error packet
+						else:
+							moto_cmd.put(nudge)
+					elif tar == b"\xCA": #Nudge up percentage
+						nudge = int.from_bytes(cmd,byteorder='big')
+						moto_cmd.put(nudge)
+					elif tar == b"\xCD": #Nudge down percentage
+						nudge = - int.from_bytes(cmd,byteorder='big')
+						moto_cmd.put(nudge)
 					else:
-						downlink.put(["UP", "ER", packet]) # Command not recognized. Downlink error message.
-				elif stx == b"\x30": # Not sure why this is.
+						downlink.put(["UP", "ER", packet]) #Command not recognized. Downlink error message.
+
+				elif stx == b"\x30":
 					pass
 				else:
 					downlink.put(["UP", "ER", packet]) # Start of text byte not  recognized. Downlink error message.
