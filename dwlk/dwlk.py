@@ -6,22 +6,22 @@ def logdata(packet, sender):
 	if sender == "MO": # Keeps track of all packets sent by the motor thread
 		with open("/home/pi/miura/moto.log", 'a') as log:
 			log.write(packet)
-	print(packet, end="")
+		print(packet, end="")
 
 	if sender == "UP": # Keeps track of all packets sent by the uplink thread
 		with open("/home/pi/miura/uplk.log", 'a') as log:
 			log.write(packet)
-	print(packet, end="")
+		print(packet, end="")
 
 	if sender == "SE": # Keeps track of all packets sent by the sensor thread
 		with open("/home/pi/miura/sens.log", 'a') as log:
 			log.write(packet)
-	print(packet, end="")
+		print(packet, end="")
 
 	if sender == "DW": # Keeps track of all packets sent by the downlink thread
 		with open("/home/pi/miura/dwlk.log", 'a') as log:
 			log.write(packet)
-	print(packet, end="")
+		print(packet, end="")
 
 def main(downlink, gnd):
 	downlink.put(["DW", "BU", "DWNL"]) # Verify that thread has started successfully

@@ -24,51 +24,10 @@ GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(Upper_Button,GPIO.IN)
 GPIO.setup(Lower_Button,GPIO.IN)
 
-#move the motor up input amount of steps
-def up(steps,cycle_type):
-	GPIO.output(Direction_Pin, GPIO.HIGH)
-	quarter = steps/4
-	if (cycle_type == "MS" or cycle_type == "CM"):
-		for step in range(steps):
-			GPIO.output(Step_Pin, GPIO.HIGH)
-			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0036) #what does this do?
-			if step == quarter: #shouldn't this be inside the for loop?
-				take_4_images()
-				quarter += quarter #what if "steps" is odd?
-	else:
-		step = 0
-		while not (GPIO.input(32)):
-			GPIO.output(Step_Pin, GPIO.HIGH)
-			GPIO.output(Step_Pin, GPIO.LOW)
-			step += 1
-			time.sleep(.0036)
-			if step == quarter:
-				take_4_images()
-				quarter += quarter
+#move motor
+def move(
+	
 
-#move the motor down input amount of steps
-def down(steps,cycle_type):
-	GPIO.output(Direction_Pin, GPIO.LOW)
-	quarter = steps/4
-	if (cycle_type == "CM"):
-		for step in range(steps):
-			GPIO.output(Step_Pin, GPIO.HIGH)
-			GPIO.output(Step_Pin, GPIO.LOW)
-			time.sleep(.0036) #what does this do?
-			if step == quarter: #shouldn't this be inside the $
-				take_4_images()
-				quarter += quarter #what if "steps" is odd?
-	else:
-		step = 0
-		while not (GPIO.input(36)):
-			GPIO.output(Step_Pin, GPIO.HIGH)
-			GPIO.output(Step_Pin, GPIO.LOW)
-			step -= 1
-			time.sleep(.0036)
-			if step == quarter:
-				take_4_images()
-				quarter += quarter
 
 
 #complete minimum success cycle
@@ -80,6 +39,7 @@ def minimum_success(moto_cmd):
 	take_4_images()
 	print("3")
 	ninths = 1080/9
+	tempninths = ninths
 	print("4")
 	for opened in range(1,180):
 		print("5")
@@ -88,7 +48,7 @@ def minimum_success(moto_cmd):
 		print(opened)
 		if opened == ninths:
 			take_4_images()
-			ninths += ninths
+			ninths += tempninths
 	down(11160, "MS")
 	receive_command(moto_cmd)
 	take_4_images()

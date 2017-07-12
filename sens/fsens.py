@@ -1,3 +1,4 @@
+import sched
 import os
 import time
 import smbus
@@ -91,7 +92,7 @@ def read_temp(downlink):
 			temp_string = lines[1].strip()[temp_output+2:]
 			temp_c = float(temp_string) /1000.0
 			temp_f = temp_c * 9.0 / 5.0 + 32.0
-			downlink.put(["SE", "T1", "{0:.2f}".format(temp_f)])
+			downlink.put(["SE", "T1", "{0:.2f}".format(temp_c)])
 	except:
 		print("Temperature reading failed")
 
@@ -114,7 +115,7 @@ def read_humi(downlink):
 def read_pres(downlink):
 	try:
 		data = bus.read_i2c_block_data(0x60, 0x00, 4)
-		pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16
+		pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16 # Use with humidity sensor?
 		pressure = (pres / 4.0) / 1000.0
 		downlink.put(["SE", "PR", "{0:.2f}".format(humidity)])
 	except:
