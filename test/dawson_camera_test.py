@@ -65,4 +65,3 @@ cameras = [camera0, camera1, camera2, camera3]
 for camera in cameras:
 	camera.take_image()
 
-
