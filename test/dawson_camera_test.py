@@ -19,14 +19,17 @@ class Camera:
 		self.address = '/dev/video{}'.format(camera_number)
 		self.image_folder = '/home/pi/miura/images/cam{}'.format(camera_number)
 		
+		self.config_cmd = "v4l2-ctl -d {} --set-fmt-video=width=1600,height=1200,pixelformat='YUYV'".format(self.address)
+		subprocess.call(shlex.split(self.config_cmd))
+		
 		self.initialized = False
 		self.initialize()
 	
 	def init_image_cmd(self):
-		return 'v4l2-ctl -d {} --stream-mmap=3 --stream-count=1 --stream-to={}/init_{:.0f}.jpg'.format(self.address, self.image_folder, time.time())
+		return 'v4l2-ctl -d {} --stream-mmap=1 --stream-count=1  --stream-to={}/init_{:.0f}.png'.format(self.address, self.image_folder, time.time())
 
 	def image_cmd(self):
-		return 'v4l2-ctl -d {} --stream-mmap=3 --stream-count=1 --stream-to={}/{:.0f}.jpg'.format(self.address, self.image_folder, time.time())
+		return 'v4l2-ctl -d {} --stream-mmap=1 --stream-count=1 --stream-to={}/{:.0f}.png'.format(self.address, self.image_folder, time.time())
 
 	def initialize(self):
 		for i in range(10):
