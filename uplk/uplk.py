@@ -23,9 +23,9 @@ def main(downlink, ground, moto_cmd, run_exp):
 						downlink.put(["UP","AK","ACK"])
 					elif tar == b"\xBB": #Send command to moto thread to be processed
 						if cmd == b"\x01": #Calibrate motor count at bottom
-							moto_cmd.put(-99)
+							moto_cmd.put(cmd)
 						elif cmd == b"\x02": #Calibrate motor count at top
-							moto_cmd.put(99)
+							moto_cmd.put(cmd)
 					elif tar == b"\xCB":
 						nudge = int.from_bytes(cmd, byteorder='big')
 						if nudge > 100:
@@ -34,10 +34,18 @@ def main(downlink, ground, moto_cmd, run_exp):
 							moto_cmd.put(nudge)
 					elif tar == b"\xCA": #Nudge up percentage
 						nudge = int.from_bytes(cmd,byteorder='big')
-						moto_cmd.put(nudge)
+						if nudge > 100:
+							downlink.put(["UP","ER",packet])
+						else:
+							nudge = nudge += 101 #necessary to retain nudge 0
+							moto_cmd.put(nudge)
 					elif tar == b"\xCD": #Nudge down percentage
 						nudge = - int.from_bytes(cmd,byteorder='big')
-						moto_cmd.put(nudge)
+						if abs(nudge) > 100:
+							downlink.put(["UP"."ER",packet])
+						else:
+							nudge = nudge -= 101
+							moto_cmd.put(nudge)
 					else:
 						downlink.put(["UP", "ER", packet]) #Command not recognized. Downlink error message.
 
