@@ -13,9 +13,14 @@ def move(steps):
 	else:
 		GPIO.output(cmoto.Direction_Pin, GPIO.LOW)
 		increment = -1
+	steps = abs(steps)
 	for step in range(steps):
 		#stop moving if either button depressed
-		if GPIO.input(cmoto.Upper_Button)|GPIO.input(cmoto.Lower_Button):
+		if GPIO.input(cmoto.Upper_Button) or GPIO.input(cmoto.Lower_Button):
+			if GPIO.input(cmoto.Upper_Button): #figure out which button was pressed and then reset stepcount accordingly
+				cmoto.max_step = cmoto.step_count
+			else:
+				cmoto.step_count = 0
 			return
 		#otherwise, move motor and increase step count
 		GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
@@ -45,17 +50,25 @@ def checkUplink(moto_cmd):
 			elif cmd == b"\x02":
 				cmoto.top_calib = True
 				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x03":
+				cmoto.minimum_success = True
+				cmoto.start_time = time.time()
+				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x04":
+				cmoto.full_extension = True
+				cmoto.start_time = time.time()
+				downlink.put(["MO","AK",packet])
 			else:
 				downlink.put(["MO","ER",packet])
 		elif type(cmd) is int:
 			packet = cmd
 			downlink.put(["MO","AK",packet])
-			if abs(cmd) <= 100: # cmd = (0,100) => (0, 17500)
+			if abs(cmd) <= 100:
 				#cmoto.nudge_step = ((cmd/100)-(cmoto.step_count/cmoto.max_step))*cmoto.max_step)
 				cmoto.nudge_step = (cmd*(cmoto.max_step/100)) - cmoto.step_count
 				cmoto.nudge_state = True #signal ready for nudging
 				downlink.put(["MO","AK",str(cmd)])
-			elif abs(cmd) > 100: # cmd = (101, 201)
+			elif abs(cmd) > 100:
 				cmd = cmd - 101
 				cmoto.nudge_step = cmd*(cmoto.max_step/100)
 				cmoto.nudge_state = True #signal ready for nudging

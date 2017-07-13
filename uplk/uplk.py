@@ -21,25 +21,30 @@ def main(downlink, ground, moto_cmd, run_exp):
 
 					if tar == b"\xAA": #Ping Pi
 						downlink.put(["UP","AK","ACK"])
-					elif tar == b"\xBB": #Send command to moto thread to be processed
+					elif tar == b"\xBA": #Send command to moto thread to be processed
+						moto_cmd.put(cmd)
+						'''
 						if cmd == b"\x01": #Calibrate motor count at bottom
 							moto_cmd.put(cmd)
 						elif cmd == b"\x02": #Calibrate motor count at top
 							moto_cmd.put(cmd)
-					elif tar == b"\xCB":
+						elif cmd == b"\x03": #complete 1 min success cycle
+						elif cmd == b"\x04": #complete 1 full extension cycle
+						'''
+					elif tar == b"\xCA":
 						nudge = int.from_bytes(cmd, byteorder='big')
 						if nudge > 100:
 							downlink.put(["UP","ER",packet]) #downlink error packet
 						else:
 							moto_cmd.put(nudge)
-					elif tar == b"\xCA": #Nudge up percentage
+					elif tar == b"\xDA": #Nudge up percentage
 						nudge = int.from_bytes(cmd,byteorder='big')
 						if nudge > 100:
 							downlink.put(["UP","ER",packet])
 						else:
 							nudge = nudge += 101 #necessary to retain nudge 0
 							moto_cmd.put(nudge)
-					elif tar == b"\xCD": #Nudge down percentage
+					elif tar == b"\xEA": #Nudge down percentage
 						nudge = - int.from_bytes(cmd,byteorder='big')
 						if abs(nudge) > 100:
 							downlink.put(["UP"."ER",packet])
