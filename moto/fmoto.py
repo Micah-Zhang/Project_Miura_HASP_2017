@@ -52,11 +52,11 @@ def checkUplink(moto_cmd):
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x03":
 				cmoto.minimum_success = True
-				cmoto.start_time = time.time()
+				cmoto.cycle_start_time = time.time()
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x04":
 				cmoto.full_extension = True
-				cmoto.start_time = time.time()
+				cmoto.cycle_start_time = time.time()
 				downlink.put(["MO","AK",packet])
 			else:
 				downlink.put(["MO","ER",packet])
