@@ -34,14 +34,12 @@ bus.write_byte_data(0x60, 0x26, 0x39) #pres
 class PeriodicScheduler:
 	def __init__(self):
 		self.scheduler = sched.scheduler(time.time, time.sleep)
-		print("Initialized")
 	
 	def setup(self, interval, action, actionargs=()):
 		self.scheduler.enter(interval, 1, self.setup, (interval, action, actionargs))
 		action(*actionargs)
 
 	def run(self):
-		print("Running")
 		self.scheduler.run()
 		
 
@@ -117,13 +115,11 @@ def read_humi(downlink):
 # Grab raw data from bus. Convert raw data to nice data.
 def read_pres(downlink):#downlink
 	try:
-		print("About to Read")
 		data = bus.read_i2c_block_data(0x60, 0x00, 4)
-		print("It done Read")
 		pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16 # Use with humidity sensor?
 		pressure = (pres / 4.0) / 1000.0
 		downlink.put(["SE", "PR", "{0:.2f}".format(pressure)])
-		print(["SE", "PR", "{0:.2f}".format(pressure)])
+		#print(["SE", "PR", "{0:.2f}".format(pressure)])
 	except:
 #		pass
 		print("Pressure Failed")

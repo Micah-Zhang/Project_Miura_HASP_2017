@@ -3,7 +3,7 @@ import queue
 
 # Import code for threading. All flight code must be initialized from the main function in the thread file
 from sens import sens
-#from dwlk import dwlk
+from dwlk import dwlk
 #from uplk import uplk
 #from moto import moto
 
@@ -38,14 +38,14 @@ run_exp = threading.Event() # Checks whether start command has been set
 # Package arg tuples for thread
 dwlk_args = (downlink, gnd_bus)
 uplk_args = (downlink, gnd_bus, moto_cmd, run_exp)
-sens_args = (downlink)
+sens_args = (downlink,)
 moto_args = (downlink, moto_cmd, run_exp)
 
 # Create thread objects
 threads = [
 #	threading.Thread(name='uplk', target=uplk.main, args=uplk_args),
 	threading.Thread(name='sens', target=sens.main, args=sens_args),
-#	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
+	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
 #	threading.Thread(name='moto', target=moto.main, args=moto_args)
 ]
 
