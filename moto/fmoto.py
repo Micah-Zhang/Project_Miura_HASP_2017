@@ -2,7 +2,7 @@ import time
 import serial
 import RPi.GPIO as GPIO
 import os
-import cmoto
+import moto.cmoto as cmoto
 
 #move motor
 def move(steps):

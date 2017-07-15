@@ -1,16 +1,16 @@
 import time
-import fmoto
-import cmoto
+import moto.cmoto as cmoto
+import moto.fmoto as fmoto
 
 def main(downlink, run_exp, moto_cmd):
 	downlink.put(["MO","BU","MOTO"]) #verify succesful thread start
 	cmoto.mission_start_time = time.time() #keep track of mission start time
 	while(True):
 		fmoto.checkUplink(moto_cmd)
-		if top_calib:
+		if cmoto.top_calib:
 			fmoto.move(20000)
 			cmoto.top_calib = False
-		if bot_calib:
+		if cmoto.bot_calib:
 			fmoto.move(-20000)
 			cmoto.bot_calib = False
 		if cmoto.nudge_state:
@@ -32,6 +32,7 @@ def main(downlink, run_exp, moto_cmd):
 				fmoto.move(- cmoto.step_count)
 				cmoto.is_raised = False
 				cmoto.full_extension = False
+'''
 		if cmoto.automation:
 			moto_cmd.put(b"\x01") #calibrate motor at bottom
 			moto_cmd.put(b"\x02") #calibrate motor at top
@@ -39,3 +40,4 @@ def main(downlink, run_exp, moto_cmd):
 			moto_cmd.put(b"\x03") #complete minimum success cycle
 			moto_cmd.put(b"\x04") #complete full extension cycle
 		time.sleep(1)
+'''
