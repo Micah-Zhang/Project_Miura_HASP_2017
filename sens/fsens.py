@@ -114,15 +114,17 @@ def read_humi(downlink):
 
 # Grab raw data from bus. Convert raw data to nice data.
 def read_pres(downlink):#downlink
-	try:
+	#try:
 		data = bus.read_i2c_block_data(0x60, 0x00, 4)
 		pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16 # Use with humidity sensor?
 		pressure = (pres / 4.0) / 1000.0
+		
 		downlink.put(["SE", "PR", "{0:.2f}".format(pressure)])
+#		print("sent to downlink")
 		#print(["SE", "PR", "{0:.2f}".format(pressure)])
-	except:
+#	except:
 #		pass
-		print("Pressure Failed")
+#		print("Pressure Failed")
 
 # Grab raw data from bus. Use Adafruit library to convert to nice data.
 def read_acce(downlink):

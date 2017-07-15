@@ -32,6 +32,7 @@ def main(downlink, gnd):
 		packet = downlink.get() # Pop the first item of the queue: a list of that contains the labels for the packet
 		sender, record, data = packet[0], packet[1], packet[2] # Package the elements of the popped list into three separate variables
 		l = len(data) # Calculate the length of the data
+#		print("pre-packet: ", packet)
 		if type(data) is not bytes: # Necessary for sending strings
 			a_data = data.encode('utf-8')
 		else:
@@ -42,6 +43,7 @@ def main(downlink, gnd):
 		with open("/home/pi/miura/downlink.log", 'a') as log: # Keeps a central record of everything that was downlinked
 			log.write(packet)
 		gnd.write(packet) # Downlink packet through serial
+#		print("post-packet: ", packet)	
 		logdata(packet, sender) # Log data received
 
-		return 0
+	return 0
