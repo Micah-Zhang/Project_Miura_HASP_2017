@@ -20,16 +20,33 @@ def move(steps):
 			if GPIO.input(cmoto.Upper_Button): #figure out which button was pressed and then reset stepcount accordingly
 				print("Upper button pressed")
 				cmoto.max_step = cmoto.step_count
+				print("max step now: ", cmoto.max_step)
 			else:
 				print("Lower button pressed")
 				cmoto.step_count = 0
+				print("step count now: ", cmoto.step_count)
 			return
-		#otherwise, move motor and increase step count
 		GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 		GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 		cmoto.step_count += increment
-		cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
+		cmoto.current_percent = cmoto.step_count/cmoto.max_step
 		time.sleep(.0036)
+
+		'''
+		if GPIO.input(cmoto.Upper_Button) and increment == 1:
+			cmoto.max_step = cmoto.step_count
+			return
+		elif GPIO.input(cmoto.Lower_Button) and increment == -1:
+			cmoto.step_count = 0
+			return
+		else:
+			#otherwise, move motor and increase step count
+			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
+			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
+			cmoto.step_count += increment
+			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
+			time.sleep(.0036)
+		'''
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():
