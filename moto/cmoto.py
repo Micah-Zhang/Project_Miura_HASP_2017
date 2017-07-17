@@ -18,7 +18,7 @@ GPIO.setup(Lower_Button,GPIO.IN)
 top_calib = False #initialize motor as uncalibrated
 bot_calib = False #initialize motor as uncalibrated
 step_count = 0 #tracks current stepcount
-max_step = 17500 #tracks maxmimum stepcount
+max_step = 14450 #tracks maxmimum stepcount
 nudge_step = 0 #flag that keeps track of how many steps motor thread needs to nudge
 nudge_state = False #flag that tells motor thread when it needs to nudge
 current_percent = 0 #tracks percentage extension of payload at any time

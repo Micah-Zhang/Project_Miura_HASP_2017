@@ -17,6 +17,7 @@ def move(steps):
 		increment = -1
 	steps = abs(steps)
 	for step in range(steps):
+		'''
 		#stop moving if either button depressed
 		if GPIO.input(cmoto.Upper_Button) or GPIO.input(cmoto.Lower_Button):
 			if GPIO.input(cmoto.Upper_Button): #figure out which button was pressed and then reset stepcount accordingly
@@ -34,17 +35,19 @@ def move(steps):
 		cmoto.step_count += increment
 		cmoto.current_percent = cmoto.step_count/cmoto.max_step
 		time.sleep(.0036)
-
 		'''
+
 		#stop if moving UP and UP button pressed
 		if GPIO.input(cmoto.Upper_Button) and increment == 1:
 			print("top button pressed. stopping payload")
 			cmoto.max_step = cmoto.step_count
+			print("new max step count: ", cmoto.max_step)
 			return
 		#stop if moving DOWN and DOWN button pressed
 		elif GPIO.input(cmoto.Lower_Button) and increment == -1:
 			print("botton button pressed. stopping payload")
 			cmoto.step_count = 0
+			print("step_count reset to: ",cmoto.step_count)
 			return
 		#otherwise, move motor and increase step count
 		else:
@@ -54,7 +57,6 @@ def move(steps):
 			cmoto.step_count += increment
 			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
 			time.sleep(.0036)
-		'''
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():
@@ -97,14 +99,14 @@ def checkUplink(moto_cmd, downlink):
 			downlink.put(["MO","AK",packet])
 			if abs(cmd) <= 100:
 				#cmoto.nudge_step = ((cmd/100)-(cmoto.step_count/cmoto.max_step))*cmoto.max_step)
-				cmoto.nudge_step = (cmd*(cmoto.max_step/100)) - cmoto.step_count
+				cmoto.nudge_step = int((cmd*(cmoto.max_step/100)) - cmoto.step_count)
 				print("nudge_step defined")
 				cmoto.nudge_state = True #signal ready for nudging
 				print("setting nudge_state flag a TRUE")
 				downlink.put(["MO","AK",str(cmd)])
 			elif abs(cmd) > 100:
 				cmd = cmd - 101
-				cmoto.nudge_step = cmd*(cmoto.max_step/100)
+				cmoto.nudge_step = int(cmd*(cmoto.max_step/100))
 				print("nudge_step defined")
 				cmoto.nudge_state = True #signal ready for nudging
 				print("setting nudge_state flag as TRUE")

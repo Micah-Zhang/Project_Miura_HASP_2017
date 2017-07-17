@@ -6,6 +6,7 @@ def main(downlink, ground, moto_cmd, run_exp):
 	while True:
 		time.sleep(2)
 		if ground.inWaiting(): # Reads uplink command
+			print("out of in waiting")
 			#HASP will send a series of 7 bytes
 			# See Interface Manual for more Details
 			soh = ground.read()  # Start of Heading (SOH)
@@ -17,6 +18,7 @@ def main(downlink, ground, moto_cmd, run_exp):
 			lf_ = ground.waitByte() # Line Feed (LF)
 			print("2 byte command received: ", tar, cmd)
 			packet = hex(int.from_bytes((soh + stx + tar + cmd + etx), byteorder='big')) # Convert from hex into bytes
+			print(packet)
 			if soh == b"\x01" and etx == b"\x03":
 				if stx == b"\x02":
 					if tar == b"\xAA": #Ping Pi
@@ -63,4 +65,3 @@ def main(downlink, ground, moto_cmd, run_exp):
 					downlink.put(["UP", "ER", packet]) # Start of text byte not  recognized. Downlink error message.
 			else:
 				downlink.put(["UP", "ER", packet]) # Received unrecognized bytes. Downlink error message.
-		return 0
