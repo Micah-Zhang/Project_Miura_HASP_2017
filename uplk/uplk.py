@@ -15,14 +15,15 @@ def main(downlink, ground, moto_cmd, run_exp):
 			etx = ground.waitByte() # End of Text (ETX)
 			cr_ = ground.waitByte() # Carriage Return (CR)
 			lf_ = ground.waitByte() # Line Feed (LF)
+			print("2 byte command received: ", tar, cmd)
 			packet = hex(int.from_bytes((soh + stx + tar + cmd + etx), byteorder='big')) # Convert from hex into bytes
 			if soh == b"\x01" and etx == b"\x03":
 				if stx == b"\x02":
-
 					if tar == b"\xAA": #Ping Pi
 						downlink.put(["UP","AK","ACK"])
 					elif tar == b"\xBA": #Send command to moto thread to be processed
 						moto_cmd.put(cmd)
+						print("passing cmd to motor thread")
 						'''
 						if cmd == b"\x01": #Calibrate motor count at bottom
 							moto_cmd.put(cmd)
@@ -37,6 +38,7 @@ def main(downlink, ground, moto_cmd, run_exp):
 							downlink.put(["UP","ER",packet]) #downlink error packet
 						else:
 							moto_cmd.put(nudge)
+							print("nudge command typeA sent!")
 					elif tar == b"\xDA": #Nudge up percentage
 						nudge = int.from_bytes(cmd,byteorder='big')
 						if nudge > 100:
@@ -44,6 +46,7 @@ def main(downlink, ground, moto_cmd, run_exp):
 						else:
 							nudge += 101 #necessary to retain nudge 0
 							moto_cmd.put(nudge)
+							print("nudge command typeB sent")
 					elif tar == b"\xEA": #Nudge down percentage
 						nudge = - int.from_bytes(cmd,byteorder='big')
 						if abs(nudge) > 100:
@@ -51,9 +54,9 @@ def main(downlink, ground, moto_cmd, run_exp):
 						else:
 							nudge -= 101
 							moto_cmd.put(nudge)
+							print("nudge command typeB sent")
 					else:
 						downlink.put(["UP", "ER", packet]) #Command not recognized. Downlink error message.
-
 				elif stx == b"\x30":
 					pass
 				else:

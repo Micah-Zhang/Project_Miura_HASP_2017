@@ -36,16 +36,18 @@ def move(steps):
 		time.sleep(.0036)
 
 		'''
+		#stop if moving UP and UP button pressed
 		if GPIO.input(cmoto.Upper_Button) and increment == 1:
-			print("stopping payload")
+			print("top button pressed. stopping payload")
 			cmoto.max_step = cmoto.step_count
 			return
+		#stop if moving DOWN and DOWN button pressed
 		elif GPIO.input(cmoto.Lower_Button) and increment == -1:
-			print("stopping payload")
+			print("botton button pressed. stopping payload")
 			cmoto.step_count = 0
 			return
+		#otherwise, move motor and increase step count
 		else:
-			#otherwise, move motor and increase step count
 			print("moving motor")
 			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
