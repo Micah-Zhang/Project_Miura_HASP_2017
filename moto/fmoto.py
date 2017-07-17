@@ -8,9 +8,11 @@ import moto.cmoto as cmoto
 def move(steps):
 	#determine if moving up or down. respond accordingly.
 	if steps > 0:
+		print("ready to move up")
 		GPIO.output(cmoto.Direction_Pin, GPIO.HIGH)
 		increment = 1
 	else:
+		print("ready to move down")
 		GPIO.output(cmoto.Direction_Pin, GPIO.LOW)
 		increment = -1
 	steps = abs(steps)
@@ -26,6 +28,7 @@ def move(steps):
 				cmoto.step_count = 0
 				print("step count now: ", cmoto.step_count)
 			return
+		print("moving motor")
 		GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 		GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 		cmoto.step_count += increment
@@ -34,13 +37,16 @@ def move(steps):
 
 		'''
 		if GPIO.input(cmoto.Upper_Button) and increment == 1:
+			print("stopping payload")
 			cmoto.max_step = cmoto.step_count
 			return
 		elif GPIO.input(cmoto.Lower_Button) and increment == -1:
+			print("stopping payload")
 			cmoto.step_count = 0
 			return
 		else:
 			#otherwise, move motor and increase step count
+			print("moving motor")
 			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 			cmoto.step_count += increment
