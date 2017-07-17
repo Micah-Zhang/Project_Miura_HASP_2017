@@ -10,15 +10,17 @@ def main(downlink, run_exp, moto_cmd):
 		if cmoto.top_calib:
 			fmoto.move(20000)
 			cmoto.top_calib = False
+			print("top calibrated")
 		if cmoto.bot_calib:
 			fmoto.move(-20000)
 			cmoto.bot_calib = False
+			print("bottom calibrated")
 		if cmoto.nudge_state:
 			fmoto.move(cmoto.nudge_step)
 			cmoto.nudge_state = False
 		if cmoto.minimum_success:
 			if not cmoto.is_raised:
-				fmoto.move(73*(cmoto.max_step/100) - cmoto.step_count)
+				fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count))
 				cmoto.is_raised = True
 			elif time.time() > cmoto.cycle_start_time + cmoto.wait_time:
 				fmoto.move(- cmoto.step_count)
@@ -32,12 +34,22 @@ def main(downlink, run_exp, moto_cmd):
 				fmoto.move(- cmoto.step_count)
 				cmoto.is_raised = False
 				cmoto.full_extension = False
-'''
 		if cmoto.automation:
-			moto_cmd.put(b"\x01") #calibrate motor at bottom
-			moto_cmd.put(b"\x02") #calibrate motor at top
-			moto_cmd.put(b"\x03") #complete minimum success cycle
-			moto_cmd.put(b"\x03") #complete minimum success cycle
-			moto_cmd.put(b"\x04") #complete full extension cycle
+			if cmoto.cycle_count == -2:
+				cmoto.cycle_count += 1
+				moto_cmd.put(b"\x01")
+			elif cmoto.cycle_count == -1:
+				cmoto.cycle_count += 1
+				moto_cmd.put(b"\x02")
+			elif cmoto.cycle_count == 0:
+				cmoto.cycle_count += 1
+				moto_cmd.put(b"\x01")
+			'''
+			elif cmoto.cycle_count == 1 or cmoto.cycle_count == 2:
+				cmoto.cycle_count += 1
+				moto_cmd.put(b"\x03")
+			elif cmoto.cycle_count > 2:
+				cmoto.cycle_count += 1
+				moto_cmd.put(b"\x04")
+			'''
 		time.sleep(1)
-'''

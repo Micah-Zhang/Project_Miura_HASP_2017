@@ -17,26 +17,6 @@ def move(steps):
 		increment = -1
 	steps = abs(steps)
 	for step in range(steps):
-		'''
-		#stop moving if either button depressed
-		if GPIO.input(cmoto.Upper_Button) or GPIO.input(cmoto.Lower_Button):
-			if GPIO.input(cmoto.Upper_Button): #figure out which button was pressed and then reset stepcount accordingly
-				print("Upper button pressed")
-				cmoto.max_step = cmoto.step_count
-				print("max step now: ", cmoto.max_step)
-			else:
-				print("Lower button pressed")
-				cmoto.step_count = 0
-				print("step count now: ", cmoto.step_count)
-			return
-		print("moving motor")
-		GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
-		GPIO.output(cmoto.Step_Pin, GPIO.LOW)
-		cmoto.step_count += increment
-		cmoto.current_percent = cmoto.step_count/cmoto.max_step
-		time.sleep(.0036)
-		'''
-
 		#stop if moving UP and UP button pressed
 		if GPIO.input(cmoto.Upper_Button) and increment == 1:
 			print("top button pressed. stopping payload")
@@ -56,7 +36,8 @@ def move(steps):
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 			cmoto.step_count += increment
 			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
-			time.sleep(.0036)
+			time.sleep(0.0015)
+			#time.sleep(.0036)
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():
@@ -92,6 +73,14 @@ def checkUplink(moto_cmd, downlink):
 				cmoto.full_extension = True
 				cmoto.cycle_start_time = time.time()
 				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x05":
+				print("setting automation flag as TRUE")
+				cmoto.automation = True
+				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x06":
+				print("setting automation flag as FALSE")
+				cmoto.automation = False
+				downlink.put(["MO","AK",packet])
 			else:
 				downlink.put(["MO","ER",packet])
 		elif type(cmd) is int:
@@ -104,12 +93,20 @@ def checkUplink(moto_cmd, downlink):
 				cmoto.nudge_state = True #signal ready for nudging
 				print("setting nudge_state flag a TRUE")
 				downlink.put(["MO","AK",str(cmd)])
-			elif abs(cmd) > 100:
-				cmd = cmd - 101
-				cmoto.nudge_step = int(cmd*(cmoto.max_step/100))
-				print("nudge_step defined")
-				cmoto.nudge_state = True #signal ready for nudging
-				print("setting nudge_state flag as TRUE")
-				downlink.put(["MO","AK",str(cmd)])
+			elif abs(cmd) > 100 and abs(cmd) < 202:
+				if cmd > 0:
+					cmd -= 101
+					cmoto.nudge_step = int(cmd*(cmoto.max_step/100))
+					cmoto.nudge_state = True #signal ready for nudging
+					downlink.put(["MO","AK",str(cmd)])
+				else:
+					cmd += 101
+					cmoto.nudge_step = int(cmd*(cmoto.max_step/100))
+					cmoto.nudge_state = True #signal ready for nudging
+					downlink.put(["MO","AK",str(cmd)])
+			elif abs(cmd) >= 202:
+				cmd -= 204
+				cmoto.cycle_count = cmd
+				print("changed cycle count to: ", cmoto.cycle_count)
 			else:
 				downlink.put(["MO", "ER",str(cmd)])

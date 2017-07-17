@@ -26,22 +26,14 @@ def main(downlink, ground, moto_cmd, run_exp):
 					elif tar == b"\xBA": #Send command to moto thread to be processed
 						moto_cmd.put(cmd)
 						print("passing cmd to motor thread")
-						'''
-						if cmd == b"\x01": #Calibrate motor count at bottom
-							moto_cmd.put(cmd)
-						elif cmd == b"\x02": #Calibrate motor count at top
-							moto_cmd.put(cmd)
-						elif cmd == b"\x03": #complete 1 min success cycle
-						elif cmd == b"\x04": #complete 1 full extension cycle
-						'''
-					elif tar == b"\xCA":
+					elif tar == b"\xCA": #Nudge absolute percentage
 						nudge = int.from_bytes(cmd, byteorder='big')
 						if nudge > 100:
 							downlink.put(["UP","ER",packet]) #downlink error packet
 						else:
 							moto_cmd.put(nudge)
-							print("nudge command typeA sent!")
-					elif tar == b"\xDA": #Nudge up percentage
+							print("nudge command typeA sent! Nudging: ", nudge)
+					elif tar == b"\xDA": #Nudge up relative percentage
 						nudge = int.from_bytes(cmd,byteorder='big')
 						if nudge > 100:
 							downlink.put(["UP","ER",packet])
@@ -49,7 +41,7 @@ def main(downlink, ground, moto_cmd, run_exp):
 							nudge += 101 #necessary to retain nudge 0
 							moto_cmd.put(nudge)
 							print("nudge command typeB sent")
-					elif tar == b"\xEA": #Nudge down percentage
+					elif tar == b"\xEA": #Nudge down relative percentage
 						nudge = - int.from_bytes(cmd,byteorder='big')
 						if abs(nudge) > 100:
 							downlink.put(["UP","ER",packet])
@@ -57,6 +49,13 @@ def main(downlink, ground, moto_cmd, run_exp):
 							nudge -= 101
 							moto_cmd.put(nudge)
 							print("nudge command typeB sent")
+					elif tar == b"\xFA": #change cycle count
+						count = int.from_bytes(cmd,byteorder='big')
+						if count > 54:
+							downlink.put(["UP","ER",packet])
+						else:
+							count += 202
+							moto_cmd.put(count)
 					else:
 						downlink.put(["UP", "ER", packet]) #Command not recognized. Downlink error message.
 				elif stx == b"\x30":
