@@ -1,12 +1,8 @@
 import time
 import serial
-import sys
-sys.path.append('/home/pi/miura')
-import func
-from func import *
- 
+
 ser = serial.Serial(
-	port = '/dev/serial0',
+	port = '/dev/ttyUSB0',
 	baudrate = 4800,
 	parity = serial.PARITY_NONE,
 	stopbits = serial.STOPBITS_ONE,
@@ -14,8 +10,11 @@ ser = serial.Serial(
 	timeout = 1
 )
 
-while True:
-	x = ser.readline().decode("utf-8")
-	print(x)
-	func.save_file("dwlk.log", x)
+ser.close()
+ser.open()
 
+while True:
+	packet = ser.readline().decode("utf-8")
+	print(packet)
+	with open("/home/micah/dwlk.log", "a+") as log:
+		log.write(packet)

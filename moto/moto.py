@@ -6,7 +6,7 @@ def main(downlink, run_exp, moto_cmd):
 	downlink.put(["MO","BU","MOTO"]) #verify succesful thread start
 	cmoto.mission_start_time = time.time() #keep track of mission start time
 	while(True):
-		fmoto.checkUplink(moto_cmd)
+		fmoto.checkUplink(moto_cmd, downlink)
 		if cmoto.top_calib:
 			fmoto.move(20000)
 			cmoto.top_calib = False

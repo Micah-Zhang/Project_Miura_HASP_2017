@@ -39,7 +39,7 @@ def take_4_images():
 	'''
 
 #parce through the commands
-def checkUplink(moto_cmd):
+def checkUplink(moto_cmd, downlink):
 	while not moto_cmd.empty(): #grab commands until queue empty
 		cmd = moto_cmd.get()
 		if type(cmd) is bytes:
