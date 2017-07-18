@@ -6,6 +6,7 @@ from sens import sens
 from dwlk import dwlk
 from uplk import uplk
 from moto import moto
+from moto import cama
 
 # Import code shared between threads
 from shared import easyserial
@@ -40,13 +41,15 @@ dwlk_args = (downlink, gnd_bus)
 uplk_args = (downlink, gnd_bus, moto_cmd, run_exp)
 sens_args = (downlink,)
 moto_args = (downlink, run_exp, moto_cmd)
+cama_args = (run_exp)
 
 # Create thread objects
 threads = [
 	threading.Thread(name='uplk', target=uplk.main, args=uplk_args),
 	threading.Thread(name='sens', target=sens.main, args=sens_args),
 	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
-	threading.Thread(name='moto', target=moto.main, args=moto_args)
+	threading.Thread(name='moto', target=moto.main, args=moto_args),
+	threading.Thread(name='cama', target=moto.main, args=cama_args)
 ]
 
 # Start running threads within a try-except block to allow for it to catch exceptions

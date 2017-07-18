@@ -31,3 +31,4 @@ auto_set = False
 prev_dwlk_time = 0
 cycle_extended = False
 cycle_contracted = False
+image_request = False
