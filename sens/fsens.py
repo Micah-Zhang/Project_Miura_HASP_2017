@@ -80,7 +80,6 @@ def temp_raw(temp_sensor):
 	f.close()
 	return lines
 
-
 # Process raw data and return nice data for ONE temp sensor. Will replace with HELIOSV code once verified.
 def read_temp(downlink):
 	try:
@@ -95,8 +94,8 @@ def read_temp(downlink):
 			temp_f = temp_c * 9.0 / 5.0 + 32.0
 			downlink.put(["SE", "T1", "{0:.2f}".format(temp_c)])
 	except:
-#		pass
-		print("Temp Failed")
+		pass
+#		print("Temp Failed")
 
 # Grab raw data from bus. Convert raw data to nice data.
 def read_humi(downlink):
@@ -109,21 +108,21 @@ def read_humi(downlink):
 		time.sleep(0.3)
 		downlink.put(["SE", "HU", "{0:.2f}".format(humidity)])
 	except:
-#		pass
-		print("Humidity Failed")
+		pass
+#		print("Humidity Failed")
 
 # Grab raw data from bus. Convert raw data to nice data.
 def read_pres(downlink):#downlink
-	#try:
+	try:
 		data = bus.read_i2c_block_data(0x60, 0x00, 4)
 		pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16 # Use with humidity sensor?
 		pressure = (pres / 4.0) / 1000.0
 		
 		downlink.put(["SE", "PR", "{0:.2f}".format(pressure)])
 #		print("sent to downlink")
-		#print(["SE", "PR", "{0:.2f}".format(pressure)])
-#	except:
-#		pass
+#		print(["SE", "PR", "{0:.2f}".format(pressure)])
+	except:
+		pass
 #		print("Pressure Failed")
 
 # Grab raw data from bus. Use Adafruit library to convert to nice data.
@@ -132,8 +131,8 @@ def read_acce(downlink):
 		x, y, z = accel.read()
 		downlink.put(["SE", "AC", "{0:.2f}".format(x), "{0:.2f}".format(y), "{0.2f}".format(z)])
 	except:
-#		pass
-		print("Accelerometer Failed")
+		pass
+#		print("Accelerometer Failed")
 
 # Blink LEDs with 0.5 second spacing.
 def blink(pin):

@@ -31,12 +31,11 @@ def move(steps):
 			return
 		#otherwise, move motor and increase step count
 		else:
-			print("moving motor")
 			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 			cmoto.step_count += increment
 			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
-			time.sleep(0.0015)
+			time.sleep(0.0010)
 			#time.sleep(.0036)
 
 #take image from all four cameras and save with the current timestamp as the name
