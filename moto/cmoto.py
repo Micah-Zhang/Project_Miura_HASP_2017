@@ -1,18 +1,8 @@
-import RPi.GPIO as GPIO
-
 #motor and button variable init
 Direction_Pin = 15
 Step_Pin = 13
 Upper_Button = 32
 Lower_Button = 36
-GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False)
-##motor setup
-GPIO.setup(Direction_Pin, GPIO.OUT, initial=GPIO.LOW)
-GPIO.setup(Step_Pin, GPIO.OUT, initial=GPIO.LOW)
-##button setup
-GPIO.setup(Upper_Button,GPIO.IN)
-GPIO.setup(Lower_Button,GPIO.IN)
 
 #flags
 top_calib = False #initialize motor as uncalibrated
@@ -26,6 +16,8 @@ minimum_success = False
 full_extension = False
 automation = False
 wait_time = 30
+#top_wait_time = 30 #change before flight
+#bot_wait_time = 30 
 #wait_time = 1080 #wait 18 minutes between extension cycles
 auto_wait = 60
 is_raised = False
@@ -35,3 +27,4 @@ mission_start_time = 0
 cycle_count = -2
 cmd_status = False
 auto_set = False
+prev_dwlk_time = 0

@@ -5,7 +5,7 @@ import os
 import moto.cmoto as cmoto
 
 #move motor
-def move(steps):
+def move(steps, downlink):
 	#determine if moving up or down. respond accordingly.
 	if steps > 0:
 		print("ready to move up")
@@ -29,14 +29,43 @@ def move(steps):
 			cmoto.step_count = 0
 			print("step_count reset to: ",cmoto.step_count)
 			return
-		#otherwise, move motor and increase step count
 		else:
 			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 			cmoto.step_count += increment
-			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
+			#cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
+			#send_step(downlink)
+			#send_step_percent(downlink)
+			#send_button(downlink)
 			time.sleep(0.0010)
 			#time.sleep(.0036)
+
+def send_step(downlink): #downlink step count" 
+	try:
+		downlink.put(["MO","SC",str(cmoto.step_count)])
+	except:
+		pass
+
+def send_step_percent(downlink): #downlink percent deployment
+	try:
+		downlink.put(["MO","SP",str(cmoto.current_percent)])
+	except:
+		pass
+
+def send_button(downlink):
+	try:
+		data = []
+		data.append(int(GPIO.input(cmoto.Lower_Button)))
+		data.append(int(GPIO.input(cmoto.Upper_Button)))
+		downlink.put(["MO","BT",cs_str(data)])
+	except:
+		pass
+
+def cs_str(data):
+	out = ""
+	for i in range(len(data)):
+		out += "%f " % (data[i])
+	return out
 
 #take image from all four cameras and save with the current timestamp as the name
 def take_4_images():

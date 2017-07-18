@@ -43,7 +43,6 @@ class PeriodicScheduler:
 		self.scheduler.run()
 		
 
-
 # Converts data array into string
 def cs_str(data):
 	out = "" # Initialize variable with empty string
