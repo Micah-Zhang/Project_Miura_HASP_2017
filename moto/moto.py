@@ -32,29 +32,39 @@ def main(downlink, run_exp, moto_cmd):
 			fmoto.move(cmoto.nudge_step, downlink)
 			cmoto.nudge_state = False
 		if cmoto.minimum_success:
-			if not cmoto.is_raised:
+			if not cmoto.cycle_extended:
+				cmoto.cycle_start_time = time.time()
 				fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink)
+				cmoto.motor_start_time = time.time()
+				cmoto.cycle_extended = True
 				cmoto.is_raised = True
-			elif time.time() > cmoto.cycle_start_time + cmoto.wait_time:
+			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
 				fmoto.move(- cmoto.step_count, downlink)
+				cmoto.motor_end_time = time.time()
+				cmoto.cycle_contracted = True
 				cmoto.is_raised = False
+			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
+				cmoto.cycle_extended = False
+				cmoto.cycle_contracted = False
 				cmoto.minimum_success = False
-				cmoto.cycle_start_time = 0
 				cmoto.cycle_end_time = time.time()
-				print("cycle start time reset")
-				print("cycle end time set")
 		if cmoto.full_extension:
-			if not cmoto.is_raised:
+			if not cmoto.cycle_extended:
+				cmoto.cycle_start_time = time.time()
 				fmoto.move(cmoto.max_step - cmoto.step_count, downlink)
+				cmoto.motor_start_time = time.time()
+				cmoto.cycle_extended = True
 				cmoto.is_raised = True
-			elif time.time() > cmoto.cycle_start_time + cmoto.wait_time:
+			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
 				fmoto.move(- cmoto.step_count, downlink)
+				cmoto.motor_end_time = time.time()
+				cmoto.cycle_contracted = True
 				cmoto.is_raised = False
+			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
+				cmoto.cycle_extended = False
+				cmoto.cycle_contracted = False
 				cmoto.full_extension = False
-				cmoto.cycle_start_time = 0
 				cmoto.cycle_end_time = time.time()
-				print("cycle start time reset")
-				print("cycle end time set")
 		if not cmoto.auto_set and (time.time() > cmoto.mission_start_time + cmoto.auto_wait): #begin automation after set amount of time
 			cmoto.auto_set = True
 			cmoto.automation = True    
@@ -69,19 +79,19 @@ def main(downlink, run_exp, moto_cmd):
 				cmoto.cycle_count += 1
 				moto_cmd.put(b"\x01")
 			elif cmoto.cycle_count == 1 or cmoto.cycle_count == 2:
-				if not cmoto.cmd_status:
+				if not cmoto.cmd_sent:
 					moto_cmd.put(b"\x03")
-					cmoto.cmd_status = True
-				elif not cmoto.minimum_success and (time.time() > cmoto.cycle_end_time + cmoto.wait_time):
-					cmoto.cmd_status = False
+					cmoto.cmd_sent = True
+				elif not cmoto.minimum_success:
+					cmoto.cmd_sent = False
 					cmoto.cycle_count += 1
 					print("cycle count now: ", cmoto.cycle_count)
 			elif cmoto.cycle_count > 2:
-				if not cmoto.cmd_status:
+				if not cmoto.cmd_sent:
 					moto_cmd.put(b"\x04")
-					cmoto.cmd_status = True
-				elif not cmoto.full_extension and (time.time() > cmoto.cycle_end_time + cmoto.wait_time):
-					cmoto.cmd_status = False
+					cmoto.cmd_sent = True
+				elif not cmoto.full_extension:
+					cmoto.cmd_sent = False
 					cmoto.cycle_count += 1
 					print("cycle count is now: ", cmoto.cycle_count)
 		if time.time() > cmoto.prev_dwlk_time + 1:

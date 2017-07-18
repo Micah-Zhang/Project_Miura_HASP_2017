@@ -33,7 +33,7 @@ def move(steps, downlink):
 			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 			cmoto.step_count += increment
-			#cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
+			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
 			#send_step(downlink)
 			#send_step_percent(downlink)
 			#send_button(downlink)
@@ -94,12 +94,10 @@ def checkUplink(moto_cmd, downlink):
 			elif cmd == b"\x03":
 				print("setting minimum_success flag as TRUE")
 				cmoto.minimum_success = True
-				cmoto.cycle_start_time = time.time()
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x04":
 				print("setting full_extension flag as TRUE")
 				cmoto.full_extension = True
-				cmoto.cycle_start_time = time.time()
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x05":
 				print("setting automation flag as TRUE")
