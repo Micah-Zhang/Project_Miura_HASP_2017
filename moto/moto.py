@@ -2,6 +2,7 @@ import time
 import moto.cmoto as cmoto
 import moto.fmoto as fmoto
 import RPi.GPIO as GPIO
+import threading 
 
 #gpio setup
 GPIO.setmode(GPIO.BOARD)
@@ -18,6 +19,8 @@ GPIO.setup(cmoto.Lower_Button,GPIO.IN)
 # Encoder initialization
 pin_A = 18
 pin_B = 16
+GPIO.setup(pin_A, GPIO.IN)
+GPIO.setup(pin_B, GPIO.IN)
 encoder = fmoto.Encoder(pin_A, pin_B)
 
 encoder_thread = threading.Thread(target=fmoto.encoder_function, args=(encoder,))

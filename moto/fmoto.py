@@ -10,6 +10,7 @@ class Encoder:
 		self.pin_A = pin_A
 		self.pin_B = pin_B
 		
+				
 		self.encoder_count = 0
 
 		self.pin_A_last_state = GPIO.input(self.pin_A)
@@ -47,7 +48,7 @@ def encoder_function(encoder):
 			encoder_data.append((time.time(), encoder.get_encoder_count()))
 		with open('encoder_data.txt','a+') as f:
 			for line in encoder_data:
-				f.write('{} {}\n'.format(line[0], line[1])
+				f.write('{} {}\n'.format(line[0], line[1]))
 
 #move motor
 def move(steps, downlink):
