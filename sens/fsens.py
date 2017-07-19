@@ -55,25 +55,28 @@ def cs_str(data):
 
 
 # HELIOSV's temp sensor read function. I strongly prefer this over ours. 
-'''
-def temp(downlink, tempLED):
+
+def temp(downlink):
 	try:
 		data_raw = []
 		data = []
+		print(1)
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
+			print(2)
 			data_raw.append(sensor.get_temperature())
+			print(3)
 		for i in range(len(data_raw)): # Copy raw temp values into file meant for converted values. Was not fully implemented.
 			data.append(data_raw[i])
 			#data.append(temp_cal[i] + data_raw[i])
-		if (not tempLED.is_set()) and tempCheck(data): # If any temp sensors are overheating and the temp LED is not on, turn it on.
+		#if (not tempLED.is_set()) and tempCheck(data): # If any temp sensors are overheating and the temp LED is not on, turn it on.
 			# If the flag isn't set, and things are on fire.
-			tempLED.set()
+			#tempLED.set()
 		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
 	except:
 		print("Temperature reading failed")
+
+
 '''
-
-
 # Grab raw temp data
 def temp_raw(temp_sensor):
 	f = open(temp_sensor, 'r')
@@ -97,7 +100,7 @@ def read_temp(downlink):
 	except:
 		pass
 #		print("Temp Failed")
-
+'''
 # Grab raw data from bus. Convert raw data to nice data.
 def read_humi(downlink):
 	try:
