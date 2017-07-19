@@ -1,10 +1,9 @@
-import cv2
+#import cv2
 import time
-import numpy as np
-#from moto import cmoto
-#from moto import moto
-#from moto import fmoto
-from moto import cama
+
+import RPi.GPIO as GPIO
+
+
 
 def cam_setup():
 	#initilize four cameras
@@ -30,8 +29,11 @@ def cam_setup():
 
 
 def take_image():
+	'''
 	cv2.imwrite('/home/pi/miura/images/cam0/{:.0f}.jpg'.format(time.time()), frame1)
 	cv2.imwrite('/home/pi/miura/images/cam1/{:.0f}.jpg'.format(time.time()), frame2)
 	cv2.imwrite('/home/pi/miura/images/cam2/{:.0f}.jpg'.format(time.time()), frame3)
 	cv2.imwrite('/home/pi/miura/images/cam3/{:.0f}.jpg'.format(time.time()), frame4)
+	'''
+
 

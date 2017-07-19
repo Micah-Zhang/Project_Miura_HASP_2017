@@ -4,6 +4,51 @@ import RPi.GPIO as GPIO
 import os
 import moto.cmoto as cmoto
 
+
+class Encoder:
+	def __init__(self, pin_A=18, pin_B=16):
+		self.pin_A = pin_A
+		self.pin_B = pin_B
+		
+		self.encoder_count = 0
+
+		self.pin_A_last_state = GPIO.input(self.pin_A)
+
+		return
+
+	def process_pulse(self):
+		pin_A_state = GPIO.input(self.pin_A)
+
+		# If states are different, that means a pulse has occured
+		if self.pin_A_last_state != pin_A_state:
+			# If the output of B is different to output of A, encoder is moving down
+			if GPIO.input(self.pin_B) == pin_A_state:
+				self.encoder_count += 1
+			else:
+				self.encoder_count -= 1
+		self.pin_A_last_state = pin_A_state
+
+		return
+
+	def get_encoder_count(self):
+		return self.encoder_count
+
+	def reset_encoder_count(self):
+		self.encoder_count = 0
+		return
+
+def encoder_function(encoder):
+	while True:
+		encoder_data = []
+		for i in range(100): # So we're not constantly accessing the file]
+			for i in range(100):
+				time.sleep(.00005)
+				encoder.process_pulse()
+			encoder_data.append((time.time(), encoder.get_encoder_count()))
+		with open('encoder_data.txt','a+') as f:
+			for line in encoder_data:
+				f.write('{} {}\n'.format(line[0], line[1])
+
 #move motor
 def move(steps, downlink):
 	#determine if moving up or down. respond accordingly.
@@ -38,7 +83,7 @@ def move(steps, downlink):
 			#send_step_percent(downlink)
 			#send_button(downlink)
 			time.sleep(0.0010)
-			#time.sleep(.0036)
+			#time.sleep(.0036) #change to this for systems test
 
 def send_step(downlink): #downlink step count" 
 	try:
@@ -52,6 +97,12 @@ def send_step_percent(downlink): #downlink percent deployment
 	except:
 		pass
 
+def send_encoder_count(downlink, encoder): #downlink quantized encoder angular displacement 
+	try:
+		downlink.put(["MO","EC",str(encoder.get_encoder_count())])
+	except:
+		pass
+
 def send_button(downlink):
 	try:
 		data = []
@@ -61,20 +112,12 @@ def send_button(downlink):
 	except:
 		pass
 
+
 def cs_str(data):
 	out = ""
 	for i in range(len(data)):
 		out += "%f " % (data[i])
 	return out
-
-#take image from all four cameras and save with the current timestamp as the name
-def take_4_images():
-	print("Taking image") #placeholder until cameras work
-	'''
-	for camera in range(1,4):
-        	timestamp = "{0:.2f}".format(time.time())
-        	os.system('fswebcam -r 1080x720 -d /dev/video{}.format(str(camera-1)) --save {}.jpg'.format(timestamp))  
-	'''
 
 #parce through the commands
 def checkUplink(moto_cmd, downlink):

@@ -15,12 +15,23 @@ GPIO.setup(cmoto.Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(cmoto.Upper_Button,GPIO.IN)
 GPIO.setup(cmoto.Lower_Button,GPIO.IN)
 
+# Encoder initialization
+pin_A = 18
+pin_B = 16
+encoder = fmoto.Encoder(pin_A, pin_B)
+
+encoder_thread = threading.Thread(target=fmoto.encoder_function, args=(encoder,))
+encoder_thread.start()
+
+# To access encoder count, use encoder.get_encoder_count() 
+
 def main(downlink, run_exp, moto_cmd):
 	downlink.put(["MO","BU","MOTO"]) #verify succesful thread start
 	cmoto.mission_start_time = time.time() #keep track of mission start time
 	while(True):
 		fmoto.checkUplink(moto_cmd, downlink)
 		if cmoto.top_calib:
+			encoder.reset_encoder_count()
 			fmoto.move(20000, downlink)
 			cmoto.top_calib = False
 			print("top calibrated")
@@ -98,4 +109,5 @@ def main(downlink, run_exp, moto_cmd):
 			fmoto.send_step(downlink)
 			fmoto.send_step_percent(downlink)
 			fmoto.send_button(downlink)
+			fmoto.send_encoder_count(downlink, encoder)
 		time.sleep(1)
