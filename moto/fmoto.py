@@ -83,8 +83,8 @@ def move(steps, downlink):
 			#send_step(downlink)
 			#send_step_percent(downlink)
 			#send_button(downlink)
-			time.sleep(0.0010)
-			#time.sleep(.0036) #change to this for systems test
+			#time.sleep(0.0010)
+			time.sleep(.0036) #change to this for systems test
 
 def send_step(downlink): #downlink step count" 
 	try:
@@ -167,6 +167,7 @@ def checkUplink(moto_cmd, downlink):
 				if cmd > 0:
 					cmd -= 101
 					cmoto.nudge_step = int(cmd*(cmoto.max_step/100))
+
 					cmoto.nudge_state = True #signal ready for nudging
 					downlink.put(["MO","AK",str(cmd)])
 				else:

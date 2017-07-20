@@ -41,7 +41,7 @@ dwlk_args = (downlink, gnd_bus)
 uplk_args = (downlink, gnd_bus, moto_cmd, run_exp)
 sens_args = (downlink,)
 moto_args = (downlink, run_exp, moto_cmd)
-cama_args = (run_exp)
+cama_args = ()
 
 # Create thread objects
 threads = [
@@ -59,7 +59,7 @@ try:
 		t.start()
 	while True:
 		for t in threads:
-			t.join(4) # Prevent main from quitting by joining threads
+			t.join(5) # Prevent main from quitting by joining threads
 except(KeyboardInterrupt, SystemExit):
 	# Capture an exit condition and shut down the flight code
 	shutdown()

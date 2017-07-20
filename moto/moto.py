@@ -46,37 +46,37 @@ def main(downlink, run_exp, moto_cmd):
 			fmoto.move(cmoto.nudge_step, downlink)
 			cmoto.nudge_state = False
 		if cmoto.minimum_success:
-			if not cmoto.cycle_extended:
+			if not cmoto.cycle_extending:
 				cmoto.cycle_start_time = time.time()
+				cmoto.cycle_extending = True
 				fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink)
-				cmoto.motor_start_time = time.time()
-				cmoto.cycle_extended = True
 				cmoto.is_raised = True
-			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
+				cmoto.motor_start_time = time.time()
+			elif not cmoto.cycle_contracting and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
+				cmoto.cycle_contracting = True
 				fmoto.move(- cmoto.step_count, downlink)
 				cmoto.motor_end_time = time.time()
-				cmoto.cycle_contracted = True
+			elif cmoto.cycle_extending and cmoto.cycle_contracting and cmoto.is_raised and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
+				cmoto.cycle_extending = False
+				cmoto.cycle_contracting= False
 				cmoto.is_raised = False
-			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
-				cmoto.cycle_extended = False
-				cmoto.cycle_contracted = False
 				cmoto.minimum_success = False
-				cmoto.cycle_end_time = time.time()
+				cmoto.cycle_end_time = time.time()		
 		if cmoto.full_extension:
-			if not cmoto.cycle_extended:
+			if not cmoto.cycle_extending:
 				cmoto.cycle_start_time = time.time()
+				cmoto.cycle_extending = True
 				fmoto.move(cmoto.max_step - cmoto.step_count, downlink)
-				cmoto.motor_start_time = time.time()
-				cmoto.cycle_extended = True
 				cmoto.is_raised = True
-			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
+				cmoto.motor_start_time = time.time()
+			elif not cmoto.cycle_contracting and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
+				cmoto.cycle_contracting = True				
 				fmoto.move(- cmoto.step_count, downlink)
 				cmoto.motor_end_time = time.time()
-				cmoto.cycle_contracted = True
+			elif cmoto.cycle_extending and cmoto.cycle_contracting and cmoto.is_raised and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
+				cmoto.cycle_extending = False
+				cmoto.cycle_contracting = False
 				cmoto.is_raised = False
-			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
-				cmoto.cycle_extended = False
-				cmoto.cycle_contracted = False
 				cmoto.full_extension = False
 				cmoto.cycle_end_time = time.time()
 		if not cmoto.auto_set and (time.time() > cmoto.mission_start_time + cmoto.auto_wait): #begin automation after set amount of time
