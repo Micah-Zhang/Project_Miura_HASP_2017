@@ -83,8 +83,8 @@ def move(steps, downlink):
 			#send_step(downlink)
 			#send_step_percent(downlink)
 			#send_button(downlink)
-			#time.sleep(0.0010)
-			time.sleep(.0036) #change to this for systems test
+			time.sleep(0.0015)
+			#time.sleep(.0036) #change to this for systems test
 
 def send_step(downlink): #downlink step count" 
 	try:
@@ -146,7 +146,9 @@ def checkUplink(moto_cmd, downlink):
 			elif cmd == b"\x05":
 				print("setting automation flag as TRUE")
 				cmoto.automation = True
+				print("set automation flag as TRUE")
 				downlink.put(["MO","AK",packet])
+				print("sent acknowledgement command")
 			elif cmd == b"\x06":
 				print("setting automation flag as FALSE")
 				cmoto.automation = False
