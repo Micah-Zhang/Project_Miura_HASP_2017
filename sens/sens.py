@@ -3,7 +3,7 @@ import sens.fsens as fsens
 #from fsens import *
 
 # Sets sampling frequency for all sensors (in seconds)
-TEMP_INTERVAL = 1
+TEMP_INTERVAL = 2
 PRES_INTERVAL = 1
 HUMI_INTERVAL = 1
 ACCE_INTERVAL = 1

@@ -5,9 +5,9 @@ import smbus
 from smbus import SMBus
 import RPi.GPIO as GPIO
 import math
+from w1thermsensor import W1ThermSensor
 #import Adafruit_ADXL345
 #import Adafruit_ADS1x15
-
 
 # Setup
 GPIO.setwarnings(False)
@@ -57,14 +57,11 @@ def cs_str(data):
 # HELIOSV's temp sensor read function. I strongly prefer this over ours. 
 
 def temp(downlink):
-	try:
+	#try:
 		data_raw = []
 		data = []
-		print(1)
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
-			print(2)
 			data_raw.append(sensor.get_temperature())
-			print(3)
 		for i in range(len(data_raw)): # Copy raw temp values into file meant for converted values. Was not fully implemented.
 			data.append(data_raw[i])
 			#data.append(temp_cal[i] + data_raw[i])
@@ -72,8 +69,8 @@ def temp(downlink):
 			# If the flag isn't set, and things are on fire.
 			#tempLED.set()
 		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
-	except:
-		print("Temperature reading failed")
+	#except:
+	#	print("Temperature reading failed")
 
 
 '''
