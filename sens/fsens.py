@@ -5,6 +5,8 @@ import smbus
 from smbus import SMBus
 import RPi.GPIO as GPIO
 import math
+import re
+from w1thermsensor import W1ThermSensor
 #import Adafruit_ADXL345
 #import Adafruit_ADS1x15
 
@@ -30,6 +32,7 @@ bus = smbus.SMBus(1)
 bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
 
+
 # Handles sensor reading schedule
 class PeriodicScheduler:
 	def __init__(self):
@@ -53,8 +56,7 @@ def cs_str(data):
 
 
 # HELIOSV's temp sensor read function. I strongly prefer this over ours. 
-'''
-def temp(downlink, tempLED):
+def temp(downlink):
 	try:
 		data_raw = []
 		data = []
@@ -63,15 +65,15 @@ def temp(downlink, tempLED):
 		for i in range(len(data_raw)): # Copy raw temp values into file meant for converted values. Was not fully implemented.
 			data.append(data_raw[i])
 			#data.append(temp_cal[i] + data_raw[i])
-		if (not tempLED.is_set()) and tempCheck(data): # If any temp sensors are overheating and the temp LED is not on, turn it on.
+		#if (not tempLED.is_set()) and tempCheck(data): # If any temp sensors are overheating and the temp LED is not on, turn it on.
 			# If the flag isn't set, and things are on fire.
-			tempLED.set()
+			#tempLED.set()
 		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
 	except:
-		print("Temperature reading failed")
+		pass
+
+
 '''
-
-
 # Grab raw temp data
 def temp_raw(temp_sensor):
 	f = open(temp_sensor, 'r')
@@ -91,11 +93,14 @@ def read_temp(downlink):
 			temp_string = lines[1].strip()[temp_output+2:]
 			temp_c = float(temp_string) /1000.0
 			temp_f = temp_c * 9.0 / 5.0 + 32.0
-			downlink.put(["SE", "T1", "{0:.2f}".format(temp_c)])
+		
+	downlink.put(["SE", "T1", "{0:.2f}".format(temp_c)])
 	except:
+
 		pass
 #		print("Temp Failed")
 
+'''
 # Grab raw data from bus. Convert raw data to nice data.
 def read_humi(downlink):
 	try:
@@ -142,6 +147,18 @@ def blink(pin):
 	time.sleep(0.5)
 	return
 
+# Check Pi temperature, CPU usage, and disk usage
+def heartbeat(downlink):
+	temp_read = os.popen("vcgencmd measure_temp").readline().replace('temp=','').replace("'C",'')
+	cpu = os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip() + '%'
+	disk_read = os.popen("df -h /")
+	disk_read.readline()
+	disk_usage = disk_read.readline() 
+	disk_usage = re.findall(r'\d{1,3}%',disk_usage)[0]
+	downlink.put(["SE", "HB", '{} {} {}'.format(temp_read, cpu, disk_usage).replace('\n','')])
+	return
+
+
 # Turn LEDs on
 def led_on(pin):
 	GPIO.output(pin,GPIO.HIGH)
@@ -155,3 +172,5 @@ def led_off(pin):
 def save_file(filename, data):
 	with open(filename, "a+") as f:
 		f.write(data)
+
+

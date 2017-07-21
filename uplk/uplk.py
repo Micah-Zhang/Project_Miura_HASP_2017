@@ -1,7 +1,7 @@
 import time
 import subprocess
 
-def main(downlink, ground, moto_cmd, run_exp):
+def main(downlink, ground, moto_cmd, run_exp, safe_mode):
 	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
 	ground.flushInput() # Clears the serial communication channel before attempting to use it
 	while True:
@@ -57,6 +57,13 @@ def main(downlink, ground, moto_cmd, run_exp):
 						else:
 							count += 202
 							moto_cmd.put(count)
+					elif tar == b"\xBB":
+						if cmd == b"\x00": # safe mode OFF
+							safe_mode.clear()
+							moto_cmd.put(b'\x08')
+						elif cmd == b"\x01": # safe mode ON
+							safe_mode.set()
+							moto_cmd.put(b'\x07')
 					elif tar == b"\xDB": # reboot pi
 						subprocess.Popen('sudo reboot', shell=True)
 					else:

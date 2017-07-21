@@ -96,7 +96,6 @@ def checkUplink(moto_cmd, downlink, safe_mode):
 			elif cmd == b"\x03":
 				print("setting minimum_success flag as TRUE")
 				cmoto.minimum_success = True
-
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x04":
 				print("setting full_extension flag as TRUE")
@@ -112,7 +111,6 @@ def checkUplink(moto_cmd, downlink, safe_mode):
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x07":
 				print("entering SAFE MODE")
-				safe_mode.set()
 				cmoto.automation = False
 				cmoto.nudge_state = False
 				cmoto.minimum_success = False
@@ -120,12 +118,15 @@ def checkUplink(moto_cmd, downlink, safe_mode):
 				cmoto.cmd_sent = False
 				cmoto.cycle_extended = False
 				cmoto.cycle_contracted = False
-				cmoto.cycle_count -= 1 
+				cmoto.top_calib = False
+				cmoto.bot_calib = False
+				cmoto.cycle_count -= 1
+				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x08":
 				print("exiting SAFE MODE")
-				safe_mode.clear()
 				cmoto.bot_calib = True
 				cmoto.automation = True
+				downlink.put(["MO","AK",packet])
 			else:
 				downlink.put(["MO","ER",packet])
 		elif type(cmd) is int:

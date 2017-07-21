@@ -38,7 +38,7 @@ safe_mode = threading.Event()
 
 # Package arg tuples for thread
 dwlk_args = (downlink, gnd_bus)
-uplk_args = (downlink, gnd_bus, moto_cmd, run_exp)
+uplk_args = (downlink, gnd_bus, moto_cmd, run_exp, safe_mode)
 sens_args = (downlink,)
 moto_args = (downlink, run_exp, moto_cmd, safe_mode)
 
