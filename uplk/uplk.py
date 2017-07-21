@@ -56,6 +56,8 @@ def main(downlink, ground, moto_cmd, run_exp):
 						else:
 							count += 202
 							moto_cmd.put(count)
+					elif tar == b"\xDB": # reboot pi
+						subprocess.Popen('sudo reboot', shell=True)
 					else:
 						downlink.put(["UP", "ER", packet]) #Command not recognized. Downlink error message.
 				elif stx == b"\x30":
