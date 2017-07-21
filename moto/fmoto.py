@@ -6,6 +6,7 @@ import moto.cmoto as cmoto
 
 #move motor
 def move(steps, downlink, safe_mode):
+	downlink_step = 0
 	#determine if moving up or down. respond accordingly.
 	if steps > 0:
 		print("ready to move up")
@@ -36,11 +37,16 @@ def move(steps, downlink, safe_mode):
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 			cmoto.step_count += increment
 			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
+			if downlink_step > 100:
+				downlink.put(["MO","SC",str(cmoto.step_count)])
+				downlink_step = 0
+			else: 
+				downlink_step += 1
 			#send_step(downlink)
 			#send_step_percent(downlink)
 			#send_button(downlink)
-			time.sleep(0.0015)
-			#time.sleep(.0036)
+			#time.sleep(0.0015)
+			time.sleep(.0036)
 
 def send_step(downlink): #downlink step count" 
 	try:

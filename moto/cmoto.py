@@ -15,9 +15,9 @@ current_percent = 0 #tracks percentage extension of payload at any time
 minimum_success = False
 full_extension = False
 automation = False
-top_wait_time = 30 #change before flight
-bot_wait_time = 30 
-auto_wait = 300
+top_wait_time = 10 #1080 = 18 minutes #change before flight
+bot_wait_time = 10 #600 = 10 minutes #change before flight
+auto_wait = 10
 tmp_time = 0
 motor_start_time = 0
 motor_end_time = 0
