@@ -37,12 +37,10 @@ def main(downlink, run_exp, moto_cmd, safe_mode):
 				fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink, safe_mode)
 				cmoto.motor_start_time = time.time()
 				cmoto.cycle_extended = True
-				cmoto.is_raised = True
 			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
 				fmoto.move(- cmoto.step_count, downlink, safe_mode)
 				cmoto.motor_end_time = time.time()
 				cmoto.cycle_contracted = True
-				cmoto.is_raised = False
 			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
 				cmoto.cycle_extended = False
 				cmoto.cycle_contracted = False
@@ -54,12 +52,10 @@ def main(downlink, run_exp, moto_cmd, safe_mode):
 				fmoto.move(cmoto.max_step - cmoto.step_count, downlink, safe_mode)
 				cmoto.motor_start_time = time.time()
 				cmoto.cycle_extended = True
-				cmoto.is_raised = True
 			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
 				fmoto.move(- cmoto.step_count, downlink, safe_mode)
 				cmoto.motor_end_time = time.time()
 				cmoto.cycle_contracted = True
-				cmoto.is_raised = False
 			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
 				cmoto.cycle_extended = False
 				cmoto.cycle_contracted = False

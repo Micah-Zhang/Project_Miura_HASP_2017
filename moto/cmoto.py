@@ -18,7 +18,6 @@ automation = False
 top_wait_time = 30 #change before flight
 bot_wait_time = 30 
 auto_wait = 10
-is_raised = False
 tmp_time = 0
 motor_start_time = 0
 motor_end_time = 0

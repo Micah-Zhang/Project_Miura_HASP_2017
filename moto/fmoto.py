@@ -17,7 +17,7 @@ def move(steps, downlink, safe_mode):
 		increment = -1
 	steps = abs(steps)
 	for step in range(steps):
-		if safe_mode.is_set()
+		if safe_mode.is_set():
 			return
 		#stop if moving UP and UP button pressed
 		if GPIO.input(cmoto.Upper_Button) and increment == 1:
