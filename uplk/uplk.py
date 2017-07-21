@@ -1,4 +1,5 @@
 import time
+import subprocess
 
 def main(downlink, ground, moto_cmd, run_exp):
 	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
