@@ -5,7 +5,7 @@ import os
 import moto.cmoto as cmoto
 
 #move motor
-def move(steps, downlink):
+def move(steps, downlink, safe_mode):
 	#determine if moving up or down. respond accordingly.
 	if steps > 0:
 		print("ready to move up")
@@ -17,6 +17,8 @@ def move(steps, downlink):
 		increment = -1
 	steps = abs(steps)
 	for step in range(steps):
+		if safe_mode.is_set()
+			return
 		#stop if moving UP and UP button pressed
 		if GPIO.input(cmoto.Upper_Button) and increment == 1:
 			print("top button pressed. stopping payload")
@@ -37,7 +39,7 @@ def move(steps, downlink):
 			#send_step(downlink)
 			#send_step_percent(downlink)
 			#send_button(downlink)
-			time.sleep(0.0010)
+			time.sleep(0.0015)
 			#time.sleep(.0036)
 
 def send_step(downlink): #downlink step count" 
@@ -77,7 +79,7 @@ def take_4_images():
 	'''
 
 #parce through the commands
-def checkUplink(moto_cmd, downlink):
+def checkUplink(moto_cmd, downlink, safe_mode):
 	while not moto_cmd.empty(): #grab commands until queue empty
 		cmd = moto_cmd.get()
 		print("command received")
@@ -94,6 +96,7 @@ def checkUplink(moto_cmd, downlink):
 			elif cmd == b"\x03":
 				print("setting minimum_success flag as TRUE")
 				cmoto.minimum_success = True
+
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x04":
 				print("setting full_extension flag as TRUE")
@@ -107,6 +110,22 @@ def checkUplink(moto_cmd, downlink):
 				print("setting automation flag as FALSE")
 				cmoto.automation = False
 				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x07":
+				print("entering SAFE MODE")
+				safe_mode.set()
+				cmoto.automation = False
+				cmoto.nudge_state = False
+				cmoto.minimum_success = False
+				cmoto.full_extension = False
+				cmoto.cmd_sent = False
+				cmoto.cycle_extended = False
+				cmoto.cycle_contracted = False
+				cmoto.cycle_count -= 1 
+			elif cmd == b"\x08":
+				print("exiting SAFE MODE")
+				safe_mode.clear()
+				cmoto.bot_calib = True
+				cmoto.automation = True
 			else:
 				downlink.put(["MO","ER",packet])
 		elif type(cmd) is int:
