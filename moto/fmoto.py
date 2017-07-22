@@ -36,53 +36,24 @@ def move(steps, downlink, safe_mode):
 			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
 			cmoto.step_count += increment
-			cmoto.current_percent = cmoto.step_count/cmoto.max_step #track percentage extended
 			if downlink_step > 100:
 				downlink.put(["MO","SC",str(cmoto.step_count)])
+				downlink.put(["MO","SP",str(cmoto.step_count/cmoto.max_step * 100)])
+				data = []
+				data.append(GPIO.input(cmoto.Lower_Button))
+				data.append(GPIO.input(cmoto.Upper_Button))
+				downlink.put(["MO","BT",data])
 				downlink_step = 0
 			else: 
 				downlink_step += 1
-			#send_step(downlink)
-			#send_step_percent(downlink)
-			#send_button(downlink)
 			#time.sleep(0.0015)
 			time.sleep(.0036)
-
-def send_step(downlink): #downlink step count" 
-	try:
-		downlink.put(["MO","SC",str(cmoto.step_count)])
-	except:
-		pass
-
-def send_step_percent(downlink): #downlink percent deployment
-	try:
-		downlink.put(["MO","SP",str(cmoto.current_percent)])
-	except:
-		pass
-
-def send_button(downlink):
-	try:
-		data = []
-		data.append(int(GPIO.input(cmoto.Lower_Button)))
-		data.append(int(GPIO.input(cmoto.Upper_Button)))
-		downlink.put(["MO","BT",cs_str(data)])
-	except:
-		pass
 
 def cs_str(data):
 	out = ""
 	for i in range(len(data)):
 		out += "%f " % (data[i])
 	return out
-
-#take image from all four cameras and save with the current timestamp as the name
-def take_4_images():
-	print("Taking image") #placeholder until cameras work
-	'''
-	for camera in range(1,4):
-        	timestamp = "{0:.2f}".format(time.time())
-        	os.system('fswebcam -r 1080x720 -d /dev/video{}.format(str(camera-1)) --save {}.jpg'.format(timestamp))  
-	'''
 
 #parce through the commands
 def checkUplink(moto_cmd, downlink, safe_mode):

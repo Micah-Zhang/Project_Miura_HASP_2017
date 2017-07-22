@@ -90,8 +90,10 @@ def main(downlink, run_exp, moto_cmd, safe_mode):
 					cmoto.cmd_sent = False
 					cmoto.cycle_count += 1
 					print("cycle count is now: ", cmoto.cycle_count)
-		if time.time() > cmoto.prev_dwlk_time + 1:
-			fmoto.send_step(downlink)
-			fmoto.send_step_percent(downlink)
-			fmoto.send_button(downlink)
+		downlink.put(["MO","SC",str(cmoto.step_count)])
+		downlink.put(["MO","SP",str(cmoto.step_count/cmoto.max_step * 100)])
+		data = []
+		data.append(GPIO.input(cmoto.Lower_Button))
+		data.append(GPIO.input(cmoto.Upper_Button))
+		downlink.put(["MO","BT",data])
 		time.sleep(1)
