@@ -5,8 +5,8 @@ import RPi.GPIO as GPIO
 led_pin = 33
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
-GPIO.setup(pin,GPIO.OUT)
-GPIO.output(pin,False)
+GPIO.setup(led_pin,GPIO.OUT)
+GPIO.output(led_pin,False)
 
 def main(downlink, ground, moto_cmd, run_exp, safe_mode):
 	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
