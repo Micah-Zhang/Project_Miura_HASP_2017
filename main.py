@@ -10,11 +10,6 @@ from moto import moto
 # Import code shared between threads
 from shared import easyserial
 
-import RPi.GPIO as gpio
-gpio.setwarnings(False)
-gpio.setmode(gpio.BOARD)
-
-
 def shutdown():
 	''' Completes all necessary events for a shutdown '''
 	exit()
@@ -35,11 +30,12 @@ gnd_bus = easyserial.Bus("/dev/serial0", 4800)
 # Event is like global boolean but safer for multithreading
 run_exp = threading.Event() # Checks whether start command has been set
 safe_mode = threading.Event()
+temp_led = threading.Event()
 
 # Package arg tuples for thread
 dwlk_args = (downlink, gnd_bus)
 uplk_args = (downlink, gnd_bus, moto_cmd, run_exp, safe_mode)
-sens_args = (downlink,)
+sens_args = (downlink, temp_led)
 moto_args = (downlink, run_exp, moto_cmd, safe_mode)
 
 # Create thread objects

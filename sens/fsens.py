@@ -8,8 +8,12 @@ import re
 from w1thermsensor import W1ThermSensor
 
 # Setup
-GPIO.setwarnings(False)
+led_pin = 35
 GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.setup(led_pin,GPIO.OUT)
+GPIO.setup(led_pin,False)
+led_on = False
 
 '''
 temp_sensor1 = '//sys/bus/w1/devices/28-000007a891a3/w1_slave'
@@ -27,6 +31,9 @@ bus = smbus.SMBus(1)
 # Extra Setup
 bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
+#place holders. replace with actual values later
+temp_max = [150.,150.,150.,150.,150.,150.,150.,150.,150.]
+temp_min = [-150.,-150.,-150.,-150.,-150.,-150.,-150.,-150.,-150.]
 
 # Handles sensor reading schedule
 class PeriodicScheduler:
@@ -46,22 +53,35 @@ def cs_str(data):
 	out = "" # Initialize variable with empty string
 	for i in range(len(data)): # Iterate through each "word" in data
 		out += "%f " % (data[i]) # Add each word to the string "out"
-	# out += "%f" % (data[-1])
 	return out # Return newly formed string
 
+
+def check_temp(temps):
+	# Checks if any temperature readings are outisde expected values
+	tempBools1 = [tempI > maxI for tempI,maxI in zip(temps,temp_max)]
+	tempBools2 = [tempII < minII for tempII,minII in zip(temps,temp_min)]
+	# Returns true if one of more things is on fire OR completely frozen. >:)
+	if any(tempBools1):
+		return True
+	elif any(tempBools2):
+		return True
+	else:
+		return False
+
  
-def read_temp(downlink):
+def read_temp(downlink, temp_led):
 	try:
-		data_raw = []
 		data = []
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
-			data_raw.append(sensor.get_temperature())
-		for i in range(len(data_raw)): # Copy raw temp values into file meant for converted values. Was not fully implemented.
-			data.append(data_raw[i])
-			#data.append(temp_cal[i] + data_raw[i])
-		#if (not tempLED.is_set()) and tempCheck(data): # If any temp sensors are overheating and the temp LED is not on, turn it on.
-			# If the flag isn't set, and things are on fire.
-			#tempLED.set()
+			data.append(sensor.get_temperature())
+		if check_temp(data):
+			if not temp_led.is_set():
+				GPIO.output(led_pin,True)
+				temp_led.set()
+		else:
+			if temp_led.is_set():
+				GPIO.output(led_pin,False)
+				temp_led.clear()
 		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
 	except:
 		pass
@@ -112,19 +132,3 @@ def read_hrbt(downlink):
 	disk_usage = re.findall(r'\d{1,3}%',disk_usage)[0]
 	downlink.put(["SE", "HB", '{} {} {}'.format(temp_read, cpu, disk_usage).replace('\n','')])
 	return
-
-
-# Turn LEDs on
-def led_on(pin):
-	GPIO.output(pin,GPIO.HIGH)
-
-# Turn off LEDs
-def led_off(pin):
-	GPIO.output(pin,GPIO.LOW)
-
-# Save file
-def save_file(filename, data):
-	with open(filename, "a+") as f:
-		f.write(data)
-
-
