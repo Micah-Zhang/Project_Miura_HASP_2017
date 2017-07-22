@@ -21,11 +21,11 @@ def main(downlink, moto_cmd, safe_mode):
 	while(True):
 		fmoto.checkUplink(moto_cmd, downlink, safe_mode)
 		if cmoto.top_calib:
-			fmoto.move(20000, downlink, safe_mode)
+			fmoto.move(15000, downlink, safe_mode)
 			cmoto.top_calib = False
 			print("top calibrated")
 		if cmoto.bot_calib:
-			fmoto.move(-20000, downlink, safe_mode)
+			fmoto.move(-15000, downlink, safe_mode)
 			cmoto.bot_calib = False
 			print("bottom calibrated")
 		if cmoto.nudge_state:

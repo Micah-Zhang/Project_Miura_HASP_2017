@@ -116,11 +116,14 @@ def read_pres(downlink):#downlink
 
 # Check Pi temperature, CPU usage, and disk usage
 def read_hrbt(downlink):
-	temp_read = os.popen("vcgencmd measure_temp").readline().replace('temp=','').replace("'C",'')
-	cpu = os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip() + '%'
-	disk_read = os.popen("df -h /")
-	disk_read.readline()
-	disk_usage = disk_read.readline() 
-	disk_usage = re.findall(r'\d{1,3}%',disk_usage)[0]
-	downlink.put(["SE", "HB", '{} {} {}'.format(temp_read, cpu, disk_usage).replace('\n','')])
-	return
+	try:
+		temp_read = os.popen("vcgencmd measure_temp").readline().replace('temp=','').replace("'C",'')
+		cpu = os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip() + '%'
+		disk_read = os.popen("df -h /")
+		disk_read.readline()
+		disk_usage = disk_read.readline() 
+		disk_usage = re.findall(r'\d{1,3}%',disk_usage)[0]
+		downlink.put(["SE", "HB", '{} {} {}'.format(temp_read, cpu, disk_usage).replace('\n','')])
+		return
+	except:
+		pass

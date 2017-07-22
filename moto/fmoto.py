@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 import os
 import moto.cmoto as cmoto
 
+
 #move motor
 def move(steps, downlink, safe_mode):
 	downlink_step = 0
@@ -49,11 +50,6 @@ def move(steps, downlink, safe_mode):
 			#time.sleep(.0015) #SANIC MODE (testing)
 			time.sleep(.0036) #NANNY MODE (flight)
 
-def cs_str(data):
-	out = ""
-	for i in range(len(data)):
-		out += "%f " % (data[i])
-	return out
 
 #parce through the commands
 def checkUplink(moto_cmd, downlink, safe_mode):
@@ -103,6 +99,14 @@ def checkUplink(moto_cmd, downlink, safe_mode):
 				print("exiting SAFE MODE")
 				cmoto.bot_calib = True
 				cmoto.automation = True
+				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x09": #reset step count to 0
+				print("reset step count = 0")
+				cmoto.step_count = 0
+				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x0A": #reset max step to default: 1500
+				print("reset max step = 1500")
+				cmoto.max_step = 1500
 				downlink.put(["MO","AK",packet])
 			else:
 				downlink.put(["MO","ER",packet])
