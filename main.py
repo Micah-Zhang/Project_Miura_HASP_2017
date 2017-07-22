@@ -30,7 +30,6 @@ temp_led = threading.Event()
 #Threading events for camera
 cam_is_moving = threading.Event()
 cam_is_open = threading.Event()
-cam_is_closed = threading.Event()
 cam_reset = threading.Event()
 
 # Package arg tuples for thread

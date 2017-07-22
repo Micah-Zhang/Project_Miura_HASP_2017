@@ -1,7 +1,8 @@
 import cv2
 import time
+import RPi.GPIO as GPIO
 
-def take_images():
+def main():
 	# intiialize 4 cameras
 	cam1 = cv2.VideoCapture(0)
 	cam2 = cv2.VideoCapture(1)
@@ -17,3 +18,6 @@ def take_images():
 	cv2.imwrite('/home/pi/images/cam1/{:.0f}.jpg'.format(time.time()), frame2)
 	cv2.imwrite('/home/pi/images/cam2/{:.0f}.jpg'.format(time.time()), frame3)
 	cv2.imwrite('/home/pi/images/cam3/{:.0f}.jpg'.format(time.time()), frame4)
+
+if __name__ == '__main__':
+	main()
