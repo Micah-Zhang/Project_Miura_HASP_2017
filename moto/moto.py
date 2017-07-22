@@ -20,44 +20,53 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 	cmoto.mission_start_time = time.time() #keep track of mission start time
 	cam_transition.set()
 	while(True):
-		fmoto.checkUplink(moto_cmd, downlink, safe_mode)
+		fmoto.checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_reset)
 		if cmoto.top_calib:
+			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
 			fmoto.move(15000, downlink, safe_mode)
+			cam_is_moving.clear()
 			cam_reset.set()
 			cam_is_open.set()
 			cmoto.top_calib = False
 			print("top calibrated")
 		if cmoto.bot_calib:
+			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
 			fmoto.move(-15000, downlink, safe_mode)
+			cam_is_moving.clear()
 			cam_reset.set()
 			cmoto.bot_calib = False
 			print("bottom calibrated")
 		if cmoto.nudge_state:
+			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
 			fmoto.move(cmoto.nudge_step, downlink, safe_mode)
+			cam_is_moving.clear()
 			cam_reset.set()
-			#cam_is_open.set()
 			cmoto.nudge_state = False
 		if cmoto.minimum_success:
 			if not cmoto.cycle_extended:
+				cam_is_open.clear()
 				cam_reset.set()
 				cam_is_moving.set()
 				cmoto.cycle_start_time = time.time()
 				fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink, safe_mode)
 				cmoto.motor_start_time = time.time()
+				cam_is_moving.clear()
 				cam_reset.set()
 				cam_is_open.set()
 				cmoto.cycle_extended = True
 			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
+				cam_is_open.clear()
 				cam_reset.set()
 				cam_is_moving.set()
 				fmoto.move(- cmoto.step_count, downlink, safe_mode)
 				cmoto.motor_end_time = time.time()
+				cam_is_moving.clear()
 				cam_reset.set()
 				cmoto.cycle_contracted = True
 			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
@@ -67,18 +76,24 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 				cmoto.cycle_end_time = time.time()
 		if cmoto.full_extension:
 			if not cmoto.cycle_extended:
+				cam_is_open.clear()
 				cam_reset.set()
 				cam_is_moving.set()
 				cmoto.cycle_start_time = time.time()
 				fmoto.move(cmoto.max_step - cmoto.step_count, downlink, safe_mode)
 				cmoto.motor_start_time = time.time()
+				cam_is_moving.clear()
 				cam_reset.set()
 				cam_is_open.set()
 				cmoto.cycle_extended = True
 			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
+				cam_is_open.clear()
 				cam_reset.set()
+				cam_is_moving.set()
 				fmoto.move(- cmoto.step_count, downlink, safe_mode)
 				cmoto.motor_end_time = time.time()
+				cam_is_moving.clear()
+				cam_reset.set()
 				cmoto.cycle_contracted = True
 			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
 				cmoto.cycle_extended = False

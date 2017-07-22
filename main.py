@@ -37,7 +37,7 @@ cam_reset = threading.Event()
 dwlk_args = (downlink, gnd_bus)
 uplk_args = (downlink, gnd_bus, moto_cmd, safe_mode)
 sens_args = (downlink, temp_led)
-moto_args = (downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_is_closed, cam_transition)
+moto_args = (downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset)
 cama_args = (downlink, cam_is_moving, cam_is_open, cam_reset)
 
 # Create thread objects

@@ -9,8 +9,6 @@ def main(downlink,cam_is_moving,cam_is_open,cam_reset):
 		if cam_reset.is_set():
 			prev_capture_time = 0
 			time_interval = math.inf
-			cam_is_moving.clear()
-			cam_is_open.clear()
 			cam_reset.clear()
 		if cam_is_moving.is_set():
 			time_interval = 5

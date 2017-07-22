@@ -45,14 +45,14 @@ def move(steps, downlink, safe_mode):
 				data.append(GPIO.input(cmoto.Upper_Button))
 				downlink.put(["MO","BT",data])
 				downlink_step = 0
-			else: 
+			else:
 				downlink_step += 1
 			#time.sleep(.0015) #SANIC MODE (testing)
 			time.sleep(.0036) #NANNY MODE (flight)
 
 
 #parce through the commands
-def checkUplink(moto_cmd, downlink, safe_mode):
+def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 	while not moto_cmd.empty(): #grab commands until queue empty
 		cmd = moto_cmd.get()
 		print("command received")
@@ -94,9 +94,14 @@ def checkUplink(moto_cmd, downlink, safe_mode):
 				cmoto.top_calib = False
 				cmoto.bot_calib = False
 				cmoto.cycle_count -= 1
+				cam_is_moving.clear()
+				cam_reset.set()
+				cam_is_open.set()
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x08":
 				print("exiting SAFE MODE")
+				cam_is_open.clear()
+				cam_reset.set()
 				cmoto.bot_calib = True
 				cmoto.automation = True
 				downlink.put(["MO","AK",packet])
@@ -107,6 +112,12 @@ def checkUplink(moto_cmd, downlink, safe_mode):
 			elif cmd == b"\x0A": #reset max step to default: 1500
 				print("reset max step = 1500")
 				cmoto.max_step = 1500
+				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x0B": #set is_open to false
+				cam_is_open.clear()
+				downlink.put(["MO","AK",packet])
+			elif cmd == b"\x0C": #set is_open to true
+				cam_is_open.set()
 				downlink.put(["MO","AK",packet])
 			else:
 				downlink.put(["MO","ER",packet])
