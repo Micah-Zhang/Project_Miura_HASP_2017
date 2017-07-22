@@ -2,20 +2,16 @@ import sched
 import os
 import time
 import smbus
-from smbus import SMBus
 import RPi.GPIO as GPIO
 import math
 import re
 from w1thermsensor import W1ThermSensor
-#import Adafruit_ADXL345
-#import Adafruit_ADS1x15
-
 
 # Setup
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
-os.system('modprobe w1-gpio')
-os.system('modprobe w1-therm')
+
+'''
 temp_sensor1 = '//sys/bus/w1/devices/28-000007a891a3/w1_slave'
 temp_sensor2 = '//sys/bus/w1/devices/28-000007a89303/w1_slave'
 temp_sensor3 = '//sys/bus/w1/devices/28-000007a8a632/w1_slave'
@@ -23,14 +19,13 @@ temp_sensor4 = '//sys/bus/w1/devices/28-000007a8acab/w1_slave'
 temp_sensor5 = '//sys/bus/w1/devices/28-000007a8af78/w1_slave'
 temp_sensor6 = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
 temp_sensor7 = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
+'''
+
 GAIN = 1
 bus = smbus.SMBus(1)
 
 # Extra Setup
-#accel = Adafruit_ADXL345.ADXL345()
-#adc = Adafruit_ADS1x15.ADS1115()
 bus.write_byte_data(0x60, 0x26, 0x39) #pres
-
 
 
 # Handles sensor reading schedule
@@ -54,9 +49,8 @@ def cs_str(data):
 	# out += "%f" % (data[-1])
 	return out # Return newly formed string
 
-
-# HELIOSV's temp sensor read function. I strongly prefer this over ours. 
-def temp(downlink):
+ 
+def read_temp(downlink):
 	try:
 		data_raw = []
 		data = []
@@ -73,34 +67,6 @@ def temp(downlink):
 		pass
 
 
-'''
-# Grab raw temp data
-def temp_raw(temp_sensor):
-	f = open(temp_sensor, 'r')
-	lines = f.readlines()
-	f.close()
-	return lines
-
-# Process raw data and return nice data for ONE temp sensor. Will replace with HELIOSV code once verified.
-def read_temp(downlink):
-	try:
-		lines = temp_raw(temp_sensor1)
-		while lines[0].strip()[-3:] != 'YES':
-			time.sleep(0.2)
-			lines = temp_raw(temp_sensor1)
-		temp_output = lines[1].find('t=')
-		if temp_output != -1:
-			temp_string = lines[1].strip()[temp_output+2:]
-			temp_c = float(temp_string) /1000.0
-			temp_f = temp_c * 9.0 / 5.0 + 32.0
-		
-	downlink.put(["SE", "T1", "{0:.2f}".format(temp_c)])
-	except:
-
-		pass
-#		print("Temp Failed")
-
-'''
 # Grab raw data from bus. Convert raw data to nice data.
 def read_humi(downlink):
 	try:
@@ -113,7 +79,7 @@ def read_humi(downlink):
 		downlink.put(["SE", "HU", "{0:.2f}".format(humidity)])
 	except:
 		pass
-#		print("Humidity Failed")
+
 
 # Grab raw data from bus. Convert raw data to nice data.
 def read_pres(downlink):#downlink
@@ -121,22 +87,10 @@ def read_pres(downlink):#downlink
 		data = bus.read_i2c_block_data(0x60, 0x00, 4)
 		pres = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xF0)) / 16 # Use with humidity sensor?
 		pressure = (pres / 4.0) / 1000.0
-		
 		downlink.put(["SE", "PR", "{0:.2f}".format(pressure)])
-#		print("sent to downlink")
-#		print(["SE", "PR", "{0:.2f}".format(pressure)])
 	except:
 		pass
-#		print("Pressure Failed")
 
-# Grab raw data from bus. Use Adafruit library to convert to nice data.
-def read_acce(downlink):
-	try:
-		x, y, z = accel.read()
-		downlink.put(["SE", "AC", "{0:.2f}".format(x), "{0:.2f}".format(y), "{0.2f}".format(z)])
-	except:
-		pass
-#		print("Accelerometer Failed")
 
 # Blink LEDs with 0.5 second spacing.
 def blink(pin):
@@ -147,8 +101,9 @@ def blink(pin):
 	time.sleep(0.5)
 	return
 
+
 # Check Pi temperature, CPU usage, and disk usage
-def heartbeat(downlink):
+def read_hrbt(downlink):
 	temp_read = os.popen("vcgencmd measure_temp").readline().replace('temp=','').replace("'C",'')
 	cpu = os.popen("top -n1 | awk '/Cpu\(s\):/ {print $2}'").readline().strip() + '%'
 	disk_read = os.popen("df -h /")
@@ -166,7 +121,6 @@ def led_on(pin):
 # Turn off LEDs
 def led_off(pin):
 	GPIO.output(pin,GPIO.LOW)
-
 
 # Save file
 def save_file(filename, data):
