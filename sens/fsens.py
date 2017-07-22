@@ -35,7 +35,7 @@ bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
 #place holders. replace with actual values later
 temp_max = [150.,150.,150.,150.,150.,150.,150.,150.,150.]
-temp_min = [-150.,-150.,-150.,-150.,-150.,-150.,-150.,-150.,-150.]
+temp_min = [-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.]
 
 # Handles sensor reading schedule
 class PeriodicScheduler:
