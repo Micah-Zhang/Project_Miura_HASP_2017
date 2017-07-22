@@ -1,13 +1,25 @@
 import time
 import subprocess
+import RPi.GPIO as GPIO
+
+pin = 33
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.setup(pin,GPIO.OUT)
+GPIO.output(pin,False)
 
 def main(downlink, ground, moto_cmd, run_exp, safe_mode):
 	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
+	led_on = False
 	ground.flushInput() # Clears the serial communication channel before attempting to use it
 	while True:
-		time.sleep(2)
+		if led_on:
+			GPIO.output(pin,True)
+			led_on = False
+		elif not led_on:
+			GPIO.output(pin,False)
 		if ground.inWaiting(): # Reads uplink command
-			print("out of in waiting")
+			led_on = True
 			#HASP will send a series of 7 bytes
 			# See Interface Manual for more Details
 			soh = ground.read()  # Start of Heading (SOH)
@@ -74,3 +86,4 @@ def main(downlink, ground, moto_cmd, run_exp, safe_mode):
 					downlink.put(["UP", "ER", packet]) # Start of text byte not  recognized. Downlink error message.
 			else:
 				downlink.put(["UP", "ER", packet]) # Received unrecognized bytes. Downlink error message.
+		time.sleep(1)
