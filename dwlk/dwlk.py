@@ -1,5 +1,12 @@
 import time
 from zlib import adler32
+import RPi.GPIO as GPIO
+
+led_pin = 29
+GPIO.setmode(GPIO.BOARD)
+GPIO.setwarnings(False)
+GPIO.setup(led_pin,GPIO.OUT)
+GPIO.output(led_pin,False)
 
 # Stores data from each thread in separate logs
 def logdata(packet, sender):
@@ -25,7 +32,17 @@ def logdata(packet, sender):
 
 def main(downlink, gnd):
 	downlink.put(["DW", "BU", "DWNL"]) # Verify that thread has started successfully
+	led_on = False
+	led_timer = 0
 	while True:
+		if not led_on and time.time() > led_timer + 1:
+			GPIO.output(led_pin,True)
+			led_timer = time.time()
+			led_on = True
+		if led_on and time.time() > led_timer + 1:
+			GPIO.output(led_pin,False)
+			led_on = False
+			led_timer = time.time()
 		# All downlinked data must be in this form:
 		# [2 char sender, 2 char record type, string of data]
 		# Multi-item data needs to be in the form of ###, ###, ###

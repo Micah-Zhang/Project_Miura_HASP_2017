@@ -2,7 +2,7 @@ import time
 import subprocess
 import RPi.GPIO as GPIO
 
-pin = 33
+led_pin = 33
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 GPIO.setup(pin,GPIO.OUT)
@@ -14,10 +14,10 @@ def main(downlink, ground, moto_cmd, run_exp, safe_mode):
 	ground.flushInput() # Clears the serial communication channel before attempting to use it
 	while True:
 		if led_on:
-			GPIO.output(pin,True)
+			GPIO.output(led_pin,True)
 			led_on = False
 		elif not led_on:
-			GPIO.output(pin,False)
+			GPIO.output(led_pin,False)
 		if ground.inWaiting(): # Reads uplink command
 			led_on = True
 			#HASP will send a series of 7 bytes
