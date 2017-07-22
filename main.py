@@ -6,6 +6,7 @@ from sens import sens
 from dwlk import dwlk
 from uplk import uplk
 from moto import moto
+from cama import cama
 
 # Import code shared between threads
 from shared import easyserial
@@ -13,11 +14,6 @@ from shared import easyserial
 def shutdown():
 	''' Completes all necessary events for a shutdown '''
 	exit()
-
-## Remove before flight pin: Check if the inhibit is active and set flag if it is 
-#inhibit = 12
-#gpio.setup(inhibit, gpio.IN)
-#motorInhibit = True if gpio.input(inhibit) else False
 
 # Create required Queues
 moto_cmd = queue.Queue()
@@ -31,18 +27,26 @@ gnd_bus = easyserial.Bus("/dev/serial0", 4800)
 safe_mode = threading.Event()
 temp_led = threading.Event()
 
+#Threading events for camera
+cam_is_moving = threading.Event()
+cam_is_open = threading.Event()
+cam_is_closed = threading.Event()
+cam_reset = threading.Event()
+
 # Package arg tuples for thread
 dwlk_args = (downlink, gnd_bus)
 uplk_args = (downlink, gnd_bus, moto_cmd, safe_mode)
 sens_args = (downlink, temp_led)
-moto_args = (downlink, moto_cmd, safe_mode)
+moto_args = (downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_is_closed, cam_transition)
+cama_args = (downlink, cam_is_moving, cam_is_open, cam_reset)
 
 # Create thread objects
 threads = [
 	threading.Thread(name='uplk', target=uplk.main, args=uplk_args),
 	threading.Thread(name='sens', target=sens.main, args=sens_args),
 	threading.Thread(name='dwlk', target=dwlk.main, args=dwlk_args),
-	threading.Thread(name='moto', target=moto.main, args=moto_args)
+	threading.Thread(name='moto', target=moto.main, args=moto_args),
+	threading.Thread(name='cama', target=cama.main, args=cama_args)
 ]
 
 # Start running threads within a try-except block to allow for it to catch exceptions
