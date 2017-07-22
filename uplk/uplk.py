@@ -8,7 +8,7 @@ GPIO.setwarnings(False)
 GPIO.setup(led_pin,GPIO.OUT)
 GPIO.output(led_pin,False)
 
-def main(downlink, ground, moto_cmd, run_exp, safe_mode):
+def main(downlink, ground, moto_cmd, safe_mode):
 	downlink.put(["UP", "BU", "UPLK"]) # Verifies correct thread initialization
 	led_on = False
 	ground.flushInput() # Clears the serial communication channel before attempting to use it

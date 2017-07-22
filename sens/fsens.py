@@ -7,7 +7,7 @@ import math
 import re
 from w1thermsensor import W1ThermSensor
 
-# Setup
+#LED Setup
 led_pin = 35
 GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
@@ -16,13 +16,15 @@ GPIO.setup(led_pin,False)
 led_on = False
 
 '''
-temp_sensor1 = '//sys/bus/w1/devices/28-000007a891a3/w1_slave'
-temp_sensor2 = '//sys/bus/w1/devices/28-000007a89303/w1_slave'
-temp_sensor3 = '//sys/bus/w1/devices/28-000007a8a632/w1_slave'
-temp_sensor4 = '//sys/bus/w1/devices/28-000007a8acab/w1_slave'
-temp_sensor5 = '//sys/bus/w1/devices/28-000007a8af78/w1_slave'
-temp_sensor6 = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
-temp_sensor7 = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
+temp_buck_converter = '//sys/bus/w1/devices/28-000007a891a3/w1_slave'
+temp_motor_driver = '//sys/bus/w1/devices/28-000007a89303/w1_slave'
+temp_camwall_1 = '//sys/bus/w1/devices/28-00000865ce6c/w1_slave'
+temp_camwall_2 = '//sys/bus/w1/devices/28-00000828fbdd/w1_slave'
+temp_camwall_3 = '//sys/bus/w1/devices/28-00000865e2e7/w1_slave'
+temp_camwall_4 = '//sys/bus/w1/devices/28-000007a8af78/w1_slave'
+temp_internal_ambient = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
+temp_exterior_ambient = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
+temp_motor = '//sys/bus/w1/devices/28-0000086460f1/w1_slave'
 '''
 
 GAIN = 1
@@ -110,16 +112,6 @@ def read_pres(downlink):#downlink
 		downlink.put(["SE", "PR", "{0:.2f}".format(pressure)])
 	except:
 		pass
-
-
-# Blink LEDs with 0.5 second spacing.
-def blink(pin):
-	GPIO.setup(pin, GPIO.OUT)
-	GPIO.output(pin,GPIO.HIGH)
-	time.sleep(0.5)
-	GPIO.output(pin,GPIO.LOW)
-	time.sleep(0.5)
-	return
 
 
 # Check Pi temperature, CPU usage, and disk usage

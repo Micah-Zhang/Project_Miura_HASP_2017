@@ -28,15 +28,14 @@ gnd_bus = easyserial.Bus("/dev/serial0", 4800)
 
 # Setting up events to be seen across threads
 # Event is like global boolean but safer for multithreading
-run_exp = threading.Event() # Checks whether start command has been set
 safe_mode = threading.Event()
 temp_led = threading.Event()
 
 # Package arg tuples for thread
 dwlk_args = (downlink, gnd_bus)
-uplk_args = (downlink, gnd_bus, moto_cmd, run_exp, safe_mode)
+uplk_args = (downlink, gnd_bus, moto_cmd, safe_mode)
 sens_args = (downlink, temp_led)
-moto_args = (downlink, run_exp, moto_cmd, safe_mode)
+moto_args = (downlink, moto_cmd, safe_mode)
 
 # Create thread objects
 threads = [

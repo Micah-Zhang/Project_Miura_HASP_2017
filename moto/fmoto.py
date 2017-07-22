@@ -46,8 +46,8 @@ def move(steps, downlink, safe_mode):
 				downlink_step = 0
 			else: 
 				downlink_step += 1
-			#time.sleep(0.0015)
-			time.sleep(.0036)
+			#time.sleep(.0015) #SANIC MODE (testing)
+			time.sleep(.0036) #NANNY MODE (flight)
 
 def cs_str(data):
 	out = ""

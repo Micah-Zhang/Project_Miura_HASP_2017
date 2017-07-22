@@ -15,7 +15,7 @@ GPIO.setup(cmoto.Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(cmoto.Upper_Button,GPIO.IN)
 GPIO.setup(cmoto.Lower_Button,GPIO.IN)
 
-def main(downlink, run_exp, moto_cmd, safe_mode):
+def main(downlink, moto_cmd, safe_mode):
 	downlink.put(["MO","BU","MOTO"]) #verify succesful thread start
 	cmoto.mission_start_time = time.time() #keep track of mission start time
 	while(True):
