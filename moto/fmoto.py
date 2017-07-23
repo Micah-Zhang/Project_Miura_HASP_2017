@@ -78,9 +78,12 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				cmoto.automation = True
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x06":
-				print("setting automation flag as FALSE")
-				cmoto.automation = False
+				print("querying safe mode")
 				downlink.put(["MO","AK",packet])
+				if safe_mode.is_set():
+					downlink.put(["MO","SM","ON"])
+				else:
+					downlink.put(["MO","SM","OFF"])
 			elif cmd == b"\x07":
 				print("entering SAFE MODE")
 				cmoto.automation = False
@@ -108,14 +111,21 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				print("reset step count = 0")
 				cmoto.step_count = 0
 				downlink.put(["MO","AK",packet])
-			elif cmd == b"\x0A": #reset max step to default: 1500
-				print("reset max step = 1500")
-				cmoto.max_step = 1500
+			elif cmd == b"\x0A": #reset max step to default: 15000
+				print("reset max step = 15000")
+				cmoto.max_step = 15000
 				downlink.put(["MO","AK",packet])
-			elif cmd == b"\x0B": #set is_open to false
+			elif cmd == b"\x0B": #query is_open
+				print("querying is open")
+				downlink.put(["MO","AK",packet])
+				if cam_is_open.is_set():
+					downlink.put(["MO","IO","ON"])
+				else:
+					downlink.put(["MO","IO","OFF"])
+			elif cmd == b"\x0C": #set is_open to false
 				cam_is_open.clear()
 				downlink.put(["MO","AK",packet])
-			elif cmd == b"\x0C": #set is_open to true
+			elif cmd == b"\x0D": #set is_open to true
 				cam_is_open.set()
 				downlink.put(["MO","AK",packet])
 			else:
