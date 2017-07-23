@@ -90,15 +90,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 			elif cmoto.cycle_count == 0:
 				cmoto.cycle_count += 1
 				moto_cmd.put(b"\x01")
-			elif cmoto.cycle_count == 1 or cmoto.cycle_count == 2:
-				if not cmoto.cmd_sent:
-					moto_cmd.put(b"\x03")
-					cmoto.cmd_sent = True
-				elif not cmoto.minimum_success:
-					cmoto.cmd_sent = False
-					cmoto.cycle_count += 1
-					print("cycle count now: ", cmoto.cycle_count)
-			elif cmoto.cycle_count > 2:
+			elif cmoto.cycle_count > 0:
 				if not cmoto.cmd_sent:
 					moto_cmd.put(b"\x04")
 					cmoto.cmd_sent = True
