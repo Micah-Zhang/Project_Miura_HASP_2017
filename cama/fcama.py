@@ -10,14 +10,15 @@ def main():
 	cam3 = cv2.VideoCapture(2)
 	cam4 = cv2.VideoCapture(3)
 	#set resolution
-	cam1.set(3,3264.)
-	cam1.set(4,2448.)
-	cam2.set(3,3264.)
-	cam2.set(4,2448.)
-	cam3.set(3,3264.)
-	cam3.set(4,2448.)
-	cam4.set(3,3264.)
-	cam4.set(4,2448.)
+	#cam1.set(3,3264.)
+	#cam1.set(4,2448.)
+	#cam2.set(3,3264.)
+	#cam2.set(4,2448.)
+	#cam3.set(3,3264.)
+	#cam3.set(4,2448.)
+	#cam4.set(3,3264.)
+	#cam4.set(4,2448.)
+	print("set resolution")
 	#take 4 images
 	r0, frame1 = cam1.read()
 	r1, frame2 = cam2.read()
@@ -28,6 +29,8 @@ def main():
 	cv2.imwrite('/home/pi/images/cam1/{:.0f}.jpg'.format(time.time()), frame2)
 	cv2.imwrite('/home/pi/images/cam2/{:.0f}.jpg'.format(time.time()), frame3)
 	cv2.imwrite('/home/pi/images/cam3/{:.0f}.jpg'.format(time.time()), frame4)
+	#deinitialize 4 cameras
+	cv2.VideoCapture.release()
 	print("done taking image")
 
 if __name__ == '__main__':
