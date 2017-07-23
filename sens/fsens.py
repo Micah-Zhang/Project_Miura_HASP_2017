@@ -26,15 +26,15 @@ temp_internal_ambient = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
 temp_exterior_ambient = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
 temp_motor = '//sys/bus/w1/devices/28-0000086460f1/w1_slave'
 
-1 = internal ambient temp
-2 = camera wall 1
-3 = camera wall 3
-4 = camera wall 4
-5 = camera wall 2
-6 = motor driver
-7 = buck converter
-8 = motor
-8 = ambient external
+1 = camera wall 3
+2 = ambient external
+3 = motor driver
+4 = motor
+5 = cameral wall 2
+6 = ambient internal
+7 = camera wall 1
+8 = cameral wall 4
+9 = buck converter
 '''
 
 GAIN = 1
