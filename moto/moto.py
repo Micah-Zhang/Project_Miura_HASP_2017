@@ -83,12 +83,15 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 		if cmoto.automation:
 			if cmoto.cycle_count == -2:
 				cmoto.cycle_count += 1
+				downlink.put(["MO","CC",str(cmoto.cycle_count)])
 				moto_cmd.put(b"\x01")
 			elif cmoto.cycle_count == -1:
 				cmoto.cycle_count += 1
+				downlink.put(["MO","CC",str(cmoto.cycle_count)])
 				moto_cmd.put(b"\x02")
 			elif cmoto.cycle_count == 0:
 				cmoto.cycle_count += 1
+				downlink.put(["MO","CC",str(cmoto.cycle_count)])
 				moto_cmd.put(b"\x01")
 			elif cmoto.cycle_count > 0:
 				if not cmoto.cmd_sent:
@@ -97,10 +100,10 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 				elif not cmoto.full_extension:
 					cmoto.cmd_sent = False
 					cmoto.cycle_count += 1
-					print("cycle count is now: ", cmoto.cycle_count)
+					downlink.put(["MO","CC",str(cmoto.cycle_count)])
 		downlink.put(["MO","SC",str(cmoto.step_count)])
-		downlink.put(["MO","SP",str(cmoto.step_count/cmoto.max_step * 100)])
+		downlink.put(["MO","SP",'{:.2f}%'.format(cmoto.step_count/cmoto.max_step * 100)])
 		lower = GPIO.input(cmoto.Lower_Button)
 		upper = GPIO.input(cmoto.Upper_Button)
-		downlink.put(["MO","BT",str(lower) + ',' + str(upper)])
+		downlink.put(["MO","BT",str(lower) + ' ' + str(upper)])
 		time.sleep(1)

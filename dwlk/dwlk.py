@@ -11,22 +11,27 @@ GPIO.output(led_pin,False)
 # Stores data from each thread in separate logs
 def logdata(packet, sender):
 	if sender == "MO": # Keeps track of all packets sent by the motor thread
-		with open("/home/pi/moto.log", 'a') as log:
+		with open("/home/pi/moto.log", 'a+') as log:
 			log.write(packet)
 		print(packet, end="")
 
 	if sender == "UP": # Keeps track of all packets sent by the uplink thread
-		with open("/home/pi/uplk.log", 'a') as log:
+		with open("/home/pi/uplk.log", 'a+') as log:
 			log.write(packet)
 		print(packet, end="")
 
 	if sender == "SE": # Keeps track of all packets sent by the sensor thread
-		with open("/home/pi/sens.log", 'a') as log:
+		with open("/home/pi/sens.log", 'a+') as log:
 			log.write(packet)
 		print(packet, end="")
 
 	if sender == "DW": # Keeps track of all packets sent by the downlink thread
-		with open("/home/pi/dwlk.log", 'a') as log:
+		with open("/home/pi/dwlk.log", 'a+') as log:
+			log.write(packet)
+		print(packet, end="")
+	
+	if sender == "CA": # Keeps track of all packets sent by the camera thread
+		with open("/home/pi/cama.log",'a+') as log:
 			log.write(packet)
 		print(packet, end="")
 

@@ -42,7 +42,7 @@ def move(steps, downlink, safe_mode):
 				downlink.put(["MO","SP",'{:.2f}%'.format(cmoto.step_count/cmoto.max_step * 100)])
 				lower = GPIO.input(cmoto.Lower_Button)
 				upper = GPIO.input(cmoto.Upper_Button)
-				downlink.put(["MO","BT",str(lower) + ', ' + str(upper)])
+				downlink.put(["MO","BT",str(lower) + ' ' + str(upper)])
 				downlink_step = 0
 			else:
 				downlink_step += 1

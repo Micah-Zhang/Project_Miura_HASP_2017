@@ -54,14 +54,14 @@ class PeriodicScheduler:
 def cs_str(data):
 	out = "" # Initialize variable with empty string
 	for i in range(len(data)): # Iterate through each "word" in data
-		out += "%f " % (data[i]) # Add each word to the string "out"
+		out += "{0:.2f} ".format(data[i]) # Add each word to the string "out"
 	return out # Return newly formed string
 
 
 def check_temp(temps):
 	# Checks if any temperature readings are outisde expected values
-	tempBools1 = [tempI > maxI for tempI,maxI in zip(temps,temp_max)]
-	tempBools2 = [tempII < minII for tempII,minII in zip(temps,temp_min)]
+	tempBools1 = [float(tempI) > maxI for tempI,maxI in zip(temps,temp_max)]
+	tempBools2 = [float(tempII) < minII for tempII,minII in zip(temps,temp_min)]
 	# Returns true if one of more things is on fire OR completely frozen. >:)
 	if any(tempBools1):
 		return True
@@ -72,7 +72,7 @@ def check_temp(temps):
 
  
 def read_temp(downlink, temp_led):
-	try:
+	#try:
 		data = []
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
 			data.append(sensor.get_temperature())
@@ -85,8 +85,8 @@ def read_temp(downlink, temp_led):
 				GPIO.output(led_pin,False)
 				temp_led.clear()
 		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
-	except:
-		print("eat dick")
+	#except:
+	#	print("eat dick")
 
 
 # Grab raw data from bus. Convert raw data to nice data.

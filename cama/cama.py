@@ -21,7 +21,9 @@ def main(downlink,cam_is_moving,cam_is_open,cam_reset):
 			time_interval = 175
 		if time.time() > prev_capture_time + time_interval:
 			GPIO.output(led_pin,True)
-			sp.call(['python2 /home/pi/miura/cama/fcama.py'], shell=True)
+			camera_status = sp.check_output(['python2 /home/pi/miura/cama/fcama.py'], shell=True)
+			camera_status = camera_status.decode().replace('\n','').replace('[','').replace(']','').replace(',','')
+			downlink.put(['CA','IM',camera_status])
 			GPIO.output(led_pin,False)
 			prev_capture_time = time.time()
 		time.sleep(1)
