@@ -131,8 +131,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 					print("cycle count is now: ", cmoto.cycle_count)
 		downlink.put(["MO","SC",str(cmoto.step_count)])
 		downlink.put(["MO","SP",str(cmoto.step_count/cmoto.max_step * 100)])
-		data = []
-		data.append(GPIO.input(cmoto.Lower_Button))
-		data.append(GPIO.input(cmoto.Upper_Button))
-		downlink.put(["MO","BT",data])
+		lower = GPIO.input(cmoto.Lower_Button)
+		upper = GPIO.input(cmoto.Upper_Button)
+		downlink.put(["MO","BT",str(lower) + ',' + str(upper)])
 		time.sleep(1)

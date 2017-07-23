@@ -41,14 +41,14 @@ temp_min = [-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.]
 class PeriodicScheduler:
 	def __init__(self):
 		self.scheduler = sched.scheduler(time.time, time.sleep)
-	
+
 	def setup(self, interval, action, actionargs=()):
 		self.scheduler.enter(interval, 1, self.setup, (interval, action, actionargs))
 		action(*actionargs)
 
 	def run(self):
 		self.scheduler.run()
-		
+
 
 # Converts data array into string
 def cs_str(data):
