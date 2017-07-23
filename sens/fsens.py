@@ -23,7 +23,7 @@ temp_camwall_2 = '//sys/bus/w1/devices/28-00000828fbdd/w1_slave'
 temp_camwall_3 = '//sys/bus/w1/devices/28-00000865e2e7/w1_slave'
 temp_camwall_4 = '//sys/bus/w1/devices/28-000007a8af78/w1_slave'
 temp_internal_ambient = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
-temp_exterior_ambient = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
+temp_external_ambient = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
 temp_motor = '//sys/bus/w1/devices/28-0000086460f1/w1_slave'
 
 1 = camera wall 3
@@ -80,11 +80,32 @@ def check_temp(temps):
 	else:
 		return False
 
- 
+def temp_find(address):
+	if address == temp_buck_converter:
+		return 1
+	elif address == temp_motor_driver:
+		return 2
+	elif address == temp_camwall_1:
+		return 3
+	elif address == temp_camwall_2:
+		return 4
+	elif address == temp_camwall_3:
+		return 5
+	elif address == temp_camwall_4:
+		return 6
+	elif address == temp_internal_ambient:
+		return 7
+	elif address == temp_external_ambient:
+		return 8
+	elif address == temp_motor:
+		return 9
+
 def read_temp(downlink, temp_led):
 	try:
 		data = []
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
+			print(sensor.id)
+			data.append(temp_find(sensor.id))
 			data.append(sensor.get_temperature())
 		if check_temp(data):
 			if not temp_led.is_set():
