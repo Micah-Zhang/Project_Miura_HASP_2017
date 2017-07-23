@@ -48,13 +48,16 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 			cam_is_moving.clear()
 			cam_reset.set()
 			cmoto.nudge_state = False
-		if cmoto.minimum_success:
+		if cmoto.minimum_success or cmoto.full_extension:
 			if not cmoto.cycle_extended:
 				cam_is_open.clear()
 				cam_reset.set()
 				cam_is_moving.set()
 				cmoto.cycle_start_time = time.time()
-				fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink, safe_mode)
+				if cmoto.minimum_success:
+					fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink, safe_mode)
+				else:
+					fmoto.move(- cmoto.step_count, downlink, safe_mode)
 				cmoto.motor_start_time = time.time()
 				cam_is_moving.clear()
 				cam_reset.set()
@@ -73,32 +76,6 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 				cmoto.cycle_extended = False
 				cmoto.cycle_contracted = False
 				cmoto.minimum_success = False
-				cmoto.cycle_end_time = time.time()
-		if cmoto.full_extension:
-			if not cmoto.cycle_extended:
-				cam_is_open.clear()
-				cam_reset.set()
-				cam_is_moving.set()
-				cmoto.cycle_start_time = time.time()
-				fmoto.move(cmoto.max_step - cmoto.step_count, downlink, safe_mode)
-				cmoto.motor_start_time = time.time()
-				cam_is_moving.clear()
-				cam_reset.set()
-				cam_is_open.set()
-				cmoto.cycle_extended = True
-			elif not cmoto.cycle_contracted and (time.time() > cmoto.motor_start_time + cmoto.top_wait_time):
-				cam_is_open.clear()
-				cam_reset.set()
-				cam_is_moving.set()
-				fmoto.move(- cmoto.step_count, downlink, safe_mode)
-				cmoto.motor_end_time = time.time()
-				cam_is_moving.clear()
-				cam_reset.set()
-				cmoto.cycle_contracted = True
-			elif cmoto.cycle_extended and cmoto.cycle_contracted and (time.time() > cmoto.motor_end_time + cmoto.bot_wait_time):
-				cmoto.cycle_extended = False
-				cmoto.cycle_contracted = False
-				cmoto.full_extension = False
 				cmoto.cycle_end_time = time.time()
 		if not cmoto.auto_set and (time.time() > cmoto.mission_start_time + cmoto.auto_wait): #begin automation after set amount of time
 			cmoto.auto_set = True
