@@ -3,10 +3,11 @@ import time
 import RPi.GPIO as GPIO
 
 def main():
+	print("taking image")
 	# intiialize 4 cameras
 	cam1 = cv2.VideoCapture(0)
 	cam2 = cv2.VideoCapture(1)
-	cam3 = cv2.VideoCaptrue(2)
+	cam3 = cv2.VideoCapture(2)
 	cam4 = cv2.VideoCapture(3)
 	#take 4 images
 	r0, frame1 = cam1.read()
@@ -18,6 +19,7 @@ def main():
 	cv2.imwrite('/home/pi/images/cam1/{:.0f}.jpg'.format(time.time()), frame2)
 	cv2.imwrite('/home/pi/images/cam2/{:.0f}.jpg'.format(time.time()), frame3)
 	cv2.imwrite('/home/pi/images/cam3/{:.0f}.jpg'.format(time.time()), frame4)
+	print("done taking image")
 
 if __name__ == '__main__':
 	main()

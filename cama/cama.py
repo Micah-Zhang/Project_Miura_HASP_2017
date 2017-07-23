@@ -1,8 +1,6 @@
 import time
-import math
 import RPi.GPIO as GPIO
 import subprocess as sp
-import cama.fcama as fcama
 
 led_pin = 31
 GPIO.setmode(GPIO.BOARD)
@@ -15,7 +13,7 @@ def main(downlink,cam_is_moving,cam_is_open,cam_reset):
 	while True:
 		if cam_reset.is_set():
 			prev_capture_time = 0
-			time_interval = math.inf
+			time_interval = float("inf")
 			cam_reset.clear()
 		if cam_is_moving.is_set():
 			time_interval = 5

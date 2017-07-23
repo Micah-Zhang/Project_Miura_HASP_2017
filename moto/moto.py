@@ -18,7 +18,7 @@ GPIO.setup(cmoto.Lower_Button,GPIO.IN)
 def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 	downlink.put(["MO","BU","MOTO"]) #verify succesful thread start
 	cmoto.mission_start_time = time.time() #keep track of mission start time
-	cam_transition.set()
+	cam_reset.set()
 	while(True):
 		fmoto.checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_reset)
 		if cmoto.top_calib:

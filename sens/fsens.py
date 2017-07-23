@@ -34,7 +34,7 @@ bus = smbus.SMBus(1)
 bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
 #place holders. replace with actual values later
-temp_max = [150.,150.,150.,150.,150.,150.,150.,150.,150.]
+temp_max = [80.,80.,80.,80.,80.,80.,80.,80.,80.]
 temp_min = [-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.]
 
 # Handles sensor reading schedule
@@ -86,7 +86,7 @@ def read_temp(downlink, temp_led):
 				temp_led.clear()
 		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
 	except:
-		pass
+		print("eat dick")
 
 
 # Grab raw data from bus. Convert raw data to nice data.

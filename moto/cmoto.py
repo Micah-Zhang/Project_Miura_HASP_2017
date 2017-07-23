@@ -16,7 +16,7 @@ full_extension = False
 automation = False
 top_wait_time = 1080 #1080 = 18 minutes #change before flight
 bot_wait_time = 600 #600 = 10 minutes #change before flight
-auto_wait = 300 #18000 = 5 hours #change before flight
+auto_wait = 10 #18000 = 5 hours #change before flight
 motor_start_time = 0
 motor_end_time = 0
 cycle_start_time = 0 #keeps track of cycle start time
