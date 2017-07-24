@@ -15,27 +15,15 @@ GPIO.setup(led_pin,GPIO.OUT)
 GPIO.setup(led_pin,False)
 led_on = False
 
-'''
-temp_buck_converter = '//sys/bus/w1/devices/28-000007a891a3/w1_slave'
-temp_motor_driver = '//sys/bus/w1/devices/28-000007a89303/w1_slave'
-temp_camwall_1 = '//sys/bus/w1/devices/28-00000865ce6c/w1_slave'
-temp_camwall_2 = '//sys/bus/w1/devices/28-00000828fbdd/w1_slave'
-temp_camwall_3 = '//sys/bus/w1/devices/28-00000865e2e7/w1_slave'
-temp_camwall_4 = '//sys/bus/w1/devices/28-000007a8af78/w1_slave'
-temp_internal_ambient = '//sys/bus/w1/devices/28-000007a8b7a1/w1_slave'
-temp_external_ambient = '//sys/bus/w1/devices/28-000007a8c380/w1_slave'
-temp_motor = '//sys/bus/w1/devices/28-0000086460f1/w1_slave'
-
-1 = camera wall 3
-2 = ambient external
-3 = motor driver
-4 = motor
-5 = cameral wall 2
-6 = ambient internal
-7 = camera wall 1
-8 = cameral wall 4
-9 = buck converter
-'''
+ambient_internal = 28-000007a8a632
+camera_wall_1 = 28-00000865ce6c
+camera_wall_2 = 28-00000828fbdd
+camera_wall_3 = 28-00000865e2e7
+camera_wall_4 = 28-0000086460f1
+temp_motor = 28-0000086460f1
+buck_converter = 28-000007a891a3
+ambient_external = 28-000007a8acab
+motor_driver = 28-000007a89303
 
 GAIN = 1
 bus = smbus.SMBus(1)
