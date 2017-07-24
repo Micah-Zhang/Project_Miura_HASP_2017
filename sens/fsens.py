@@ -52,7 +52,10 @@ class PeriodicScheduler:
 def cs_str(data):
 	out = "" # Initialize variable with empty string
 	for i in range(len(data)): # Iterate through each "word" in data
-		out += "{0:.2f} ".format(data[i]) # Add each word to the string "out"
+		if i % 2 == 0:
+			out += "{:.0f}: ".format(data[i]) # Add each word to the string "out"
+		else:
+			out += "{0:.2f} ".format(data[i])
 	return out # Return newly formed string
 
 
@@ -87,6 +90,8 @@ def temp_find(address):
 		return 8
 	elif address == motor_driver:
 		return 9
+	else:
+		print("DEEP SHIT")
 
 def read_temp(downlink, temp_led):
 	#try:
@@ -102,7 +107,7 @@ def read_temp(downlink, temp_led):
 			if temp_led.is_set():
 				GPIO.output(led_pin,False)
 				temp_led.clear()
-		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
+		downlink.put(["SE", "T%i" % (len(data)/2), cs_str(data)]) # Send the packaged data packet to the downlink thread.
 	#except:
 	#	pass
 
