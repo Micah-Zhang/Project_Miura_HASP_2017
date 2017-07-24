@@ -2,6 +2,7 @@ import time
 import moto.cmoto as cmoto
 import moto.fmoto as fmoto
 import RPi.GPIO as GPIO
+import threading
 
 #gpio setup
 GPIO.setmode(GPIO.BOARD)
@@ -37,7 +38,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
-			fmoto.move(15000, downlink, safe_mode, encoder)
+			fmoto.move(16000, downlink, safe_mode, encoder)
 			cam_is_moving.clear()
 			cam_reset.set()
 			cam_is_open.set()
@@ -47,7 +48,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
-			fmoto.move(-15000, downlink, safe_mode, encoder)
+			fmoto.move(-16000, downlink, safe_mode, encoder)
 			cam_is_moving.clear()
 			cam_reset.set()
 			cmoto.bot_calib = False

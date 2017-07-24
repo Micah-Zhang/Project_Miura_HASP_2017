@@ -113,9 +113,9 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				print("reset step count = 0")
 				cmoto.step_count = 0
 				downlink.put(["MO","AK",packet])
-			elif cmd == b"\x0A": #reset max step to default: 15000
-				print("reset max step = 15000")
-				cmoto.max_step = 15000
+			elif cmd == b"\x0A": #reset max step to default: 16000
+				print("reset max step = 16000")
+				cmoto.max_step = 16000
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x0B": #query is_open
 				print("querying is open")
@@ -194,13 +194,7 @@ class Encoder:
 
 def encoder_function(encoder):
 	while True:
+		time.sleep(.00005)
+		encoder.process_pulse()
 		encoder_data = []
-		for i in range(100): # So we're not constantly accessing the file]
-			for i in range(100):
-				time.sleep(.00005)
-				encoder.process_pulse()
-			encoder_data.append((time.time(), encoder.get_encoder_count()))
-		with open('encoder_data.txt','a+') as f:
-			for line in encoder_data:
-				f.write('{} {}\n'.format(line[0], line[1]))
 
