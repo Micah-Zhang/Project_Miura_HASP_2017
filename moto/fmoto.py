@@ -98,6 +98,8 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				cmoto.top_calib = False
 				cmoto.bot_calib = False
 				cmoto.cycle_count -= 1
+				if cmoto.cycle_count < -2:
+					cmoto.cycle_count = -2
 				cam_is_moving.clear()
 				cam_reset.set()
 				cam_is_open.set()
