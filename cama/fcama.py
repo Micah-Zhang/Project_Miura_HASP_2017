@@ -24,7 +24,7 @@ def main():
 	cam3.set(cv2.cv.CV_CAP_PROP_EXPOSURE,-10)
 	r2, frame3 = cam3.read()
 	cv2.imwrite('/home/pi/images/cam2/{:.0f}.jpg'.format(time.time()), frame3)
-	cam3.release()	
+	cam3.release()
 
 	cam4 = cv2.VideoCapture(3)
 	cam4.set(3,1024.)
@@ -32,7 +32,7 @@ def main():
 	cam4.set(cv2.cv.CV_CAP_PROP_EXPOSURE,-10)
 	r3, frame4 = cam4.read()
 	cv2.imwrite('/home/pi/images/cam3/{:.0f}.jpg'.format(time.time()), frame4)
-	cam4.release()	
+	cam4.release()
 
 	print map(int, [r0,r1,r2,r3])
 
