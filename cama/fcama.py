@@ -3,10 +3,10 @@ import time
 
 def main():
 	cam1 = cv2.VideoCapture(0)
-	cam1.set(cv2.cv.CV_CAP_PROP_SETTINGS,0)
 	cam1.set(3,1024.)
 	cam1.set(4,768.)
 	r0, frame1 = cam1.read()
+	cam1.get(cv2.cv.CV_CAP_PROP_EXPOSURE)
 	cam1.set(cv2.cv.CV_CAP_PROP_EXPOSURE,-10)
 	cv2.imwrite('/home/pi/images/cam0/{:.0f}.jpg'.format(time.time()), frame1)
 	cam1.release()
