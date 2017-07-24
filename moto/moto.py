@@ -23,7 +23,7 @@ GPIO.setup(pin_A, GPIO.IN)
 GPIO.setup(pin_B, GPIO.IN)
 encoder = fmoto.Encoder(pin_A, pin_B)
 
-# To access encoder count, use encoder.get_encoder_count() 
+# To access encoder count, use encoder.get_encoder_count()
 
 encoder_thread = threading.Thread(target=fmoto.encoder_function, args=(encoder,))
 encoder_thread.start()

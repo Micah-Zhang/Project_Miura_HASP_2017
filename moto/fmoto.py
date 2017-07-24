@@ -100,6 +100,7 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				cmoto.cycle_count -= 1
 				if cmoto.cycle_count < -2:
 					cmoto.cycle_count = -2
+				downlink.put(["MO","CC",str(cmoto.cycle_count)])
 				cam_is_moving.clear()
 				cam_reset.set()
 				cam_is_open.set()
@@ -133,8 +134,6 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 			else:
 				downlink.put(["MO","ER",packet])
 		elif type(cmd) is int:
-			packet = cmd
-			downlink.put(["MO","AK",packet])
 			if abs(cmd) <= 100:
 				#cmoto.nudge_step = ((cmd/100)-(cmoto.step_count/cmoto.max_step))*cmoto.max_step)
 				cmoto.nudge_step = int((cmd*(cmoto.max_step/100)) - cmoto.step_count)
@@ -157,6 +156,8 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				cmd -= 204
 				cmoto.cycle_count = cmd
 				print("changed cycle count to: ", cmoto.cycle_count)
+				downlink.put(["MO","CC",str(cmoto.cycle_count)])
+				downlink.put(["MO","AK",str(cmd)])
 			else:
 				downlink.put(["MO", "ER",str(cmd)])
 
