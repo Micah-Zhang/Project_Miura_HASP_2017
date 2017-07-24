@@ -15,15 +15,15 @@ GPIO.setup(led_pin,GPIO.OUT)
 GPIO.setup(led_pin,False)
 led_on = False
 
-ambient_internal = 28-000007a8a632
-camera_wall_1 = 28-00000865ce6c
-camera_wall_2 = 28-00000828fbdd
-camera_wall_3 = 28-00000865e2e7
-camera_wall_4 = 28-0000086460f1
-temp_motor = 28-0000086460f1
-buck_converter = 28-000007a891a3
-ambient_external = 28-000007a8acab
-motor_driver = 28-000007a89303
+ambient_internal = "28-000007a8a632"
+camera_wall_1 = "28-00000865ce6c"
+camera_wall_2 = "28-00000828fbdd"
+camera_wall_3 = "28-00000865e2e7"
+camera_wall_4 = "28-0000086460f1"
+temp_motor = "28-0000086460f1"
+buck_converter = "28-000007a891a3"
+ambient_external = "28-000007a8acab"
+motor_driver = "28-000007a89303"
 
 GAIN = 1
 bus = smbus.SMBus(1)
@@ -89,10 +89,11 @@ def temp_find(address):
 		return 9
 
 def read_temp(downlink, temp_led):
-	try:
+	#try:
 		data = []
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
 			print(sensor.id)
+		'''
 			data.append(temp_find(sensor.id))
 			data.append(sensor.get_temperature())
 		if check_temp(data):
@@ -104,8 +105,9 @@ def read_temp(downlink, temp_led):
 				GPIO.output(led_pin,False)
 				temp_led.clear()
 		downlink.put(["SE", "T%i" % (len(data)), cs_str(data)]) # Send the packaged data packet to the downlink thread.
-	except:
-		pass
+		'''
+	#except:
+	#	pass
 
 
 # Grab raw data from bus. Convert raw data to nice data.
