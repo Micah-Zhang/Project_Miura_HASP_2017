@@ -15,15 +15,15 @@ GPIO.setup(led_pin,GPIO.OUT)
 GPIO.setup(led_pin,False)
 led_on = False
 
-ambient_internal = "28-000007a8a632"
-camera_wall_1 = "28-00000865ce6c"
-camera_wall_2 = "28-00000828fbdd"
-camera_wall_3 = "28-00000865e2e7"
-camera_wall_4 = "28-0000086460f1"
-temp_motor = "28-0000086460f1"
-buck_converter = "28-000007a891a3"
-ambient_external = "28-000007a8acab"
-motor_driver = "28-000007a89303"
+camera_wall_1 = "00000865ce6c"
+camera_wall_2 = "00000828fbdd"
+camera_wall_3 = "00000865e2e7"
+camera_wall_4 = "0000086460f1"
+temp_motor = "0000086460f1"
+buck_converter = "000007a891a3"
+ambient_internal = "000007a8a632"
+ambient_external = "000007a8acab"
+motor_driver = "000007a89303"
 
 GAIN = 1
 bus = smbus.SMBus(1)
@@ -69,30 +69,34 @@ def check_temp(temps):
 		return False
 
 def temp_find(address):
-	if address == temp_buck_converter:
+	if address == camera_wall_1:
 		return 1
-	elif address == temp_motor_driver:
+	elif address == camera_wall_2:
 		return 2
-	elif address == temp_camwall_1:
+	elif address == camera_wall_3:
 		return 3
-	elif address == temp_camwall_2:
+	elif address == camera_wall_4:
 		return 4
-	elif address == temp_camwall_3:
-		return 5
-	elif address == temp_camwall_4:
-		return 6
-	elif address == temp_internal_ambient:
-		return 7
-	elif address == temp_external_ambient:
-		return 8
 	elif address == temp_motor:
+		return 5
+	elif address == buck_converter:
+		return 6
+	elif address == ambient_internal:
+		return 7
+	elif address == ambient_external:
+		return 8
+	elif address == motor_driver:
 		return 9
+	else:
+		print("POOP")
 
 def read_temp(downlink, temp_led):
 	#try:
 		data = []
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
 			print(sensor.id)
+			print(temp_find(sensor.id))
+	
 		'''
 			data.append(temp_find(sensor.id))
 			data.append(sensor.get_temperature())
