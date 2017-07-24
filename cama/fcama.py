@@ -6,7 +6,7 @@ def main():
 	cam1.set(3,1024.)
 	cam1.set(4,768.)
 	print("1")
-	print(cam1.get(CV_CAP_PROP_EXPOSURE))
+	print(cam1.get(cv2.CV_CAP_PROP_EXPOSURE))
 	print(cam1.get(CV_CAP_PROP_BRIGHTNESS))
 	print(cam1.get(CV_CAP_PROP_CONTRAST))
 	print(cam1.get(CV_CAP_PROP_SATURATION))
@@ -20,7 +20,7 @@ def main():
 	r0, frame1 = cam1.read()
 	cv2.imwrite('/home/pi/images/cam0/{:.0f}.jpg'.format(time.time()), frame1)
 	cam1.release()
-	
+
 	cam2 = cv2.VideoCapture(1)
 	cam2.set(3,1024.)
 	cam2.set(4,768.)
@@ -38,7 +38,7 @@ def main():
 	print("\n")
 	r1, frame2 = cam2.read()
 	cv2.imwrite('/home/pi/images/cam1/{:.0f}.jpg'.format(time.time()), frame2)
-	cam2.release()	
+	cam2.release()
 
 	cam3 = cv2.VideoCapture(2)
 	cam3.set(3,1024.)
@@ -57,7 +57,7 @@ def main():
 	print("\n")
 	r2, frame3 = cam3.read()
 	cv2.imwrite('/home/pi/images/cam2/{:.0f}.jpg'.format(time.time()), frame3)
-	cam3.release()		
+	cam3.release()	
 
 	cam4 = cv2.VideoCapture(3)
 	cam4.set(3,1024.)
