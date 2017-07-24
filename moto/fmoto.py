@@ -6,7 +6,7 @@ import moto.cmoto as cmoto
 
 
 #move motor
-def move(steps, downlink, safe_mode):
+def move(steps, downlink, safe_mode, encoder):
 	downlink_step = 0
 	#determine if moving up or down. respond accordingly.
 	if steps > 0:
@@ -31,6 +31,7 @@ def move(steps, downlink, safe_mode):
 		elif GPIO.input(cmoto.Lower_Button) and increment == -1:
 			print("botton button pressed. stopping payload")
 			cmoto.step_count = 0
+			encoder.reset_encoder_count()
 			print("step_count reset to: ",cmoto.step_count)
 			return
 		else:
@@ -43,6 +44,7 @@ def move(steps, downlink, safe_mode):
 				lower = GPIO.input(cmoto.Lower_Button)
 				upper = GPIO.input(cmoto.Upper_Button)
 				downlink.put(["MO","BT",str(lower) + ' ' + str(upper)])
+				downlink.put(["MO","EC",str(encoder.get_encoder_count())])
 				downlink_step = 0
 			else:
 				downlink_step += 1
@@ -157,3 +159,48 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				print("changed cycle count to: ", cmoto.cycle_count)
 			else:
 				downlink.put(["MO", "ER",str(cmd)])
+
+class Encoder:
+	def __init__(self, pin_A=18, pin_B=16):
+		self.pin_A = pin_A
+		self.pin_B = pin_B
+
+		self.encoder_count = 0
+
+		self.pin_A_last_state = GPIO.input(self.pin_A)
+
+		return
+
+	def process_pulse(self):
+		pin_A_state = GPIO.input(self.pin_A)
+
+		# If states are different, that means a pulse has occured
+		if self.pin_A_last_state != pin_A_state:
+			# If the output of B is different to output of A, encoder is moving down
+			if GPIO.input(self.pin_B) == pin_A_state:
+				self.encoder_count += 1
+			else:
+				self.encoder_count -= 1
+		self.pin_A_last_state = pin_A_state
+
+		return
+
+	def get_encoder_count(self):
+		return self.encoder_count
+
+	def reset_encoder_count(self):
+		self.encoder_count = 0
+		return
+
+def encoder_function(encoder):
+	while True:
+		encoder_data = []
+		for i in range(100): # So we're not constantly accessing the file]
+			for i in range(100):
+				time.sleep(.00005)
+				encoder.process_pulse()
+			encoder_data.append((time.time(), encoder.get_encoder_count()))
+		with open('encoder_data.txt','a+') as f:
+			for line in encoder_data:
+				f.write('{} {}\n'.format(line[0], line[1]))
+

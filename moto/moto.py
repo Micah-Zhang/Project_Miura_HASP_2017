@@ -15,6 +15,18 @@ GPIO.setup(cmoto.Step_Pin, GPIO.OUT, initial=GPIO.LOW)
 GPIO.setup(cmoto.Upper_Button,GPIO.IN)
 GPIO.setup(cmoto.Lower_Button,GPIO.IN)
 
+# Encoder initialization
+pin_A = 18
+pin_B = 16
+GPIO.setup(pin_A, GPIO.IN)
+GPIO.setup(pin_B, GPIO.IN)
+encoder = fmoto.Encoder(pin_A, pin_B)
+
+# To access encoder count, use encoder.get_encoder_count() 
+
+encoder_thread = threading.Thread(target=fmoto.encoder_function, args=(encoder,))
+encoder_thread.start()
+
 def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 	downlink.put(["MO","BU","MOTO"]) #verify succesful thread start
 	cmoto.mission_start_time = time.time() #keep track of mission start time
@@ -25,7 +37,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
-			fmoto.move(15000, downlink, safe_mode)
+			fmoto.move(15000, downlink, safe_mode, encoder)
 			cam_is_moving.clear()
 			cam_reset.set()
 			cam_is_open.set()
@@ -35,7 +47,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
-			fmoto.move(-15000, downlink, safe_mode)
+			fmoto.move(-15000, downlink, safe_mode, encoder)
 			cam_is_moving.clear()
 			cam_reset.set()
 			cmoto.bot_calib = False
@@ -44,7 +56,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 			cam_is_open.clear()
 			cam_reset.set()
 			cam_is_moving.set()
-			fmoto.move(cmoto.nudge_step, downlink, safe_mode)
+			fmoto.move(cmoto.nudge_step, downlink, safe_mode, encoder)
 			cam_is_moving.clear()
 			cam_reset.set()
 			cmoto.nudge_state = False
@@ -55,9 +67,9 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 				cam_is_moving.set()
 				cmoto.cycle_start_time = time.time()
 				if cmoto.minimum_success:
-					fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink, safe_mode)
+					fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink, safe_mode, encoder)
 				else:
-					fmoto.move(cmoto.max_step - cmoto.step_count, downlink, safe_mode)
+					fmoto.move(cmoto.max_step - cmoto.step_count, downlink, safe_mode, encoder)
 				cmoto.motor_start_time = time.time()
 				cam_is_moving.clear()
 				cam_reset.set()
@@ -67,7 +79,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 				cam_is_open.clear()
 				cam_reset.set()
 				cam_is_moving.set()
-				fmoto.move(- cmoto.step_count, downlink, safe_mode)
+				fmoto.move(- cmoto.step_count, downlink, safe_mode, encoder)
 				cmoto.motor_end_time = time.time()
 				cam_is_moving.clear()
 				cam_reset.set()
@@ -106,4 +118,5 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 		lower = GPIO.input(cmoto.Lower_Button)
 		upper = GPIO.input(cmoto.Upper_Button)
 		downlink.put(["MO","BT",str(lower) + ' ' + str(upper)])
+		downlink.put(["MO","EC",str(encoder.get_encoder_count())])
 		time.sleep(1)
