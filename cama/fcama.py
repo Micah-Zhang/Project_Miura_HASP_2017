@@ -6,7 +6,7 @@ def main():
 	cam1.set(3,1024.)
 	cam1.set(4,768.)
 	print("1")
-	print(cam1.get("CV_CAP_PROP_EXPOSURE"))
+	print(cam1.get(1))
 	print(cam1.get(CV_CAP_PROP_BRIGHTNESS))
 	print(cam1.get(CV_CAP_PROP_CONTRAST))
 	print(cam1.get(CV_CAP_PROP_SATURATION))
