@@ -32,8 +32,8 @@ bus = smbus.SMBus(1)
 bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
 #place holders. replace with actual values later
-temp_max = [80.,80.,80.,80.,80.,80.,80.,80.,80.]
-temp_min = [-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.,-20.]
+temp_max = [70.,70.,70.,70.,80.,105.,125.,125.,150.]
+temp_min = [-20.,-20.,-20.,-20.,-20.,-20.,-25.,-25.,-40.]
 
 # Handles sensor reading schedule
 class PeriodicScheduler:
@@ -63,7 +63,7 @@ def cs_str(data):
 def check_temp(data):
 	for i in range(len(data)):
 		if i % 2 == 0:
-			label = data[i]
+			label = data[i] - 1
 		else:
 			value = data[i]
 			if value > temp_max[label] or value < temp_min[label]:
@@ -94,7 +94,7 @@ def temp_find(address):
 
 # Read temperature and downlink
 def read_temp(downlink, temp_led):
-	#try:
+	try:
 		data = []
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
 			data.append(temp_find(sensor.id))
@@ -108,8 +108,8 @@ def read_temp(downlink, temp_led):
 				GPIO.output(led_pin,False)
 				temp_led.clear()
 		downlink.put(["SE", "T%i" % (len(data)/2), cs_str(data)]) # Send the packaged data packet to the downlink thread.
-	#except:
-	#	pass
+	except:
+		pass
 
 
 # Grab raw data from bus. Convert raw data to nice data.
