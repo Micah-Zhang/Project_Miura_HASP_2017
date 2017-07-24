@@ -5,8 +5,8 @@ def main():
 	cam1 = cv2.VideoCapture(0)
 	cam1.set(3,1024.)
 	cam1.set(4,768.)
-	r0, frame1 = cam1.read()	
-	cam1.set(cv2.cv.CAP_PROP_EXPOSURE,-10)
+	r0, frame1 = cam1.read()
+	cam1.set(cv2.cv.CV_CAP_PROP_EXPOSURE,-10)
 	cv2.imwrite('/home/pi/images/cam0/{:.0f}.jpg'.format(time.time()), frame1)
 	cam1.release()
 
@@ -14,7 +14,7 @@ def main():
 	cam2.set(3,1024.)
 	cam2.set(4,768.)
 	r1, frame2 = cam2.read()
-	cam2.set(cv2.cv.CAP_PROP_EXPOSURE,-10)
+	cam2.set(cv2.cv.CV_CAP_PROP_EXPOSURE,-10)
 	cv2.imwrite('/home/pi/images/cam1/{:.0f}.jpg'.format(time.time()), frame2)
 	cam2.release()
 
@@ -23,14 +23,14 @@ def main():
 	cam3.set(4,768.)
 	r2, frame3 = cam3.read()
 	cv2.imwrite('/home/pi/images/cam2/{:.0f}.jpg'.format(time.time()), frame3)
-	cam3.set(cv2.cv.CAP_PROP_EXPOSURE,-10)	
+	cam3.set(cv2.cv.CV_CAP_PROP_EXPOSURE,-10)
 	cam3.release()
 
 	cam4 = cv2.VideoCapture(3)
 	cam4.set(3,1024.)
 	cam4.set(4,768.)
 	r3, frame4 = cam4.read()
-	cam4.set(cv2.cv.CAP_PROP_EXPOSURE,-10)	
+	cam4.set(cv2.cv.CV_CAP_PROP_EXPOSURE,-10)
 	cv2.imwrite('/home/pi/images/cam3/{:.0f}.jpg'.format(time.time()), frame4)
 	cam4.release()
 
