@@ -106,8 +106,6 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				print("exiting SAFE MODE")
 				cam_is_open.clear()
 				cam_reset.set()
-				cmoto.bot_calib = True
-				cmoto.automation = True
 				downlink.put(["MO","AK",packet])
 			elif cmd == b"\x09": #reset step count to 0
 				print("reset step count = 0")
