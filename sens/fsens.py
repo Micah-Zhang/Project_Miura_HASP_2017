@@ -59,23 +59,24 @@ def cs_str(data):
 	return out # Return newly formed string
 
 
-def check_temp(temps):
-	# Checks if any temperature readings are outisde expected values
-	tempBools1 = [float(tempI) > maxI for tempI,maxI in zip(temps,temp_max)]
-	tempBools2 = [float(tempII) < minII for tempII,minII in zip(temps,temp_min)]
-	# Returns true if one of more things is on fire OR completely frozen. >:)
-	if any(tempBools1):
-		return True
-	elif any(tempBools2):
-		return True
-	else:
-		return False
+# Check to see if temp sensors are within normal operating temperatures
+def check_temp(data):
+	for i in range(len(data)):
+		if i % 2 == 0:
+			label = data[i]
+		else:
+			value = data[i]
+			if value > temp_max[label] or value < temp_min[label]:
+				return True
+	return False
 
+
+# Determine temperature sensor identity
 def temp_find(address):
 	if address == camera_wall_1:
-		return int(1)
+		return 1
 	elif address == camera_wall_2:
-		return int(2)
+		return 2
 	elif address == camera_wall_3:
 		return 3
 	elif address == camera_wall_4:
@@ -90,14 +91,13 @@ def temp_find(address):
 		return 8
 	elif address == motor_driver:
 		return 9
-	else:
-		print("DEEP SHIT")
 
+# Read temperature and downlink
 def read_temp(downlink, temp_led):
 	#try:
 		data = []
 		for sensor in W1ThermSensor.get_available_sensors(): # Grab temp values from all available sensors in a round robin fashion
-			data.append(int(temp_find(sensor.id)))
+			data.append(temp_find(sensor.id))
 			data.append(sensor.get_temperature())
 		if check_temp(data):
 			if not temp_led.is_set():
