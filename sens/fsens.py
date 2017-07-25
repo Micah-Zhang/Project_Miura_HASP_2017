@@ -32,7 +32,7 @@ bus = smbus.SMBus(1)
 bus.write_byte_data(0x60, 0x26, 0x39) #pres
 
 #place holders. replace with actual values later
-temp_max = [70.,70.,70.,70.,80.,105.,125.,35.,150.]
+temp_max = [70.,70.,70.,70.,80.,105.,125.,125.,150.]
 temp_min = [-20.,-20.,-20.,-20.,-20.,-20.,-25.,-25.,-40.]
 
 # Handles sensor reading schedule
