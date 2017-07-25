@@ -34,6 +34,8 @@ def take_image():
 
 def main(downlink,cam_is_moving,cam_is_open,cam_reset):
 	downlink.put(["CA","BU","CAMA"])
+	prev_capture_time = 0
+	time_interval = float("inf")
 	while True:
 		if cam_reset.is_set():
 			prev_capture_time = 0
