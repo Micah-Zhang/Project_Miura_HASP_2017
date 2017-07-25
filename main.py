@@ -20,7 +20,7 @@ moto_cmd = queue.Queue()
 downlink = queue.Queue()
 
 # Create shared objects
-gnd_bus = easyserial.Bus("/dev/serial0", 4800)
+gnd_bus = easyserial.Bus("/dev/ttyUSB0", 4800)
 
 # Setting up events to be seen across threads
 # Event is like global boolean but safer for multithreading
