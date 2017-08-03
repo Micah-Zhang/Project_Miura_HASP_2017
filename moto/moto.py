@@ -70,7 +70,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 				if cmoto.minimum_success:
 					fmoto.move(int(73*(cmoto.max_step/100) - cmoto.step_count), downlink, safe_mode, encoder)
 				else:
-					fmoto.move(cmoto.max_step - cmoto.step_count, downlink, safe_mode, encoder)
+					fmoto.move(cmoto.max_step - cmoto.step_count + 750, downlink, safe_mode, encoder)
 				cmoto.motor_start_time = time.time()
 				cam_is_moving.clear()
 				cam_reset.set()
@@ -80,7 +80,7 @@ def main(downlink, moto_cmd, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 				cam_is_open.clear()
 				cam_reset.set()
 				cam_is_moving.set()
-				fmoto.move(- cmoto.step_count, downlink, safe_mode, encoder)
+				fmoto.move(- cmoto.step_count - 750, downlink, safe_mode, encoder)
 				cmoto.motor_end_time = time.time()
 				cam_is_moving.clear()
 				cam_reset.set()
