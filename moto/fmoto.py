@@ -113,14 +113,23 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 			# Turns on safe mode, which turns OFF all flags that could induce movement
 			elif cmd == b"\x07":
 				print("entering SAFE MODE")
+				# Prevents automation conditional from repeating
 				cmoto.automation = False
+				# Stops nudge_state conditional from repeating
 				cmoto.nudge_state = False
+				# Stops minimum_success conditional from repeating
 				cmoto.minimum_success = False
+				# Prevents full_extension conditional from repeating
 				cmoto.full_extension = False
+				# If code is still inside full_extension or min_success cycle, forces it to exit
 				cmoto.cmd_sent = False
+				# Forces program to exit out of main cycle
 				cmoto.cycle_extended = False
+				# Forces program to exit out of main cycle
 				cmoto.cycle_contracted = False
+				# If a top calibration cycle was queued, remove it from the queue
 				cmoto.top_calib = False
+				# If a bottom calibration cycle was queued, remove it from the queue
 				cmoto.bot_calib = False
 				# Automatically revert to previous cycle after exiting safe mode
 				cmoto.cycle_count -= 1
