@@ -72,4 +72,36 @@ title('Ambient Internal Temp');
 xlabel('Time (s)');
 ylabel('Temp (F)');
 
+%Camera wall 1 plot
+c4 = find(strcmp(data,'1:')); %check for 3: in data
+cama4 = c4 + 1; %finds the temperature
+camera4 = data(cama4); %converts from a line number into the temp value
+camerawall4 = str2double(camera4); %converts camerawall from a cell into double
+time2 = [1:6225]; %sets up time variable
+plot(time2, camerawall4) %plot the graph
+title('Camera Wall 1 Temp');
+xlabel('Time (s)');
+ylabel('Temp (F)');
+
+%Camera wall 4 plot
+c4 = find(strcmp(data,'4:')); %check for 3: in data
+cama4 = c4 + 1; %finds the temperature
+camera4 = data(cama4); %converts from a line number into the temp value
+camerawall4 = str2double(camera4); %converts camerawall from a cell into double
+time2 = [1:6225]; %sets up time variable
+plot(time2, camerawall4) %plot the graph
+title('Camera Wall 4 Temp');
+xlabel('Time (s)');
+ylabel('Temp (F)');
+
+%Buck Converter plot
+b1 = find(strcmp(data,'6:')); %check for 3: in data
+buc1 = b1 + 1; %finds the temperature
+buck1 = data(buc1); %converts from a line number into the temp value
+buckconverter = str2double(buck1); %converts camerawall from a cell into double
+time2 = [1:6225]; %sets up time variable
+plot(time2, buckconverter) %plot the graph
+title('Buck Converter Temp');
+xlabel('Time (s)');
+ylabel('Temp (F)');
 
