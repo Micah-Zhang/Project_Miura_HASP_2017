@@ -23,3 +23,8 @@ Launch Location: Columbia Scientific Balloon Facility, Ft. Sumner, New Mexico
 Flight Duration: 20 hours
 
 Programming Language: Python3
+
+Microcontroller: Raspberry Pi 3 Model B
+
+Flight Software Overview:
+5 threads. 6 including main. Communicated with each other via queues and threading events. Has full uplink and downlink capabilities via pyserial. Camera and motor threads highly codependent. Each thread contianed in its appropriately named folder. 'test' folder contains snippets of code used for testing. 'shared' folder contains legacy code used to serial and i2c communication.
