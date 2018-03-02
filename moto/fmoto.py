@@ -4,9 +4,13 @@ import RPi.GPIO as GPIO
 import os
 import moto.cmoto as cmoto
 
-
-#move motor
+# "move" function:
+# Takes steps to be moved, downlink queue, safe_mode flag, and encoder class as inputs. No outputs.
+# Moves motor specified number of steps. Will move until either the specified step count is reached or the respective button is pressed
+# Keeps track of and downlinks stepcount, stepcount percentage, button state, and encoder count every 100 steps
+# Stops/will not begin moving if safe_mode flag is true
 def move(steps, downlink, safe_mode, encoder):
+	# Enables downlink every 100 steps. Resets to 0 after every downlink.
 	downlink_step = 0
 	#determine if moving up or down. respond accordingly.
 	if steps > 0:
@@ -19,6 +23,7 @@ def move(steps, downlink, safe_mode, encoder):
 		increment = -1
 	steps = abs(steps)
 	for step in range(steps):
+		# Allows near immediate response when in safe mode
 		if safe_mode.is_set():
 			return
 		#stop if moving UP and UP button pressed
@@ -35,14 +40,21 @@ def move(steps, downlink, safe_mode, encoder):
 			print("step_count reset to: ",cmoto.step_count)
 			return
 		else:
+			# Move 1 step
 			GPIO.output(cmoto.Step_Pin, GPIO.HIGH)
 			GPIO.output(cmoto.Step_Pin, GPIO.LOW)
+			# Update step count variable accordingly
 			cmoto.step_count += increment
+			# Every 100 steps
 			if downlink_step > 100:
+				# Downlink current step count
 				downlink.put(["MO","SC",str(cmoto.step_count)])
+				# Calculate step count percentage (current step/max step) downlink
 				downlink.put(["MO","SP",'{:.2f}%'.format(cmoto.step_count/cmoto.max_step * 100)])
+				# Retrieve upper and lower button states
 				lower = GPIO.input(cmoto.Lower_Button)
 				upper = GPIO.input(cmoto.Upper_Button)
+				# Downlink button states
 				downlink.put(["MO","BT",str(lower) + ' ' + str(upper)])
 				downlink.put(["MO","EC",str(encoder.get_encoder_count())])
 				downlink_step = 0
@@ -52,33 +64,43 @@ def move(steps, downlink, safe_mode, encoder):
 			time.sleep(.0036) #NANNY MODE (flight)
 
 
-#parce through the commands
+# function: checkUplink
+# Takes moto_cmd flag, downlink queue, safe_mode flag, cam_is_moving flag, cam_is_open flag, and cam_reset flag as inputs. No outputs.
+# Takes all commands received from uplink thread and responds accordingly
 def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_reset):
 	while not moto_cmd.empty(): #grab commands until queue empty
 		cmd = moto_cmd.get()
 		print("command received")
+		# Function is passed either bytes or integers which is used to parse command
 		if type(cmd) is bytes:
+			# Store packet for downlink
 			packet = hex(int.from_bytes(cmd, byteorder='big'))
+			# Sets bottom calibration flag to true and downlinks acknowledgement
 			if cmd == b"\x01":
 				print("setting bot_calib flag as TRUE")
 				cmoto.bot_calib = True
 				downlink.put(["MO","AK",packet])
+			# Sets top calibration flag to true and downlinks acknowledgement
 			elif cmd == b"\x02":
 				print("setting top_calib flag as TRUE")
 				cmoto.top_calib = True
 				downlink.put(["MO","AK",packet])
+			# Sets minimum success flag to true and downlinks acknowledgement
 			elif cmd == b"\x03":
 				print("setting minimum_success flag as TRUE")
 				cmoto.minimum_success = True
 				downlink.put(["MO","AK",packet])
+			# Sets full extension flag to true and downlinks acknowledgement
 			elif cmd == b"\x04":
 				print("setting full_extension flag as TRUE")
 				cmoto.full_extension = True
 				downlink.put(["MO","AK",packet])
+			# Sets automation flag to true and downlinks acknowledgement
 			elif cmd == b"\x05":
 				print("setting automation flag as TRUE")
 				cmoto.automation = True
 				downlink.put(["MO","AK",packet])
+			# Determines of is safe of is on or off and downlinks safe mode status
 			elif cmd == b"\x06":
 				print("querying safe mode")
 				downlink.put(["MO","AK",packet])
@@ -86,25 +108,40 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 					downlink.put(["MO","SM","ON"])
 				else:
 					downlink.put(["MO","SM","OFF"])
+			# Turns on safe mode, which turns OFF all flags that could induce movement
 			elif cmd == b"\x07":
 				print("entering SAFE MODE")
-				cmoto.automation = False
+				# Prevents automation conditional from repeatingc
+				moto.automation = False
+				# Stops nudge_state conditional from repeating
 				cmoto.nudge_state = False
+				# Stops minimum_success conditional from repeating
 				cmoto.minimum_success = False
+				# Prevents full_extension conditional from repeating
 				cmoto.full_extension = False
+				# If code is still inside full_extension or min_success cycle, forces it to exit
 				cmoto.cmd_sent = False
+				# Forces program to exit out of main cycle
 				cmoto.cycle_extended = False
+				# Forces program to exit out of main cycle
 				cmoto.cycle_contracted = False
+				# If a top calibration cycle was queued, remove it from the queue
 				cmoto.top_calib = False
+				# If a bottom calibration cycle was queued, remove it from the queue
 				cmoto.bot_calib = False
+				# Automatically revert to previous cycle after exiting safe mode
 				cmoto.cycle_count -= 1
+				# Unless cycle count is already a minimum, then just set cycle count to default, -2, or the first calibration cycle
 				if cmoto.cycle_count < -2:
 					cmoto.cycle_count = -2
+				# Downlink the new cycle count
 				downlink.put(["MO","CC",str(cmoto.cycle_count)])
+				# Stop all current camera operation. Enter "observation mode" characterized by lower frequency of image capture
 				cam_is_moving.clear()
 				cam_reset.set()
 				cam_is_open.set()
 				downlink.put(["MO","AK",packet])
+			# Exit safe mode. Exit observation mode.
 			elif cmd == b"\x08":
 				print("exiting SAFE MODE")
 				cam_is_open.clear()
@@ -118,6 +155,7 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 				print("reset max step = 16000")
 				cmoto.max_step = 16000
 				downlink.put(["MO","AK",packet])
+			# Query observation mode status.
 			elif cmd == b"\x0B": #query is_open
 				print("querying is open")
 				downlink.put(["MO","AK",packet])
@@ -131,6 +169,7 @@ def checkUplink(moto_cmd, downlink, safe_mode, cam_is_moving, cam_is_open, cam_r
 			elif cmd == b"\x0D": #set is_open to true
 				cam_is_open.set()
 				downlink.put(["MO","AK",packet])
+			# Send error message
 			else:
 				downlink.put(["MO","ER",packet])
 		elif type(cmd) is int:
